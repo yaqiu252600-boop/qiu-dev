@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/products/gaokao-volunteer",
     "/tools",
     "/tools/pdf-to-word",
+    "/tools/video-tools",
     "/tools/gaokao-volunteer",
     "/about",
     "/contact",
