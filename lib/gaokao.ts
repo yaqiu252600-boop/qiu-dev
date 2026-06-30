@@ -281,11 +281,11 @@ const preferenceCounts: Record<
   VolunteerPreference,
   Record<RecommendationLevel, number>
 > = {
-  "rush-bachelor": { rush: 3, stable: 2, safe: 1 },
-  "stable-admission": { rush: 1, stable: 3, safe: 2 },
-  employment: { rush: 1, stable: 2, safe: 3 },
-  upgrade: { rush: 1, stable: 3, safe: 2 },
-  balanced: { rush: 2, stable: 2, safe: 2 },
+  "rush-bachelor": { rush: 10, stable: 8, safe: 6 },
+  "stable-admission": { rush: 5, stable: 10, safe: 8 },
+  employment: { rush: 4, stable: 8, safe: 10 },
+  upgrade: { rush: 5, stable: 10, safe: 8 },
+  balanced: { rush: 8, stable: 8, safe: 8 },
 }
 
 const levelTargets: Record<
@@ -525,6 +525,21 @@ function createAllCandidates() {
   })
 }
 
+function uniqueCandidates(candidates: Candidate[]) {
+  const seen = new Set<string>()
+
+  return candidates.filter((candidate) => {
+    const key = getCandidateKey(candidate)
+
+    if (seen.has(key)) {
+      return false
+    }
+
+    seen.add(key)
+    return true
+  })
+}
+
 function filterCandidates(input: GaokaoInput, candidates: Candidate[]) {
   const sameProvinceAndSubject = candidates.filter(
     (candidate) =>
@@ -532,21 +547,39 @@ function filterCandidates(input: GaokaoInput, candidates: Candidate[]) {
       subjectMatches(candidate.admission.subjectType, input.subjectType),
   )
 
-  if (sameProvinceAndSubject.length > 0) {
-    return sameProvinceAndSubject
-  }
-
   const sameProvince = candidates.filter((candidate) =>
     isSameProvince(candidate.admission.province, input.province),
   )
 
-  if (sameProvince.length > 0) {
-    return sameProvince
-  }
-
   const sameSubject = candidates.filter((candidate) =>
     subjectMatches(candidate.admission.subjectType, input.subjectType),
   )
+
+  if (input.acceptsOutOfProvince === "accept") {
+    return uniqueCandidates([
+      ...sameProvinceAndSubject,
+      ...sameSubject,
+      ...sameProvince,
+      ...candidates,
+    ])
+  }
+
+  if (input.acceptsOutOfProvince === "nearby") {
+    return uniqueCandidates([
+      ...sameProvinceAndSubject,
+      ...sameProvince,
+      ...sameSubject,
+      ...candidates,
+    ])
+  }
+
+  if (sameProvinceAndSubject.length > 0) {
+    return sameProvinceAndSubject
+  }
+
+  if (sameProvince.length > 0) {
+    return sameProvince
+  }
 
   return sameSubject.length > 0 ? sameSubject : candidates
 }
@@ -963,7 +996,17 @@ function pickForLevel(
   const strictCandidates = available.filter((candidate) =>
     isCandidateForLevel(candidate, input, estimatedRank, level),
   )
-  const pool = strictCandidates.length >= count ? strictCandidates : available
+  const allStrictCandidates = candidates.filter((candidate) =>
+    isCandidateForLevel(candidate, input, estimatedRank, level),
+  )
+  const pool =
+    strictCandidates.length >= count
+      ? strictCandidates
+      : available.length > 0
+        ? available
+        : allStrictCandidates.length > 0
+          ? allStrictCandidates
+          : candidates
 
   return [...pool]
     .sort(

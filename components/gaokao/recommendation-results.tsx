@@ -10,6 +10,8 @@ import {
 import {
   groupRecommendations,
   type GaokaoPlan,
+  type RecommendationLevel,
+  type SchoolRecommendation,
   type StrategyOption,
 } from "@/lib/gaokao"
 
@@ -50,38 +52,29 @@ export function RecommendationResults({ plan }: { plan: GaokaoPlan | null }) {
       <SectionCard index="3" title="风险提醒" items={plan.riskWarnings} tone="warning" />
       <TradeoffCard plan={plan} />
       <OptionsSection index="5" title="推荐路径" options={plan.recommendedPaths} />
-      <OptionsSection index="6" title="冲刺方案" options={[plan.rushPlan]} />
-      <OptionsSection index="7" title="稳妥方案" options={[plan.stablePlan]} />
-      <OptionsSection index="8" title="保底方案" options={[plan.safePlan]} />
+      <OptionsSection
+        index="6"
+        title="冲刺方案"
+        options={[plan.rushPlan]}
+        recommendations={grouped.rush}
+        recommendationLevel="rush"
+      />
+      <OptionsSection
+        index="7"
+        title="稳妥方案"
+        options={[plan.stablePlan]}
+        recommendations={grouped.stable}
+        recommendationLevel="stable"
+      />
+      <OptionsSection
+        index="8"
+        title="保底方案"
+        options={[plan.safePlan]}
+        recommendations={grouped.safe}
+        recommendationLevel="safe"
+      />
       <OptionsSection index="9" title="专业方向建议" options={plan.majorDirectionAdvice} />
       <SectionCard index="10" title="下一步行动清单" items={plan.nextActions} />
-
-      {plan.recommendations.length > 0 ? (
-        <section>
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold text-foreground">
-              院校数据补充参考
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              这部分来自已接入数据或演示兜底数据，只作为结构参考，不能替代官方核验。
-            </p>
-          </div>
-          <div className="space-y-6">
-            {(["rush", "stable", "safe"] as const).map((level) =>
-              grouped[level].length > 0 ? (
-                <div key={level} className="grid gap-4 lg:grid-cols-2">
-                  {grouped[level].map((recommendation) => (
-                    <RecommendationCard
-                      key={recommendation.id}
-                      recommendation={recommendation}
-                    />
-                  ))}
-                </div>
-              ) : null,
-            )}
-          </div>
-        </section>
-      ) : null}
     </div>
   )
 }
@@ -207,11 +200,21 @@ function OptionsSection({
   index,
   title,
   options,
+  recommendations,
+  recommendationLevel,
 }: {
   index: string
   title: string
   options: StrategyOption[]
+  recommendations?: SchoolRecommendation[]
+  recommendationLevel?: RecommendationLevel
 }) {
+  const recommendationTitle: Record<RecommendationLevel, string> = {
+    rush: "推荐冲刺学校",
+    stable: "推荐稳妥学校",
+    safe: "推荐保底学校",
+  }
+
   return (
     <section>
       <h2 className="mb-4 text-xl font-semibold text-foreground">
@@ -237,6 +240,33 @@ function OptionsSection({
           </Card>
         ))}
       </div>
+      {recommendationLevel ? (
+        <div className="mt-4">
+          <div className="mb-3 text-sm font-medium text-foreground">
+            {recommendationTitle[recommendationLevel]}
+            {recommendations?.length ? `（${recommendations.length} 个）` : ""}
+          </div>
+          {recommendations?.length ? (
+            <div className="grid gap-4 lg:grid-cols-2">
+              {recommendations.map((recommendation) => (
+                <RecommendationCard
+                  key={recommendation.id}
+                  recommendation={recommendation}
+                />
+              ))}
+            </div>
+          ) : (
+            <Card className="border-dashed bg-white shadow-none">
+              <CardContent className="p-4 text-sm leading-6 text-muted-foreground">
+                当前数据源没有匹配到这一档的院校。请补充位次或扩大省份、科类、专业接受范围后重新生成。
+              </CardContent>
+            </Card>
+          )}
+          <p className="mt-3 text-xs leading-5 text-muted-foreground">
+            院校结果来自已接入数据或演示兜底数据，只作为结构参考，不能替代官方核验。
+          </p>
+        </div>
+      ) : null}
     </section>
   )
 }
