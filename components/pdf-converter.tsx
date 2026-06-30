@@ -1,6 +1,6 @@
 "use client"
 
-import { ChangeEvent, FormEvent, useMemo, useState } from "react"
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react"
 import { CheckCircle2, Download, FileText, Upload } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils"
 
 type ConvertState = "idle" | "ready" | "converting" | "done" | "error"
+type EngineState = "checking" | "available" | "unavailable"
 
 export function PdfConverter() {
   const [file, setFile] = useState<File | null>(null)
@@ -21,11 +22,56 @@ export function PdfConverter() {
   const [message, setMessage] = useState("请选择一个 PDF 文件")
   const [downloadUrl, setDownloadUrl] = useState("")
   const [downloadName, setDownloadName] = useState("")
+  const [engineState, setEngineState] = useState<EngineState>("checking")
 
   const canConvert = useMemo(
-    () => Boolean(file) && state !== "converting",
-    [file, state],
+    () => Boolean(file) && state !== "converting" && engineState === "available",
+    [engineState, file, state],
   )
+
+  useEffect(() => {
+    let mounted = true
+
+    async function checkEngine() {
+      try {
+        const response = await fetch("/api/pdf-to-word?status=1", {
+          cache: "no-store",
+        })
+        const result = (await response.json()) as {
+          available?: boolean
+          message?: string
+        }
+
+        if (!mounted) {
+          return
+        }
+
+        setEngineState(result.available ? "available" : "unavailable")
+
+        if (!result.available) {
+          setState("error")
+          setMessage(
+            result.message ??
+              "当前环境未配置 PDF 转 Word 转换引擎，线上暂不能直接转换。",
+          )
+        }
+      } catch {
+        if (!mounted) {
+          return
+        }
+
+        setEngineState("unavailable")
+        setState("error")
+        setMessage("无法确认转换引擎状态，暂不能开始转换。")
+      }
+    }
+
+    checkEngine()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const selected = event.target.files?.[0]
@@ -34,8 +80,12 @@ export function PdfConverter() {
 
     if (!selected) {
       setFile(null)
-      setState("idle")
-      setMessage("请选择一个 PDF 文件")
+      setState(engineState === "unavailable" ? "error" : "idle")
+      setMessage(
+        engineState === "unavailable"
+          ? "当前环境未配置 PDF 转 Word 转换引擎，线上暂不能直接转换。"
+          : "请选择一个 PDF 文件",
+      )
       return
     }
 
@@ -49,6 +99,12 @@ export function PdfConverter() {
     }
 
     setFile(selected)
+    if (engineState === "unavailable") {
+      setState("error")
+      setMessage("文件已选择，但当前环境未配置转换引擎，暂不能在线转换。")
+      return
+    }
+
     setState("ready")
     setMessage(`${selected.name} 已准备好`)
   }
@@ -104,7 +160,7 @@ export function PdfConverter() {
         </div>
         <CardTitle>PDF 转 Word</CardTitle>
         <CardDescription>
-          上传 PDF 后调用本地转换引擎生成可编辑的 Word 文档。文件在本机处理，不会上传到第三方服务。
+          上传 PDF 后调用本地或自托管转换引擎生成可编辑的 Word 文档。若线上环境未配置转换服务，页面会自动提示不可用。
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -142,7 +198,7 @@ export function PdfConverter() {
             ) : (
               <FileText className="h-4 w-4" aria-hidden="true" />
             )}
-            <span>{message}</span>
+            <span>{engineState === "checking" ? "正在检查转换引擎状态..." : message}</span>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">

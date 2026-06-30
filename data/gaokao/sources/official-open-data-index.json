@@ -1,0 +1,51 @@
+[
+  {
+    "id": "sd-2026-score-ranks-summer",
+    "province": "山东",
+    "year": 2026,
+    "title": "山东省2026年夏季高考文化总成绩一分一段表",
+    "dataTypes": ["scoreRanks"],
+    "sourceName": "山东省教育招生考试院",
+    "sourceUrl": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7258",
+    "publishedAt": "2026-06-25",
+    "fetchedAt": "2026-06-30",
+    "status": "verified_source_page",
+    "rawFileName": "山东省2026年夏季高考文化总成绩一分一段表.xls",
+    "rawFileUrl": "https://www.sdzk.cn/Floadup/file/20260625/6391799529165570082629463.xls",
+    "reusePolicy": "requires_review",
+    "licenseNote": "山东省教育招生考试院官网底部声明未经授权不得复制、转载、建立镜像。当前项目仅展示官方来源入口，不转载原始文件或批量重发布数据。",
+    "notes": "已核验官方来源页面。当前运行环境无法直接下载附件，且原始文件入库前需确认转载和再分发边界。"
+  },
+  {
+    "id": "sd-2026-enrollment-plan-supplement",
+    "province": "山东",
+    "year": 2026,
+    "title": "山东省2026年普通高校招生填报志愿指南补充信息",
+    "dataTypes": ["enrollmentPlans", "policies"],
+    "sourceName": "山东省教育招生考试院",
+    "sourceUrl": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7263",
+    "publishedAt": "2026-06-27",
+    "fetchedAt": "2026-06-30",
+    "status": "verified_source_page",
+    "rawFileName": "山东省2026年普通高校招生填报志愿指南补充信息.docx",
+    "rawFileUrl": "https://www.sdzk.cn/Floadup/file/20260627/6391815298192132651279477.docx",
+    "reusePolicy": "requires_review",
+    "licenseNote": "山东省教育招生考试院官网底部声明未经授权不得复制、转载、建立镜像。当前项目仅展示官方来源入口，不转载原始文件或批量重发布数据。",
+    "notes": "已核验官方来源页面。招生计划正式结构化前需逐条保留院校、专业、年份、省份和来源字段。"
+  },
+  {
+    "id": "sd-2026-admission-policy",
+    "province": "山东",
+    "year": 2026,
+    "title": "山东省2026年普通高校招生录取工作意见",
+    "dataTypes": ["provinceRules", "policies"],
+    "sourceName": "山东省教育招生考试院",
+    "sourceUrl": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7251",
+    "publishedAt": "2026-06-21",
+    "fetchedAt": "2026-06-30",
+    "status": "verified_source_page",
+    "reusePolicy": "source_index_only",
+    "licenseNote": "山东省教育招生考试院官网底部声明未经授权不得复制、转载、建立镜像。当前项目仅展示官方来源入口，不转载原始文件或批量重发布数据。",
+    "notes": "用于核验山东省 2026 年招生录取政策、批次和志愿规则。"
+  }
+]

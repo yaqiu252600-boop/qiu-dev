@@ -35,7 +35,7 @@ export default function ToolsPage() {
                   <div className="flex flex-wrap justify-end gap-2">
                     <StatusBadge status={tool.status} />
                     <Badge variant="outline" className="bg-white">
-                      本地转换
+                      {tool.type}
                     </Badge>
                   </div>
                 </div>

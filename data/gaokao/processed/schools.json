@@ -1,0 +1,402 @@
+[
+  {
+    "id": "jiangcheng-tech",
+    "name": "江城信息科技大学",
+    "province": "湖北",
+    "city": "武汉",
+    "level": "双一流建设高校",
+    "schoolType": "理工类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "计算机强校",
+      "工科",
+      "新工科",
+      "软件工程"
+    ],
+    "description": "以信息技术、电子工程和智能制造为优势方向，适合关注互联网、人工智能和产业数字化的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "huaxia-medical",
+    "name": "华夏医学大学",
+    "province": "湖南",
+    "city": "长沙",
+    "level": "省属重点",
+    "schoolType": "医药类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "临床医学",
+      "口腔医学",
+      "医学影像",
+      "实践培养"
+    ],
+    "description": "医学专业体系完整，培养周期较长，适合目标明确且能接受高强度学习训练的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "yuehai-finance",
+    "name": "粤海财经大学",
+    "province": "广东",
+    "city": "广州",
+    "level": "省属重点",
+    "schoolType": "财经类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "金融",
+      "会计",
+      "数字经济",
+      "湾区实习"
+    ],
+    "description": "经管、金融和数字经济方向资源集中，适合关注城市实习机会和商业分析能力的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "beichen-normal",
+    "name": "北辰师范大学",
+    "province": "天津",
+    "city": "天津",
+    "level": "省属重点",
+    "schoolType": "师范类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "师范",
+      "心理学",
+      "中文",
+      "教师培养"
+    ],
+    "description": "师范和人文基础较稳，适合重视职业稳定性、公共服务和长期成长路径的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "xiling-engineering",
+    "name": "西岭工程大学",
+    "province": "四川",
+    "city": "成都",
+    "level": "普通本科",
+    "schoolType": "理工类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "智能制造",
+      "机械",
+      "土木",
+      "区域产业"
+    ],
+    "description": "工程类专业覆盖面较广，重视项目实践和地方产业结合，适合动手能力较强的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "linhai-law",
+    "name": "临海政法学院",
+    "province": "山东",
+    "city": "青岛",
+    "level": "普通本科",
+    "schoolType": "政法类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "法学",
+      "公共管理",
+      "社会工作",
+      "案例训练"
+    ],
+    "description": "偏重规则理解、公共事务和表达训练，适合关注法学、公共治理和社会服务的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "nanhu-arts",
+    "name": "南湖艺术与传媒学院",
+    "province": "浙江",
+    "city": "杭州",
+    "level": "普通本科",
+    "schoolType": "艺术传媒类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "数字媒体",
+      "视觉传达",
+      "传媒",
+      "作品集"
+    ],
+    "description": "传媒和设计课程强调作品积累，适合有审美表达、内容创作和数字媒体兴趣的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "dongyuan-applied",
+    "name": "东原应用技术大学",
+    "province": "河南",
+    "city": "郑州",
+    "level": "应用型本科",
+    "schoolType": "综合类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "应用型",
+      "就业导向",
+      "软件",
+      "智能制造"
+    ],
+    "description": "应用型专业较多，强调就业导向和基础实践能力，适合希望稳妥进入本科培养体系的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "qingyuan-health",
+    "name": "清源健康学院",
+    "province": "安徽",
+    "city": "合肥",
+    "level": "普通本科",
+    "schoolType": "医药健康类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "护理",
+      "康复",
+      "健康管理",
+      "应用心理"
+    ],
+    "description": "健康服务相关专业集中，适合关注稳定就业、医疗辅助和健康管理方向的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "hewan-liberal",
+    "name": "河湾文理学院",
+    "province": "江西",
+    "city": "南昌",
+    "level": "普通本科",
+    "schoolType": "文理综合类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "中文",
+      "历史",
+      "教育",
+      "基础学科"
+    ],
+    "description": "文理基础专业完整，适合希望保留专业调整空间、重视录取稳定性的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "donghai-ocean",
+    "name": "东海海洋大学",
+    "province": "浙江",
+    "city": "宁波",
+    "level": "省属重点",
+    "schoolType": "海洋类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "海洋科学",
+      "食品工程",
+      "环境",
+      "港航"
+    ],
+    "description": "围绕海洋、食品、环境和港航产业设置专业，适合关注区域产业和应用研究的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "shannan-agriculture",
+    "name": "山南农业大学",
+    "province": "云南",
+    "city": "昆明",
+    "level": "普通本科",
+    "schoolType": "农林类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "农学",
+      "生物技术",
+      "生态",
+      "乡村振兴"
+    ],
+    "description": "农学、生物和生态相关专业较多，适合关注生命科学、食品安全和基层发展方向的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "zhongzhou-transport",
+    "name": "中州交通大学",
+    "province": "河南",
+    "city": "洛阳",
+    "level": "省属重点",
+    "schoolType": "交通类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "交通运输",
+      "物流",
+      "轨道交通",
+      "工程管理"
+    ],
+    "description": "交通运输、物流和工程管理方向特色明显，适合关注交通基础设施和供应链行业的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "lingnan-language",
+    "name": "岭南外国语大学",
+    "province": "广东",
+    "city": "深圳",
+    "level": "普通本科",
+    "schoolType": "语言类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "外语",
+      "国际商务",
+      "跨境电商",
+      "翻译"
+    ],
+    "description": "语言和国际商务结合较紧密，适合外语表达能力强、关注跨境业务的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "huabei-energy",
+    "name": "华北能源大学",
+    "province": "山西",
+    "city": "太原",
+    "level": "省属重点",
+    "schoolType": "理工类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "新能源",
+      "电气",
+      "能源动力",
+      "安全工程"
+    ],
+    "description": "能源、电气和安全工程基础较强，适合关注新能源、电网和工业安全的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "xinan-data",
+    "name": "西南数据科学学院",
+    "province": "重庆",
+    "city": "重庆",
+    "level": "普通本科",
+    "schoolType": "信息类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "数据科学",
+      "统计",
+      "人工智能",
+      "金融科技"
+    ],
+    "description": "以数据科学、统计和智能应用为特色，适合数学基础较好、愿意训练数据分析能力的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "haicheng-tourism",
+    "name": "海城旅游管理学院",
+    "province": "福建",
+    "city": "厦门",
+    "level": "应用型本科",
+    "schoolType": "财经管理类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "旅游管理",
+      "酒店管理",
+      "会展经济",
+      "服务业"
+    ],
+    "description": "旅游、酒店和会展方向实践课程较多，适合关注服务行业、城市运营和文旅产业的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "yanzhao-architecture",
+    "name": "燕赵建筑大学",
+    "province": "河北",
+    "city": "石家庄",
+    "level": "普通本科",
+    "schoolType": "建筑类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "建筑学",
+      "城乡规划",
+      "土木",
+      "工程造价"
+    ],
+    "description": "建筑、规划和工程造价方向较完整，适合空间想象力较好并愿意投入长期设计训练的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "jinhai-business",
+    "name": "津海商学院",
+    "province": "上海",
+    "city": "上海",
+    "level": "普通本科",
+    "schoolType": "财经类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "市场营销",
+      "会计",
+      "电商",
+      "城市实习"
+    ],
+    "description": "商科基础专业完整，城市商业资源丰富，适合关注品牌、电商和财务管理的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  },
+  {
+    "id": "songjiang-ai",
+    "name": "松江人工智能学院",
+    "province": "江苏",
+    "city": "苏州",
+    "level": "新型研究型本科",
+    "schoolType": "信息类",
+    "ownership": "demo-not-specified",
+    "tags": [
+      "人工智能",
+      "机器学习",
+      "机器人",
+      "产教融合"
+    ],
+    "description": "面向人工智能和机器人应用培养工程型人才，适合愿意持续学习算法和工程实践的考生。",
+    "sourceName": "qiu.dev demo dataset (not official data)",
+    "sourceUrl": "local-demo://qiu.dev/data/gaokao/processed",
+    "updatedAt": "2026-06-30",
+    "isDemo": true
+  }
+]

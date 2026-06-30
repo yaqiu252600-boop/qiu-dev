@@ -1,0 +1,250 @@
+[
+  {
+    "province": "北京",
+    "examAuthorityName": "北京教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "天津",
+    "examAuthorityName": "天津市教育招生考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "河北",
+    "examAuthorityName": "河北省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "山西",
+    "examAuthorityName": "山西省招生考试管理中心",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "内蒙古",
+    "examAuthorityName": "内蒙古自治区教育招生考试中心",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "辽宁",
+    "examAuthorityName": "辽宁省招生考试办公室",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "吉林",
+    "examAuthorityName": "吉林省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "黑龙江",
+    "examAuthorityName": "黑龙江省招生考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "上海",
+    "examAuthorityName": "上海市教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "江苏",
+    "examAuthorityName": "江苏省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "浙江",
+    "examAuthorityName": "浙江省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "安徽",
+    "examAuthorityName": "安徽省教育招生考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "福建",
+    "examAuthorityName": "福建省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "江西",
+    "examAuthorityName": "江西省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "山东",
+    "examAuthorityName": "山东省教育招生考试院",
+    "officialWebsite": "https://www.sdzk.cn/",
+    "status": "candidate",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官方入口已登记；已核验到 2026 年一分一段、招生志愿指南补充信息和录取工作意见来源页。需遵守官网转载限制。"
+  },
+  {
+    "province": "河南",
+    "examAuthorityName": "河南省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "湖北",
+    "examAuthorityName": "湖北省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "湖南",
+    "examAuthorityName": "湖南省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "广东",
+    "examAuthorityName": "广东省教育考试院",
+    "officialWebsite": "https://eea.gd.gov.cn/",
+    "status": "candidate",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "样例省份来源入口已登记；后续优先人工下载官方 PDF、Excel 或公告并保留来源元数据。"
+  },
+  {
+    "province": "广西",
+    "examAuthorityName": "广西壮族自治区招生考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "海南",
+    "examAuthorityName": "海南省考试局",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "重庆",
+    "examAuthorityName": "重庆市教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "四川",
+    "examAuthorityName": "四川省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "贵州",
+    "examAuthorityName": "贵州省招生考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "云南",
+    "examAuthorityName": "云南省招生考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "西藏",
+    "examAuthorityName": "西藏自治区教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "陕西",
+    "examAuthorityName": "陕西省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "甘肃",
+    "examAuthorityName": "甘肃省教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "青海",
+    "examAuthorityName": "青海省教育招生考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "宁夏",
+    "examAuthorityName": "宁夏教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  },
+  {
+    "province": "新疆",
+    "examAuthorityName": "新疆维吾尔自治区教育考试院",
+    "officialWebsite": "",
+    "status": "todo",
+    "dataTypes": ["admissionScores", "scoreRanks", "enrollmentPlans", "policies"],
+    "notes": "官网 URL 待人工核验后填写，不使用未确认来源。"
+  }
+]

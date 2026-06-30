@@ -45,10 +45,13 @@ pnpm-debug.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 # runtime files
 /work/
+
+# gaokao raw downloads
+/data/gaokao/raw/*
+!/data/gaokao/raw/.gitkeep
 
 # temporary PDF / Word files
 ~$*.doc

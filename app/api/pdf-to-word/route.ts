@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 
 import {
   convertPdfToWord,
+  findPdfToWordEngine,
   getConvertedFilePath,
 } from "@/lib/pdf-to-word-engine"
 
@@ -60,6 +61,19 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   const url = new URL(request.url)
+
+  if (url.searchParams.get("status") === "1") {
+    const enginePath = await findPdfToWordEngine()
+
+    return NextResponse.json({
+      available: Boolean(enginePath),
+      mode: "local-engine",
+      message: enginePath
+        ? "当前环境已配置 PDF 转 Word 转换引擎。"
+        : "当前环境未配置 PDF 转 Word 转换引擎。Vercel 线上不能直接运行本地 Windows EXE，需要接入独立转换服务后才能在线转换。",
+    })
+  }
+
   const jobId = url.searchParams.get("job")
   const fileName = url.searchParams.get("file")
 

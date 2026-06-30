@@ -1,0 +1,98 @@
+[
+  {
+    "id": "software",
+    "label": "计算机软件",
+    "fitScores": ["380-450", "450-500", "500-550"],
+    "recommendedMajors": ["软件工程", "计算机应用技术", "大数据技术", "人工智能技术应用"],
+    "employmentDirections": ["Web 开发", "软件测试", "数据处理", "信息化运维"],
+    "upgradeNotes": "适合专升本和持续自学，但需要较强学习投入，不建议只因热门盲选。"
+  },
+  {
+    "id": "electrical-automation",
+    "label": "电气自动化",
+    "fitScores": ["300-380", "380-450", "450-500", "500-550"],
+    "recommendedMajors": ["电气自动化技术", "自动化", "机电一体化技术", "智能控制技术"],
+    "employmentDirections": ["设备维护", "自动化产线", "电气工程助理", "工业控制"],
+    "upgradeNotes": "就业面较宽，适合重视稳定就业和技能积累的考生。"
+  },
+  {
+    "id": "intelligent-manufacturing",
+    "label": "机械智能制造",
+    "fitScores": ["300-380", "380-450", "450-500"],
+    "recommendedMajors": ["机械制造及自动化", "智能制造装备技术", "数控技术"],
+    "employmentDirections": ["制造工艺", "设备调试", "生产管理", "智能制造现场工程"],
+    "upgradeNotes": "更看重实践条件和实训设备，需重点查看学校实训资源。"
+  },
+  {
+    "id": "medical-care",
+    "label": "医学护理药学",
+    "fitScores": ["300-380", "380-450", "450-500", "500-550"],
+    "recommendedMajors": ["护理", "药学", "康复治疗技术", "医学检验技术"],
+    "employmentDirections": ["护理岗位", "药房与医药服务", "康复机构", "基层医疗服务"],
+    "upgradeNotes": "稳定性较好，但要接受行业辛苦和资格考试要求。"
+  },
+  {
+    "id": "teacher-education",
+    "label": "师范教育",
+    "fitScores": ["450-500", "500-550"],
+    "recommendedMajors": ["小学教育", "学前教育", "汉语言文学", "数学与应用数学"],
+    "employmentDirections": ["教师", "教培课程", "教育管理", "儿童发展服务"],
+    "upgradeNotes": "需核对是否师范类、教师资格证路径和本地招聘条件。"
+  },
+  {
+    "id": "accounting-finance",
+    "label": "财会金融",
+    "fitScores": ["380-450", "450-500", "500-550"],
+    "recommendedMajors": ["会计学", "大数据与会计", "财务管理", "金融服务与管理"],
+    "employmentDirections": ["会计", "审计助理", "财务专员", "银行基层岗位"],
+    "upgradeNotes": "适合考证和稳步积累，但要警惕普通金融泛化就业。"
+  },
+  {
+    "id": "law-public-admin",
+    "label": "法学公管",
+    "fitScores": ["500-550"],
+    "recommendedMajors": ["法学", "行政管理", "社会工作", "公共事业管理"],
+    "employmentDirections": ["法务助理", "基层公共服务", "考公考编", "合规岗位"],
+    "upgradeNotes": "法学门槛较高，低分段不建议只凭兴趣盲目选择。"
+  },
+  {
+    "id": "rail-transit-aviation",
+    "label": "铁道交通航空",
+    "fitScores": ["300-380", "380-450", "450-500"],
+    "recommendedMajors": ["铁道机车运用与维护", "城市轨道交通运营管理", "航空服务"],
+    "employmentDirections": ["轨道交通运营", "设备维护", "站务服务", "交通服务"],
+    "upgradeNotes": "要核对身体条件、就业订单真实性和实习安排。"
+  },
+  {
+    "id": "architecture-civil",
+    "label": "建筑土木",
+    "fitScores": ["380-450", "450-500"],
+    "recommendedMajors": ["建筑工程技术", "工程造价", "城乡规划", "土木工程"],
+    "employmentDirections": ["工程造价", "施工管理", "资料员", "项目助理"],
+    "upgradeNotes": "行业周期波动明显，优先工程造价、智能建造等更细分方向。"
+  },
+  {
+    "id": "digital-media-design",
+    "label": "数字媒体设计",
+    "fitScores": ["300-380", "380-450", "450-500"],
+    "recommendedMajors": ["数字媒体艺术", "视觉传达设计", "动漫制作技术", "广告艺术设计"],
+    "employmentDirections": ["UI 设计", "新媒体视觉", "短视频包装", "品牌设计"],
+    "upgradeNotes": "作品集比学校名气更重要，需确认课程是否实用。"
+  },
+  {
+    "id": "agriculture-food",
+    "label": "农林食品",
+    "fitScores": ["300-380", "380-450", "450-500"],
+    "recommendedMajors": ["食品质量与安全", "现代农业技术", "园林技术", "动物医学"],
+    "employmentDirections": ["食品检测", "农产品运营", "基层农技", "园林养护"],
+    "upgradeNotes": "适合愿意走应用技术路线的考生，需看区域产业匹配度。"
+  },
+  {
+    "id": "uncertain",
+    "label": "不确定",
+    "fitScores": ["300-380", "380-450", "450-500", "500-550"],
+    "recommendedMajors": ["电气自动化技术", "大数据与会计", "护理", "计算机应用技术"],
+    "employmentDirections": ["稳定就业", "技能提升", "专升本备选", "区域就业"],
+    "upgradeNotes": "不确定时优先选择就业面宽、可升本、学费可控的专业。"
+  }
+]

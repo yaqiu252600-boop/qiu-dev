@@ -1,0 +1,50 @@
+[
+  {
+    "id": "missing-rank",
+    "trigger": "rank_missing",
+    "severity": "high",
+    "message": "位次比单纯分数更适合判断录取概率，建议结合本省一分一段表补充。"
+  },
+  {
+    "id": "low-score-private-bachelor",
+    "trigger": "score_below_380_private_bachelor",
+    "severity": "high",
+    "message": "300-380 分段不建议盲目冲民办本科，除非学费可承受且专业质量明确。"
+  },
+  {
+    "id": "tuition-low-private",
+    "trigger": "low_tuition_private_bachelor",
+    "severity": "high",
+    "message": "家庭学费承受能力较低时，应谨慎选择民办本科和高收费专业。"
+  },
+  {
+    "id": "reject-junior-college",
+    "trigger": "reject_junior_college_under_500",
+    "severity": "medium",
+    "message": "500 分以下完全排斥专科会明显压缩可选方案，建议至少保留强专科兜底。"
+  },
+  {
+    "id": "employment-goal",
+    "trigger": "employment_goal",
+    "severity": "medium",
+    "message": "就业优先时，专业实训、证书路径、校企合作和城市产业比学校名气更重要。"
+  },
+  {
+    "id": "bachelor-edge",
+    "trigger": "score_450_500",
+    "severity": "medium",
+    "message": "本科边缘段要防止高估录取概率，冲本科同时必须保留强专科或职业本科方案。"
+  },
+  {
+    "id": "school-name-bias",
+    "trigger": "general",
+    "severity": "medium",
+    "message": "不要只按学校名气排序，应同时比较专业、城市、学费、校区和就业方向。"
+  },
+  {
+    "id": "out-province",
+    "trigger": "out_province_conditional",
+    "severity": "low",
+    "message": "接受外省可以扩大选择面，但要核对交通成本、生活成本和家庭支持条件。"
+  }
+]

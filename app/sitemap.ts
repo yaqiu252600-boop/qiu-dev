@@ -9,8 +9,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/projects",
     "/products",
+    "/products/gaokao-volunteer",
     "/tools",
     "/tools/pdf-to-word",
+    "/tools/gaokao-volunteer",
     "/about",
     "/contact",
   ]
