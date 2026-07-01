@@ -8,6 +8,7 @@ const navItems = [
   { href: "/projects", label: "项目" },
   { href: "/products", label: "产品" },
   { href: "/tools", label: "工具" },
+  { href: "/data-sources", label: "数据" },
   { href: "/about", label: "关于" },
   { href: "/contact", label: "联系" },
 ]

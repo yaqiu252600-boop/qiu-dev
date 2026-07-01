@@ -1,0 +1,105 @@
+[
+  {
+    "data_type": "universities",
+    "province": "全国",
+    "year": 2026,
+    "source_name": "中华人民共和国教育部",
+    "source_url": "https://www.moe.gov.cn/jyb_xxgk/s5743/s5744/202606/t20260618_1441074.html",
+    "downloaded_at": "2026-07-01T00:00:00+09:00",
+    "source_updated_at": "2026-06-18",
+    "raw_files": [
+      "data/raw/moe/moe_universities_2026.html",
+      "data/raw/moe/W020260618416094865984_moe_universities_2026.xls"
+    ],
+    "processed_files": [
+      "data/processed/universities/moe_universities_2026.csv"
+    ],
+    "status": "success",
+    "row_count": 2952,
+    "notes": "已从教育部官方 Excel 附件清洗全国普通高等学校名单。"
+  },
+  {
+    "data_type": "score_segments",
+    "province": "江苏",
+    "year": 2026,
+    "source_name": "江苏省教育考试院",
+    "source_url": "https://www.jseea.cn/webfile/index/index_zkxx/2026-06-24/7475494421979467776.html",
+    "downloaded_at": "2026-07-01T00:00:00+09:00",
+    "source_updated_at": "2026-06-24",
+    "raw_files": [
+      "data/raw/jiangsu/2026-score-segments/jseea_2026_score_segments_page.html",
+      "data/raw/jiangsu/2026-score-segments/jiangsu_2026_history_score_segment.jpg",
+      "data/raw/jiangsu/2026-score-segments/jiangsu_2026_physics_score_segment.jpg"
+    ],
+    "processed_files": [
+      "data/pending-review/jiangsu_2026_history_score_segments_pending_review.csv",
+      "data/pending-review/jiangsu_2026_physics_score_segments_pending_review.csv"
+    ],
+    "status": "pending_review",
+    "row_count": 0,
+    "notes": "官方数据以 JPG 图片发布；当前环境缺少可靠 OCR，已保存原图和待校验 CSV，未导入正式 score_segments 表。"
+  },
+  {
+    "data_type": "admission_scores",
+    "province": "江苏",
+    "year": 2025,
+    "source_name": "江苏省教育考试院",
+    "source_url": "https://www.jseea.cn/webfile/index/index_zkxx/2025-07-18/7846267149297614848.html",
+    "downloaded_at": "2026-07-01T00:00:00+09:00",
+    "source_updated_at": "2025-07-18",
+    "raw_files": [
+      "data/raw/jiangsu/2025-admission-scores/jiangsu_2025_undergraduate_history.pdf",
+      "data/raw/jiangsu/2025-admission-scores/jiangsu_2025_undergraduate_physics.pdf"
+    ],
+    "processed_files": [
+      "data/processed/admission-scores/jiangsu_2025_undergraduate.csv"
+    ],
+    "status": "success",
+    "row_count": 4306,
+    "notes": "已从江苏省教育考试院普通类本科批次平行志愿投档线 PDF 抽取院校专业组和投档最低分。PDF 不包含最低位次，min_rank 留空。"
+  },
+  {
+    "data_type": "admission_scores",
+    "province": "江苏",
+    "year": 2024,
+    "source_name": "江苏省教育考试院",
+    "source_url": "https://www.jseea.cn/",
+    "downloaded_at": "2026-07-01T00:00:00+09:00",
+    "source_updated_at": "",
+    "raw_files": [],
+    "processed_files": [],
+    "status": "missing",
+    "row_count": 0,
+    "notes": "暂未完成官方 2024 普通类本科批投档线文件定位、下载和清洗，系统不会使用替代或推测数据。"
+  },
+  {
+    "data_type": "admission_scores",
+    "province": "江苏",
+    "year": 2023,
+    "source_name": "江苏省教育考试院",
+    "source_url": "https://www.jseea.cn/",
+    "downloaded_at": "2026-07-01T00:00:00+09:00",
+    "source_updated_at": "",
+    "raw_files": [],
+    "processed_files": [],
+    "status": "missing",
+    "row_count": 0,
+    "notes": "暂未完成官方 2023 普通类本科批投档线文件定位、下载和清洗，系统不会使用替代或推测数据。"
+  },
+  {
+    "data_type": "admission_plans",
+    "province": "江苏",
+    "year": 2026,
+    "source_name": "江苏省教育考试院",
+    "source_url": "https://www.jseea.cn/",
+    "downloaded_at": "2026-07-01T00:00:00+09:00",
+    "source_updated_at": "",
+    "raw_files": [],
+    "processed_files": [
+      "data/processed/admission-plans/jiangsu_2026_admission_plans.csv"
+    ],
+    "status": "missing",
+    "row_count": 0,
+    "notes": "未找到可直接公开下载、无需登录或验证码的江苏省 2026 官方招生计划结构化文件，页面必须显示暂无可信招生计划数据。"
+  }
+]

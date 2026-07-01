@@ -4,7 +4,6 @@ import {
   ArrowRight,
   Database,
   GraduationCap,
-  Layers,
   LineChart,
   ShieldCheck,
 } from "lucide-react"
@@ -22,60 +21,60 @@ import {
 } from "@/components/ui/card"
 
 export const metadata: Metadata = {
-  title: "高考志愿辅助系统 | qiu.dev",
+  title: "高考志愿数据查询与辅助分析工具 | qiu.dev",
   description:
-    "根据省份、分数、科类和兴趣方向生成初步冲稳保志愿推荐方案。",
+    "基于官方公开数据的高考院校、投档线和数据来源查询工具。",
 }
 
 const productHighlights = [
   {
-    title: "冲稳保结构",
-    description: "把推荐结果拆成冲刺、稳妥、保底三类，降低选择时的信息混乱。",
-    icon: Layers,
+    title: "官方院校库",
+    description:
+      "院校搜索只读取教育部 2026 年全国普通高等学校名单，不生成不存在的学校。",
+    icon: Database,
   },
   {
-    title: "规则可解释",
-    description: "每个推荐项都展示匹配理由、风险提示、适合人群和建议操作。",
+    title: "投档线辅助分析",
+    description:
+      "推荐结果只来自已导入的官方投档线数据，没有可信数据时显示暂无记录。",
     icon: LineChart,
   },
   {
     title: "安全边界清晰",
-    description: "当前版本明确标注 Beta 演示属性，不替代真实志愿填报判断。",
+    description:
+      "没有一分一段、招生计划或专业录取线时，页面会明确提示，不用模型补齐。",
     icon: ShieldCheck,
   },
-]
-
-const roadmap = [
-  "接入真实招生计划、专业组和历年录取位次数据。",
-  "增加省份、批次、选科要求和城市偏好的细分筛选。",
-  "把规则推荐升级为规则 + AI 解释的组合方案。",
 ]
 
 const dataSourceItems = [
   {
     label: "全国官方来源",
-    value: "阳光高考院校库、阳光高考专业知识库、阳光志愿信息服务系统。",
+    value: "教育部全国普通高等学校名单、阳光高考院校库、阳光高考专业知识库。",
   },
   {
     label: "省级来源",
-    value: "各省教育考试院、招生考试院、招生考试信息网发布的官方公告、PDF、Excel。",
+    value:
+      "各省教育考试院、招生考试院、招生考试信息网发布的官方公告、PDF、Excel。",
   },
   {
     label: "数据类型",
-    value: "院校库、专业库、历年录取分数、最低位次、一分一段、招生计划、招生章程。",
+    value:
+      "院校库、专业库、历年录取分数、最低位次、一分一段、招生计划、招生章程。",
   },
   {
     label: "当前状态",
-    value: "真实数据接入中；未接入地区会明确标记演示数据，不作为真实填报依据。",
+    value:
+      "已接入教育部高校名单和江苏 2025 普通类本科批投档线；招生计划暂无可信结构化数据。",
   },
 ]
 
 const targetSegmentReasons = [
-  "这个分段的考生更需要具体路径，而不是空泛地推荐学校名称。",
+  "这个分段考生更需要具体路径，而不是空泛推荐学校名称。",
   "本科、专科、民办本科、职业本科之间的选择复杂，不能只看分数线。",
   "专业和就业方向对未来影响更大，尤其要重视可迁移技能和升学衔接。",
   "学费、城市、专升本机会、校区和选科要求需要放在一起比较。",
-  "系统会优先解决普通分数段考生真实会遇到的取舍问题。",
+  "系统优先解决普通分数段考生真实会遇到的取舍问题。",
 ]
 
 const dataAccessPlan = [
@@ -86,7 +85,13 @@ const dataAccessPlan = [
   "专业库",
   "招生章程",
   "逐省接入与来源登记",
-  "所有数据必须保留 sourceName、sourceUrl、year、province、fetchedAt / updatedAt",
+  "所有数据必须保留 sourceName、sourceUrl、year、province、fetchedAt 或 updatedAt",
+]
+
+const roadmap = [
+  "继续接入江苏 2023、2024 普通类本科批官方投档线。",
+  "增加省份、批次、选科要求和城市偏好的细分筛选。",
+  "在确认来源和授权边界后接入招生计划数据。",
 ]
 
 export default function GaokaoVolunteerProductPage() {
@@ -98,18 +103,19 @@ export default function GaokaoVolunteerProductPage() {
             <div className="mb-3 flex flex-wrap gap-2">
               <Badge variant="dev">开发中</Badge>
               <Badge variant="outline" className="bg-white">
-                AI / 教育
+                官方数据
               </Badge>
               <Badge variant="outline" className="bg-white">
                 MVP
               </Badge>
             </div>
             <h1 className="text-3xl font-semibold leading-tight text-foreground sm:text-4xl">
-              高考志愿辅助系统
+              高考志愿数据查询与辅助分析工具
             </h1>
             <p className="mt-4 max-w-3xl text-base leading-7 text-muted-foreground">
-              一个面向高考志愿填报场景的产品实验。当前版本先用规则和可标记的演示 fallback 数据跑通
-              输入、推荐、解释和风险提示流程，为后续接入官方真实数据和 AI 解释层打基础。
+              一个面向高考志愿填报场景的数据工具。当前版本优先解决数据可信问题：
+              院校库来自教育部官方名单，投档线来自江苏省教育考试院公开 PDF，
+              缺失数据不会编造。
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Button asChild>
@@ -131,7 +137,7 @@ export default function GaokaoVolunteerProductPage() {
         <div className="container">
           <SectionHeading
             title="产品能力"
-            description="先把核心体验做小做稳，后续再扩展数据和智能解释能力。"
+            description="先把可信数据底座做稳，再逐步扩展省份和批次。"
           />
           <div className="grid gap-5 lg:grid-cols-3">
             {productHighlights.map((item) => (
@@ -166,6 +172,7 @@ export default function GaokaoVolunteerProductPage() {
             ))}
           </div>
         </div>
+
         <div className="container mb-10 grid gap-6 lg:grid-cols-2">
           <Card className="bg-white">
             <CardHeader>
@@ -188,6 +195,7 @@ export default function GaokaoVolunteerProductPage() {
               </ul>
             </CardContent>
           </Card>
+
           <Card className="bg-white">
             <CardHeader>
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground">
@@ -210,13 +218,14 @@ export default function GaokaoVolunteerProductPage() {
             </CardContent>
           </Card>
         </div>
+
         <div className="container grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <h2 className="text-2xl font-semibold text-foreground">
               迭代方向
             </h2>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              这个产品会从演示版逐步走向可验证的填报辅助工具，重点是数据可靠性、
+              这个产品会逐步走向可验证的填报辅助工具，重点是数据可靠性、
               推荐可解释性和风险边界。
             </p>
           </div>

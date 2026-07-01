@@ -4,8 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "lint": "tsc --noEmit",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "import:gaokao-csv": "node scripts/trusted-gaokao/import-local-csv.mjs",
+    "import:gaokao-json": "node scripts/trusted-gaokao/import-local-json.mjs",
+    "validate:gaokao-data": "node scripts/trusted-gaokao/validate-data.mjs",
+    "build:gaokao-sqlite": "python scripts/trusted-gaokao/create-sqlite.py"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
