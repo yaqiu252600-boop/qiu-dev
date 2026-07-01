@@ -80,6 +80,49 @@ CREATE TABLE IF NOT EXISTS admission_plans (
   UNIQUE(year, province, subject_type, batch_name, university_code, major_group_code, major_code, major_name)
 );
 
+CREATE TABLE IF NOT EXISTS province_rules (
+  id TEXT PRIMARY KEY,
+  province TEXT NOT NULL,
+  year INTEGER NOT NULL,
+  batch_name TEXT,
+  subject_type TEXT,
+  volunteer_mode TEXT,
+  max_school_groups INTEGER,
+  max_majors_per_group INTEGER,
+  adjustment_allowed TEXT,
+  fill_time_start TEXT,
+  fill_time_end TEXT,
+  rule_summary TEXT,
+  source_name TEXT NOT NULL,
+  source_url TEXT NOT NULL,
+  source_updated_at TEXT NOT NULL,
+  status TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE(year, province, batch_name, subject_type)
+);
+
+CREATE TABLE IF NOT EXISTS data_sources (
+  id TEXT PRIMARY KEY,
+  province TEXT NOT NULL,
+  year INTEGER NOT NULL,
+  data_type TEXT NOT NULL,
+  source_name TEXT NOT NULL,
+  source_url TEXT NOT NULL,
+  source_updated_at TEXT NOT NULL,
+  downloaded_at TEXT,
+  raw_file_path TEXT,
+  processed_file_path TEXT,
+  total_rows INTEGER DEFAULT 0,
+  imported_rows INTEGER DEFAULT 0,
+  status TEXT NOT NULL,
+  missing_fields TEXT,
+  notes TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE(province, year, data_type, source_url)
+);
+
 CREATE TABLE IF NOT EXISTS data_import_jobs (
   id TEXT PRIMARY KEY,
   data_type TEXT NOT NULL,

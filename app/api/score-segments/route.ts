@@ -20,6 +20,6 @@ export function GET(request: Request) {
     message:
       data.length > 0
         ? "查询成功。"
-        : "暂无可信一分一段/逐分段数据。江苏 2026 官方数据已保存原图，尚未通过 OCR 校验，暂不参与换算。",
+        : "暂无 verified 逐分段数据。江苏 2026 官方图片已保存，OCR 数据待人工校验，暂不参与位次换算。",
   })
 }

@@ -1,0 +1,14 @@
+{
+  "data_type": "admission_plans",
+  "province": "江苏",
+  "year": 2026,
+  "status": "missing",
+  "reason": "未找到公开可批量下载的分学校、分专业组、分专业招生计划结构化数据",
+  "official_summary_url": "https://www.jseea.cn/webfile/index/index_zkxx/2026-06-23/7474808080111243264.html",
+  "source_name": "江苏省教育考试院",
+  "source_url": "https://www.jseea.cn/webfile/index/index_zkxx/2026-06-23/7474808080111243264.html",
+  "source_updated_at": "2026-06-23",
+  "raw_file_path": "",
+  "processed_file_path": "data/sources/missing_jiangsu_2026_admission_plans.json",
+  "note": "仅有总量说明不能用于专业组推荐；如后续发现官方公开 Excel/PDF/网页表格，应先下载原始文件并完成字段校验后再导入 admission_plans。"
+}

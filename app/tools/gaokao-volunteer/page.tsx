@@ -5,14 +5,17 @@ import { TrustedGaokaoWorkbench } from "@/components/gaokao/trusted-gaokao-workb
 import { SectionHeading } from "@/components/section-heading"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { getProvinceDataOverview } from "@/lib/trusted-gaokao"
 
 export const metadata: Metadata = {
   title: "高考志愿数据查询与辅助分析工具 | qiu.dev",
   description:
-    "基于官方公开数据的高考志愿数据查询、分数换位次和投档线辅助分析工具。",
+    "基于官方公开数据的高考志愿数据查询、投档线参考和数据来源核验工具。",
 }
 
 export default function GaokaoVolunteerToolPage() {
+  const provinceStatuses = getProvinceDataOverview()
+
   return (
     <section className="page-section">
       <div className="container">
@@ -26,14 +29,14 @@ export default function GaokaoVolunteerToolPage() {
               官方数据
             </Badge>
             <Badge variant="outline" className="bg-white">
-              江苏 MVP
+              全国状态
             </Badge>
             <Button asChild variant="outline" size="sm">
               <Link href="/data-sources">查看数据来源</Link>
             </Button>
           </div>
         </div>
-        <TrustedGaokaoWorkbench />
+        <TrustedGaokaoWorkbench provinceStatuses={provinceStatuses} />
       </div>
     </section>
   )

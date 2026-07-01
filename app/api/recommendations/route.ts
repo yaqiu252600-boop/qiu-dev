@@ -15,7 +15,8 @@ export function GET(request: Request) {
   const subjectType = url.searchParams.get("subject_type")
   const score = Number(url.searchParams.get("score"))
   const rankParam = url.searchParams.get("rank")
-  const rank = rankParam ? Number(rankParam) : undefined
+  let rank = rankParam ? Number(rankParam) : undefined
+  let convertedRankFromScore = false
 
   if (!province || !year || !subjectType || Number.isNaN(score)) {
     return NextResponse.json(
@@ -36,14 +37,9 @@ export function GET(request: Request) {
       score,
     })
 
-    if (!converted) {
-      return NextResponse.json(
-        {
-          error:
-            "暂无可信一分一段/逐分段数据，不能由分数换算位次。你可以补充官方位次，或先查看投档线查询结果。",
-        },
-        { status: 404 },
-      )
+    if (converted) {
+      rank = converted.cumulative_count
+      convertedRankFromScore = true
     }
   }
 
@@ -53,6 +49,7 @@ export function GET(request: Request) {
     subject_type: subjectType,
     score,
     rank,
+    converted_rank_from_score: convertedRankFromScore,
     batch_name: url.searchParams.get("batch_name") ?? undefined,
   })
 

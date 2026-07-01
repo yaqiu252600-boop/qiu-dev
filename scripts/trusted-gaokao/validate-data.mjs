@@ -2,6 +2,16 @@ import fs from "node:fs"
 import path from "node:path"
 
 const root = process.cwd()
+const errors = []
+const allowedSourceStatuses = [
+  "verified",
+  "imported",
+  "pending_review",
+  "partial",
+  "missing",
+  "blocked",
+  "failed",
+]
 
 function parseCsvLine(line) {
   const cells = []
@@ -69,23 +79,30 @@ function listCsvFiles(dir) {
     .map((file) => path.join(dir, file))
 }
 
-const errors = []
-
 function requireField(row, field, label) {
   if (!row[field]) {
     errors.push(`${label} 缺少 ${field}`)
   }
 }
 
+function requireNumber(row, field, label) {
+  if (row[field] === "" || Number.isNaN(Number(row[field]))) {
+    errors.push(`${label} ${field} 必须是数字`)
+  }
+}
+
 function validateUniversities() {
-  const rows = readCsv(path.join(root, "data/processed/universities/moe_universities_2026.csv"))
+  const rows = readCsv(
+    path.join(root, "data/processed/universities/moe_universities_2026.csv"),
+  )
   const codes = new Set()
 
   rows.forEach((row, index) => {
-    requireField(row, "school_code", `universities 第 ${index + 1} 行`)
-    requireField(row, "name", `universities 第 ${index + 1} 行`)
-    requireField(row, "source_name", `universities 第 ${index + 1} 行`)
-    requireField(row, "source_url", `universities 第 ${index + 1} 行`)
+    const label = `universities 第 ${index + 1} 行`
+    requireField(row, "school_code", label)
+    requireField(row, "name", label)
+    requireField(row, "source_name", label)
+    requireField(row, "source_url", label)
 
     if (row.school_code) {
       if (codes.has(row.school_code)) {
@@ -102,26 +119,32 @@ function validateUniversities() {
 function validateScoreSegments() {
   let count = 0
 
-  for (const filePath of listCsvFiles(path.join(root, "data/processed/score-segments"))) {
+  for (const filePath of listCsvFiles(
+    path.join(root, "data/processed/score-segments"),
+  )) {
     const rows = readCsv(filePath)
     count += rows.length
     const groups = new Map()
 
     rows.forEach((row, index) => {
       const label = `${path.basename(filePath)} 第 ${index + 1} 行`
-      requireField(row, "year", label)
-      requireField(row, "province", label)
-      requireField(row, "subject_type", label)
-      requireField(row, "source_name", label)
-      requireField(row, "source_url", label)
-
-      if (Number.isNaN(Number(row.score))) {
-        errors.push(`${label} score 必须是数字`)
+      for (const field of [
+        "year",
+        "province",
+        "subject_type",
+        "score",
+        "same_score_count",
+        "cumulative_count",
+        "source_name",
+        "source_url",
+        "source_updated_at",
+      ]) {
+        requireField(row, field, label)
       }
 
-      if (Number.isNaN(Number(row.cumulative_count))) {
-        errors.push(`${label} cumulative_count 必须是数字`)
-      }
+      requireNumber(row, "score", label)
+      requireNumber(row, "same_score_count", label)
+      requireNumber(row, "cumulative_count", label)
 
       const key = `${row.year}-${row.province}-${row.subject_type}`
       const current = groups.get(key) ?? []
@@ -130,17 +153,23 @@ function validateScoreSegments() {
     })
 
     for (const [key, rowsInGroup] of groups) {
-      const sorted = rowsInGroup.sort((left, right) => Number(right.score) - Number(left.score))
-      let previous = -1
+      let previousScore = Number.POSITIVE_INFINITY
+      let previousCumulative = -1
 
-      sorted.forEach((row) => {
+      rowsInGroup.forEach((row) => {
+        const score = Number(row.score)
         const cumulative = Number(row.cumulative_count)
 
-        if (cumulative < previous) {
+        if (score > previousScore) {
+          errors.push(`${path.basename(filePath)} ${key} score 未递减`)
+        }
+
+        if (cumulative < previousCumulative) {
           errors.push(`${path.basename(filePath)} ${key} cumulative_count 未递增`)
         }
 
-        previous = cumulative
+        previousScore = score
+        previousCumulative = cumulative
       })
     }
   }
@@ -151,19 +180,30 @@ function validateScoreSegments() {
 function validateAdmissionScores() {
   let count = 0
 
-  for (const filePath of listCsvFiles(path.join(root, "data/processed/admission-scores"))) {
+  for (const filePath of listCsvFiles(
+    path.join(root, "data/processed/admission-scores"),
+  )) {
     const rows = readCsv(filePath)
     count += rows.length
 
     rows.forEach((row, index) => {
       const label = `${path.basename(filePath)} 第 ${index + 1} 行`
-      requireField(row, "university_name", label)
-      requireField(row, "source_name", label)
-      requireField(row, "source_url", label)
-
-      if (Number.isNaN(Number(row.min_score))) {
-        errors.push(`${label} min_score 必须是数字`)
+      for (const field of [
+        "year",
+        "province",
+        "subject_type",
+        "batch_name",
+        "university_code",
+        "university_name",
+        "min_score",
+        "source_name",
+        "source_url",
+        "source_updated_at",
+      ]) {
+        requireField(row, field, label)
       }
+
+      requireNumber(row, "min_score", label)
 
       if (row.min_rank && Number.isNaN(Number(row.min_rank))) {
         errors.push(`${label} min_rank 如果存在必须是数字`)
@@ -174,10 +214,49 @@ function validateAdmissionScores() {
   return count
 }
 
+function validateSourceManifest() {
+  const files = [
+    path.join(root, "data/sources/source_manifest.json"),
+    path.join(root, "data/sources/other_provinces_source_manifest.json"),
+  ].filter((filePath) => fs.existsSync(filePath))
+  let count = 0
+
+  files.forEach((filePath) => {
+    const rows = JSON.parse(fs.readFileSync(filePath, "utf8"))
+    count += rows.length
+
+    rows.forEach((row, index) => {
+      const label = `${path.basename(filePath)} 第 ${index + 1} 条`
+      for (const field of [
+        "data_type",
+        "province",
+        "year",
+        "status",
+        "source_name",
+        "source_url",
+        "source_updated_at",
+        "raw_files",
+        "processed_files",
+      ]) {
+        if (row[field] === undefined || row[field] === null || row[field] === "") {
+          errors.push(`${label} 缺少 ${field}`)
+        }
+      }
+
+      if (!allowedSourceStatuses.includes(row.status)) {
+        errors.push(`${label} status 非法：${row.status}`)
+      }
+    })
+  })
+
+  return count
+}
+
 const summary = {
   universities: validateUniversities(),
   score_segments: validateScoreSegments(),
   admission_scores: validateAdmissionScores(),
+  source_manifest: validateSourceManifest(),
 }
 
 console.log(JSON.stringify(summary, null, 2))

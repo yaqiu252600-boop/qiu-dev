@@ -19,6 +19,6 @@ export function GET(request: Request) {
     message:
       universities.length > 0
         ? "查询成功，结果来自教育部 2026 年全国普通高等学校名单。"
-        : "暂无可信院校数据，请先确认是否已导入教育部官方高校名单，或调整搜索条件。",
+        : "暂无可信院校数据，请确认学校名称或调整搜索条件。",
   })
 }

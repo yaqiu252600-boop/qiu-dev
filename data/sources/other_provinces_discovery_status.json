@@ -1,0 +1,506 @@
+[
+  {
+    "province": "河北",
+    "province_slug": "hebei",
+    "checked_at": "2026-07-01T13:08:32.771Z",
+    "official_site": "https://www.hebeea.edu.cn/",
+    "gaokao_channel_url": "https://www.hebeea.edu.cn/html/ptgk/",
+    "checks": [
+      {
+        "url": "https://www.hebeea.edu.cn/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.hebeea.edu.cn/",
+        "content_type": "text/html",
+        "blocked": true,
+        "error": ""
+      },
+      {
+        "url": "https://www.hebeea.edu.cn/html/ptgk/",
+        "ok": false,
+        "status": 404,
+        "final_url": "https://www.hebeea.edu.cn/html/ptgk/",
+        "content_type": "text/html",
+        "blocked": false,
+        "error": ""
+      }
+    ],
+    "discovered_links": {
+      "hebei_2026_score_segments": [],
+      "hebei_2023_admission_scores": [],
+      "hebei_2024_admission_scores": [],
+      "hebei_2025_admission_scores": [],
+      "hebei_2026_admission_plans": [],
+      "hebei_2026_province_rules": [
+        {
+          "url": "https://www.hebeea.edu.cn/c/2026-06-17/493051.html",
+          "text": "2026年河北省普通高考志愿填报须知"
+        },
+        {
+          "url": "https://www.hebeea.edu.cn/c/2026-06-26/493217.html",
+          "text": "2026年河北省高考志愿填报智能参考系统6月26日起正式上线"
+        },
+        {
+          "url": "https://www.hebeea.edu.cn/c/2026-06-26/493218.html",
+          "text": "河北省高考志愿填报智能参考系统使用手册（2026版）"
+        }
+      ]
+    }
+  },
+  {
+    "province": "浙江",
+    "province_slug": "zhejiang",
+    "checked_at": "2026-07-01T13:08:33.123Z",
+    "official_site": "https://www.zjzs.net/",
+    "gaokao_channel_url": "https://www.zjzs.net/",
+    "checks": [
+      {
+        "url": "https://www.zjzs.net/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.zjzs.net/",
+        "content_type": "text/html",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://www.zjzs.net/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.zjzs.net/",
+        "content_type": "text/html",
+        "blocked": false,
+        "error": ""
+      }
+    ],
+    "discovered_links": {
+      "zhejiang_2026_score_segments": [],
+      "zhejiang_2023_admission_scores": [],
+      "zhejiang_2024_admission_scores": [],
+      "zhejiang_2025_admission_scores": [],
+      "zhejiang_2026_admission_plans": [],
+      "zhejiang_2026_province_rules": []
+    }
+  },
+  {
+    "province": "安徽",
+    "province_slug": "anhui",
+    "checked_at": "2026-07-01T13:08:34.317Z",
+    "official_site": "https://www.ahzsks.cn/",
+    "gaokao_channel_url": "https://www.ahzsks.cn/ptgxzs/",
+    "checks": [
+      {
+        "url": "https://www.ahzsks.cn/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.ahzsks.cn/index.htm",
+        "content_type": "text/html",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://www.ahzsks.cn/ptgxzs/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.ahzsks.cn/ptgxzs/",
+        "content_type": "text/html;charset=GBK",
+        "blocked": false,
+        "error": ""
+      }
+    ],
+    "discovered_links": {
+      "anhui_2026_score_segments": [],
+      "anhui_2023_admission_scores": [],
+      "anhui_2024_admission_scores": [],
+      "anhui_2025_admission_scores": [],
+      "anhui_2026_admission_plans": [],
+      "anhui_2026_province_rules": []
+    }
+  },
+  {
+    "province": "山东",
+    "province_slug": "shandong",
+    "checked_at": "2026-07-01T13:08:36.053Z",
+    "official_site": "https://www.sdzk.cn/",
+    "gaokao_channel_url": "https://www.sdzk.cn/NewsList.aspx?BCID=4",
+    "checks": [
+      {
+        "url": "https://www.sdzk.cn/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.sdzk.cn/",
+        "content_type": "text/html; charset=utf-8",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://www.sdzk.cn/NewsList.aspx?BCID=4",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.sdzk.cn/Default.aspx",
+        "content_type": "text/html; charset=utf-8",
+        "blocked": false,
+        "error": ""
+      }
+    ],
+    "discovered_links": {
+      "shandong_2026_score_segments": [
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7272",
+          "text": "2026年本科艺术统考各类别综合成绩一分一段表2026-06-27"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7271",
+          "text": "2026年本科艺术统考各类别双达线考生文化成绩一分一段表2026-06-27"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7270",
+          "text": "2026年本科艺术统考各类别双达线考生专业成绩一分一段表2026-06-27"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7269",
+          "text": "2026年体育类综合成绩分段表2026-06-27"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7258",
+          "text": "2026年夏季高考文化成绩一分一段表2026-06-25"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7259",
+          "text": "2026年春季高考成绩一分一段表2026-06-25"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7272",
+          "text": "2026年本科艺术统考各类别综合成绩一分一段表2026-06-27"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7271",
+          "text": "2026年本科艺术统考各类别双达线考生文化成绩一分一段表2026-06-27"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7270",
+          "text": "2026年本科艺术统考各类别双达线考生专业成绩一分一段表2026-06-27"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7269",
+          "text": "2026年体育类综合成绩分段表2026-06-27"
+        }
+      ],
+      "shandong_2023_admission_scores": [],
+      "shandong_2024_admission_scores": [],
+      "shandong_2025_admission_scores": [],
+      "shandong_2026_admission_plans": [
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7278",
+          "text": "成都体育学院2026年本科招生计划信息变更2026-06-30"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7268",
+          "text": "山东省2026年普通高等学校分专业招生计划补充信息（本科）2026-06-27"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7278",
+          "text": "成都体育学院2026年本科招生计划信息变更2026-06-30"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7268",
+          "text": "山东省2026年普通高等学校分专业招生计划补充信息（本科）2026-06-27"
+        }
+      ],
+      "shandong_2026_province_rules": [
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7265",
+          "text": "山东省普通高校招生志愿填报百问百答（2026版）2026-06-26"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7255",
+          "text": "关于设立山东省2026年高考志愿填报咨询服务站的公告2026-06-25"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7265",
+          "text": "山东省普通高校招生志愿填报百问百答（2026版）2026-06-26"
+        },
+        {
+          "url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7255",
+          "text": "关于设立山东省2026年高考志愿填报咨询服务站的公告2026-06-25"
+        }
+      ]
+    }
+  },
+  {
+    "province": "河南",
+    "province_slug": "henan",
+    "checked_at": "2026-07-01T13:08:36.429Z",
+    "official_site": "https://www.haeea.cn/",
+    "gaokao_channel_url": "https://www.haeea.cn/",
+    "checks": [
+      {
+        "url": "https://www.haeea.cn/",
+        "ok": false,
+        "status": 400,
+        "final_url": "https://www.haeea.cn/",
+        "content_type": "text/html",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://www.haeea.cn/",
+        "ok": false,
+        "status": 400,
+        "final_url": "https://www.haeea.cn/",
+        "content_type": "text/html",
+        "blocked": false,
+        "error": ""
+      }
+    ],
+    "discovered_links": {
+      "henan_2026_score_segments": [],
+      "henan_2023_admission_scores": [],
+      "henan_2024_admission_scores": [],
+      "henan_2025_admission_scores": [],
+      "henan_2026_admission_plans": [],
+      "henan_2026_province_rules": []
+    }
+  },
+  {
+    "province": "湖北",
+    "province_slug": "hubei",
+    "checked_at": "2026-07-01T13:08:37.065Z",
+    "official_site": "http://www.hbea.edu.cn/",
+    "gaokao_channel_url": "http://www.hbea.edu.cn/html/ptgk/",
+    "checks": [
+      {
+        "url": "http://www.hbea.edu.cn/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.hbea.edu.cn/",
+        "content_type": "text/html",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "http://www.hbea.edu.cn/html/ptgk/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.hbea.edu.cn/html/ptgk/",
+        "content_type": "text/html",
+        "blocked": false,
+        "error": ""
+      }
+    ],
+    "discovered_links": {
+      "hubei_2026_score_segments": [
+        {
+          "url": "http://www.hbea.edu.cn/html/2026-06/15963.html",
+          "text": "[普通高考] 湖北省2026年艺术类体育类技能高考综合排序成绩一分一段统计表2026/6/25 19:58:00"
+        },
+        {
+          "url": "http://www.hbea.edu.cn/html/2026-06/15962.html",
+          "text": "[普通高考] 湖北省2026年普通高考总分一分一段统计表—普通类2026/6/25 15:33:00"
+        }
+      ],
+      "hubei_2023_admission_scores": [],
+      "hubei_2024_admission_scores": [],
+      "hubei_2025_admission_scores": [],
+      "hubei_2026_admission_plans": [],
+      "hubei_2026_province_rules": []
+    }
+  },
+  {
+    "province": "湖南",
+    "province_slug": "hunan",
+    "checked_at": "2026-07-01T13:08:37.525Z",
+    "official_site": "https://www.hneeb.cn/",
+    "gaokao_channel_url": "https://www.hneeb.cn/hnxxg/741/index.htm",
+    "checks": [
+      {
+        "url": "https://www.hneeb.cn/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.hneeb.cn/",
+        "content_type": "text/html; charset=utf-8",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://www.hneeb.cn/hnxxg/741/index.htm",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.hneeb.cn/hnxxg/741/index.htm",
+        "content_type": "text/html; charset=gbk",
+        "blocked": false,
+        "error": ""
+      }
+    ],
+    "discovered_links": {
+      "hunan_2026_score_segments": [],
+      "hunan_2023_admission_scores": [],
+      "hunan_2024_admission_scores": [],
+      "hunan_2025_admission_scores": [],
+      "hunan_2026_admission_plans": [],
+      "hunan_2026_province_rules": []
+    }
+  },
+  {
+    "province": "广东",
+    "province_slug": "guangdong",
+    "checked_at": "2026-07-01T13:08:38.091Z",
+    "official_site": "https://eea.gd.gov.cn/",
+    "gaokao_channel_url": "https://eea.gd.gov.cn/ptgk/",
+    "checks": [
+      {
+        "url": "https://eea.gd.gov.cn/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://eea.gd.gov.cn/",
+        "content_type": "text/html; charset=utf-8",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://eea.gd.gov.cn/ptgk/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://eea.gd.gov.cn/ptgk/",
+        "content_type": "text/html; charset=utf-8",
+        "blocked": false,
+        "error": ""
+      }
+    ],
+    "discovered_links": {
+      "guangdong_2026_score_segments": [],
+      "guangdong_2023_admission_scores": [],
+      "guangdong_2024_admission_scores": [],
+      "guangdong_2025_admission_scores": [],
+      "guangdong_2026_admission_plans": [
+        {
+          "url": "https://eea.gd.gov.cn/tzgg/content/post_4917333.html",
+          "text": "关于《广东省2026年普通高等学校招生专业目录》更正的通知"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/ptgk/content/post_4917051.html",
+          "text": "关于《广东省2026年普通高等学校招生专业目录》更正的通知"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/ptgk/content/post_4917051.html",
+          "text": "关于《广东省2026年普通高等学校招生专业目录》更正的通知"
+        }
+      ],
+      "guangdong_2026_province_rules": [
+        {
+          "url": "https://eea.gd.gov.cn/news/content/post_4915636.html",
+          "text": "广东省招生委员会办公室关于做好2026年普通高校招生志愿填报工作的通知"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/news/content/post_4913870.html",
+          "text": "2026年全国联招考试成绩查询、志愿填报及录取安排的通知"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/tzgg/content/post_4915637.html",
+          "text": "广东省招生委员会办公室关于做好2026年普通高校招生志愿填报工作的通知"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/ptgk/content/post_4915574.html",
+          "text": "广东省招生委员会办公室关于做好2026年普通高校招生志愿填报工作的通知"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/lhzs/content/post_4913853.html",
+          "text": "2026年全国联招考试成绩查询、志愿填报及录取安排的通知"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/bmbk_sksywj/content/post_4915635.html",
+          "text": "广东省招生委员会办公室关于做好2026年普通高校招生志愿填报工作的通知"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/bmbk_sksywj/content/post_4866862.html",
+          "text": "关于做好2026年普通高等学校春季考试招生志愿填报工作的通知"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/bmbk_sksywj/content/post_4802375.html",
+          "text": "广东省2026年普通高等学校专升本招生工作规定"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/ptgk/content/post_4915574.html",
+          "text": "广东省招生委员会办公室关于做好2026年普通高校招生志愿填报工作的通知"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/ptgk/content/post_4896456.html",
+          "text": "广东省2026年普通专升本志愿填报答疑"
+        }
+      ]
+    }
+  },
+  {
+    "province": "四川",
+    "province_slug": "sichuan",
+    "checked_at": "2026-07-01T13:08:38.551Z",
+    "official_site": "https://www.sceea.cn/",
+    "gaokao_channel_url": "https://www.sceea.cn/List/NewsList_30.html",
+    "checks": [
+      {
+        "url": "https://www.sceea.cn/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.sceea.cn/",
+        "content_type": "text/html",
+        "blocked": true,
+        "error": ""
+      },
+      {
+        "url": "https://www.sceea.cn/List/NewsList_30.html",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.sceea.cn/List/NewsList_30.html",
+        "content_type": "text/html",
+        "blocked": true,
+        "error": ""
+      }
+    ],
+    "discovered_links": {
+      "sichuan_2026_score_segments": [
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4871.html",
+          "text": "四川省2026年普通高校招生本科艺术类综合成绩、体育类专业成绩分段统计"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4858.html",
+          "text": "官方发布！四川省2026年普通高考历史类成绩分段统计表出炉"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4857.html",
+          "text": "官方发布！四川省2026年普通高考物理类成绩分段统计表出炉"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4857.html",
+          "text": "官方发布！四川省2026年普通高考物理类成绩分段统计表出炉"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202604/Newsdetail_4722.html",
+          "text": "四川省2026年高职单招普高类考生成绩分段统计表"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4858.html",
+          "text": "官方发布！四川省2026年普通高考历史类成绩分段统计表出炉"
+        }
+      ],
+      "sichuan_2023_admission_scores": [],
+      "sichuan_2024_admission_scores": [],
+      "sichuan_2025_admission_scores": [],
+      "sichuan_2026_admission_plans": [
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4852.html",
+          "text": "关于下发2026年普通高校在川招生计划更正及调整的通知"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4875.html",
+          "text": "关于下发2026年普通高校在川招生计划更正及调整的通知（二）"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4852.html",
+          "text": "关于下发2026年普通高校在川招生计划更正及调整的通知"
+        }
+      ],
+      "sichuan_2026_province_rules": []
+    }
+  }
+]

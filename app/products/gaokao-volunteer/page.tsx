@@ -34,15 +34,15 @@ const productHighlights = [
     icon: Database,
   },
   {
-    title: "投档线辅助分析",
+    title: "投档线参考",
     description:
-      "推荐结果只来自已导入的官方投档线数据，没有可信数据时显示暂无记录。",
+      "当前正式推荐只来自已导入的官方投档线数据；没有最低位次时只做分数参考。",
     icon: LineChart,
   },
   {
-    title: "安全边界清晰",
+    title: "边界清晰",
     description:
-      "没有一分一段、招生计划或专业录取线时，页面会明确提示，不用模型补齐。",
+      "逐分段、招生计划或专业录取线未验证时，页面会明确显示不可用于推荐。",
     icon: ShieldCheck,
   },
 ]
@@ -58,40 +58,29 @@ const dataSourceItems = [
       "各省教育考试院、招生考试院、招生考试信息网发布的官方公告、PDF、Excel。",
   },
   {
-    label: "数据类型",
+    label: "当前可用",
     value:
-      "院校库、专业库、历年录取分数、最低位次、一分一段、招生计划、招生章程。",
+      "教育部 2026 高校名单、江苏 2025 普通类本科批投档最低分；非江苏省份已开始官方源发现和状态登记。",
   },
   {
-    label: "当前状态",
+    label: "当前不可用",
     value:
-      "已接入教育部高校名单和江苏 2025 普通类本科批投档线；招生计划暂无可信结构化数据。",
+      "未导入 verified 一分一段、含最低位次投档线或当年招生计划的省份，只展示不可用原因，不生成具体学校专业方案。",
   },
 ]
 
 const targetSegmentReasons = [
   "这个分段考生更需要具体路径，而不是空泛推荐学校名称。",
   "本科、专科、民办本科、职业本科之间的选择复杂，不能只看分数线。",
-  "专业和就业方向对未来影响更大，尤其要重视可迁移技能和升学衔接。",
-  "学费、城市、专升本机会、校区和选科要求需要放在一起比较。",
-  "系统优先解决普通分数段考生真实会遇到的取舍问题。",
+  "专业和就业方向对未来影响更大，尤其要重视学费、城市和升学衔接。",
+  "没有 verified 位次和招生计划时，系统只提供历史投档最低分参考。",
 ]
 
 const dataAccessPlan = [
-  "2019-2025 历年录取数据",
-  "一分一段表",
-  "招生计划",
-  "院校库",
-  "专业库",
-  "招生章程",
-  "逐省接入与来源登记",
-  "所有数据必须保留 sourceName、sourceUrl、year、province、fetchedAt 或 updatedAt",
-]
-
-const roadmap = [
-  "继续接入江苏 2023、2024 普通类本科批官方投档线。",
-  "增加省份、批次、选科要求和城市偏好的细分筛选。",
-  "在确认来源和授权边界后接入招生计划数据。",
+  "江苏由独立任务继续处理，本轮全国扩展不覆盖江苏数据。",
+  "先跑第一批非江苏省份官方源发现和 missing/blocked/partial 状态登记。",
+  "只在找到公开可批量下载并可校验的官方文件后，才导入 processed 数据。",
+  "逐省登记 source_name、source_url、source_updated_at、downloaded_at 和处理路径。",
 ]
 
 export default function GaokaoVolunteerProductPage() {
@@ -106,7 +95,7 @@ export default function GaokaoVolunteerProductPage() {
                 官方数据
               </Badge>
               <Badge variant="outline" className="bg-white">
-                MVP
+                全国状态版
               </Badge>
             </div>
             <h1 className="text-3xl font-semibold leading-tight text-foreground sm:text-4xl">
@@ -114,8 +103,8 @@ export default function GaokaoVolunteerProductPage() {
             </h1>
             <p className="mt-4 max-w-3xl text-base leading-7 text-muted-foreground">
               一个面向高考志愿填报场景的数据工具。当前版本优先解决数据可信问题：
-              院校库来自教育部官方名单，投档线来自江苏省教育考试院公开 PDF，
-              缺失数据不会编造。
+              院校库来自教育部官方名单，省份数据按官方来源逐步登记；
+              缺失数据只显示状态和原因，不会编造。
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Button asChild>
@@ -125,7 +114,7 @@ export default function GaokaoVolunteerProductPage() {
                 </Link>
               </Button>
               <Button asChild variant="outline">
-                <Link href="/projects/gaokao-volunteer">查看技术项目</Link>
+                <Link href="/data-sources">查看数据来源</Link>
               </Button>
             </div>
           </div>
@@ -137,7 +126,7 @@ export default function GaokaoVolunteerProductPage() {
         <div className="container">
           <SectionHeading
             title="产品能力"
-            description="先把可信数据底座做稳，再逐步扩展省份和批次。"
+            description="先把可信数据底座做稳，再逐步扩展省份、批次和年份。"
           />
           <div className="grid gap-5 lg:grid-cols-3">
             {productHighlights.map((item) => (
@@ -209,30 +198,6 @@ export default function GaokaoVolunteerProductPage() {
             <CardContent>
               <ul className="space-y-3 text-sm leading-6 text-muted-foreground">
                 {dataAccessPlan.map((item) => (
-                  <li key={item} className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="container grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <h2 className="text-2xl font-semibold text-foreground">
-              迭代方向
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              这个产品会逐步走向可验证的填报辅助工具，重点是数据可靠性、
-              推荐可解释性和风险边界。
-            </p>
-          </div>
-          <Card className="bg-white">
-            <CardContent className="p-6">
-              <ul className="space-y-4 text-sm leading-6 text-muted-foreground">
-                {roadmap.map((item) => (
                   <li key={item} className="flex gap-3">
                     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                     <span>{item}</span>

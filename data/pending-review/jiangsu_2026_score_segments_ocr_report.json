@@ -1,0 +1,28 @@
+{
+  "province": "江苏",
+  "year": 2026,
+  "source_name": "江苏省教育考试院",
+  "source_url": "https://www.jseea.cn/webfile/index/index_zkxx/2026-06-24/7475494421979467776.html",
+  "source_updated_at": "2026-06-24",
+  "status": "pending_review",
+  "ocr_available": false,
+  "generated_at": "2026-07-01T07:51:16.531752+00:00",
+  "files": [
+    {
+      "subject_type": "history",
+      "raw_file_path": "data\\raw\\jiangsu\\2026-score-segments\\jiangsu_2026_history_score_segment.jpg",
+      "processed_file_path": "data\\pending-review\\jiangsu_2026_score_segments_history_ocr.csv",
+      "rows": 0,
+      "status": "pending_review"
+    },
+    {
+      "subject_type": "physics",
+      "raw_file_path": "data\\raw\\jiangsu\\2026-score-segments\\jiangsu_2026_physics_score_segment.jpg",
+      "processed_file_path": "data\\pending-review\\jiangsu_2026_score_segments_physics_ocr.csv",
+      "rows": 0,
+      "status": "pending_review"
+    }
+  ],
+  "validation_pass_rate": 0,
+  "note": "当前环境未安装可用 OCR 引擎，已保留官方 JPG 原图和待校验 CSV 表头；未导入正式 score_segments 表。"
+}

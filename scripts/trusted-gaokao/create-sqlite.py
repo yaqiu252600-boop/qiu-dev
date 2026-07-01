@@ -15,6 +15,16 @@ def read_csv(path: Path):
         return list(csv.DictReader(file))
 
 
+def read_csv_dir(path: Path):
+    rows = []
+    if not path.exists():
+        return rows
+
+    for file_path in sorted(path.glob("*.csv")):
+        rows.extend(read_csv(file_path))
+    return rows
+
+
 def insert_rows(connection, table, rows):
     if not rows:
         return 0
@@ -43,10 +53,18 @@ def main():
         "admission_scores": insert_rows(
             connection,
             "admission_scores",
-            read_csv(ROOT / "data" / "processed" / "admission-scores" / "jiangsu_2025_undergraduate.csv"),
+            read_csv_dir(ROOT / "data" / "processed" / "admission-scores"),
         ),
-        "score_segments": 0,
-        "admission_plans": 0,
+        "score_segments": insert_rows(
+            connection,
+            "score_segments",
+            read_csv_dir(ROOT / "data" / "processed" / "score-segments"),
+        ),
+        "admission_plans": insert_rows(
+            connection,
+            "admission_plans",
+            read_csv_dir(ROOT / "data" / "processed" / "admission-plans"),
+        ),
     }
 
     connection.commit()

@@ -30,7 +30,7 @@ export function GET(request: Request) {
     return NextResponse.json(
       {
         error:
-          "暂无可信一分一段/逐分段数据，不能用分数换算位次。请以省教育考试院官方发布为准。",
+          "暂无已校验的一分一段数据，无法进行可信位次换算。",
       },
       { status: 404 },
     )

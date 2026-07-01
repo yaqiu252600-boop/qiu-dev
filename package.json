@@ -7,10 +7,22 @@
     "lint": "tsc --noEmit",
     "build": "next build",
     "start": "next start",
+    "download:jiangsu-official": "node scripts/trusted-gaokao/download-jiangsu-official.mjs",
+    "import:jiangsu-admission-scores": "node scripts/trusted-gaokao/run-python.mjs scripts/trusted-gaokao/import-jiangsu-admission-scores.py",
+    "ocr:score-segments:jiangsu-2026": "node scripts/trusted-gaokao/run-python.mjs scripts/trusted-gaokao/ocr-jiangsu-2026-score-segments.py",
+    "verify:score-segments:jiangsu-2026": "node scripts/trusted-gaokao/verify-score-segments-jiangsu-2026.mjs",
     "import:gaokao-csv": "node scripts/trusted-gaokao/import-local-csv.mjs",
     "import:gaokao-json": "node scripts/trusted-gaokao/import-local-json.mjs",
     "validate:gaokao-data": "node scripts/trusted-gaokao/validate-data.mjs",
-    "build:gaokao-sqlite": "python scripts/trusted-gaokao/create-sqlite.py"
+    "build:gaokao-sqlite": "node scripts/trusted-gaokao/run-python.mjs scripts/trusted-gaokao/create-sqlite.py",
+    "data:discover-provinces": "node scripts/trusted-gaokao/province-data-framework.mjs --mode=discover",
+    "data:fetch-province": "node scripts/trusted-gaokao/province-data-framework.mjs --mode=fetch",
+    "data:fetch-batch-1": "node scripts/trusted-gaokao/province-data-framework.mjs --mode=fetch --batch=1 --year=2026",
+    "data:fetch-batch-2": "node scripts/trusted-gaokao/province-data-framework.mjs --mode=fetch --batch=2 --year=2026",
+    "data:fetch-batch-3": "node scripts/trusted-gaokao/province-data-framework.mjs --mode=fetch --batch=3 --year=2026",
+    "data:validate": "node scripts/trusted-gaokao/validate-data.mjs",
+    "data:import": "node scripts/trusted-gaokao/province-data-framework.mjs --mode=import",
+    "data:report": "node scripts/trusted-gaokao/province-data-framework.mjs --mode=report"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",

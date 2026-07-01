@@ -81,6 +81,7 @@ export type TrustedAdmissionPlan = {
 }
 
 export type SourceManifestEntry = {
+  id?: string
   data_type: string
   province: string
   year: number
@@ -88,14 +89,66 @@ export type SourceManifestEntry = {
   source_url: string
   downloaded_at: string
   source_updated_at: string
+  raw_file_path?: string
+  processed_file_path?: string
   raw_files: string[]
   processed_files: string[]
-  status: "success" | "missing" | "pending_review" | "failed"
-  row_count: number
+  status:
+    | "verified"
+    | "imported"
+    | "pending_review"
+    | "partial"
+    | "missing"
+    | "blocked"
+    | "failed"
+  row_count?: number
+  total_rows?: number
+  imported_rows?: number
+  missing_fields?: string[]
+  queryable: boolean
+  usable_for_score_reference: boolean
+  usable_for_rank_recommendation: boolean
+  usable_for_admission_plan_recommendation: boolean
   notes: string
 }
 
+type RawSourceManifestEntry = Omit<SourceManifestEntry, "status"> & {
+  status: string
+}
+
+export type ProvinceConfig = {
+  province: string
+  province_slug: string
+  exam_authority_name: string
+  official_site: string
+  gaokao_channel_url: string
+  search_keywords: string[]
+  priority_batch: number
+  status: string
+  notes: string
+}
+
+export type ProvinceDataOverview = {
+  province: string
+  province_slug: string
+  priority_batch: number
+  exam_authority_name: string
+  official_site: string
+  gaokao_channel_url: string
+  config_status: string
+  universities_status: string
+  score_segments_status: SourceManifestEntry["status"] | "missing"
+  admission_scores_by_year: Record<string, SourceManifestEntry["status"] | "missing">
+  admission_plans_status: SourceManifestEntry["status"] | "missing"
+  province_rules_status: SourceManifestEntry["status"] | "missing"
+  support_capabilities: string[]
+  unavailable_reasons: string[]
+  sources: SourceManifestEntry[]
+  handled_independently?: boolean
+}
+
 export type RecommendationBucket = "rush" | "stable" | "safe"
+export type RecommendationMode = "rank_recommendation" | "score_reference"
 
 export type TrustedRecommendation = TrustedAdmissionScore & {
   bucket: RecommendationBucket
@@ -208,8 +261,18 @@ function sameProvince(left: string, right: string) {
   return normalizeProvince(left) === normalizeProvince(right)
 }
 
+function readJsonFile<T>(filePath: string, fallback: T) {
+  if (!fs.existsSync(filePath)) {
+    return fallback
+  }
+
+  return JSON.parse(fs.readFileSync(filePath, "utf8")) as T
+}
+
 export function getTrustedUniversities() {
-  return readCsv(dataPath("processed", "universities", "moe_universities_2026.csv")) as TrustedUniversity[]
+  return readCsv(
+    dataPath("processed", "universities", "moe_universities_2026.csv"),
+  ) as TrustedUniversity[]
 }
 
 export function getTrustedScoreSegments() {
@@ -248,13 +311,201 @@ export function getTrustedAdmissionPlans() {
 }
 
 export function getSourceManifest() {
-  const filePath = dataPath("sources", "source_manifest.json")
+  const primary = readJsonFile<RawSourceManifestEntry[]>(
+    dataPath("sources", "source_manifest.json"),
+    [],
+  )
+  const otherProvinces = readJsonFile<RawSourceManifestEntry[]>(
+    dataPath("sources", "other_provinces_source_manifest.json"),
+    [],
+  )
 
-  if (!fs.existsSync(filePath)) {
-    return []
-  }
+  return [...primary, ...otherProvinces].map((entry) => ({
+    ...entry,
+    status: entry.status === "success" ? "verified" : entry.status,
+    raw_files: entry.raw_files ?? [],
+    processed_files: entry.processed_files ?? [],
+    queryable: Boolean(entry.queryable),
+    usable_for_score_reference: Boolean(entry.usable_for_score_reference),
+    usable_for_rank_recommendation: Boolean(entry.usable_for_rank_recommendation),
+    usable_for_admission_plan_recommendation: Boolean(
+      entry.usable_for_admission_plan_recommendation,
+    ),
+  })) as SourceManifestEntry[]
+}
 
-  return JSON.parse(fs.readFileSync(filePath, "utf8")) as SourceManifestEntry[]
+const jiangsuConfig: ProvinceConfig = {
+  province: "江苏",
+  province_slug: "jiangsu",
+  exam_authority_name: "江苏省教育考试院",
+  official_site: "https://www.jseea.cn/",
+  gaokao_channel_url: "https://www.jseea.cn/",
+  search_keywords: [],
+  priority_batch: 0,
+  status: "handled_independently",
+  notes: "江苏由独立任务处理中；本轮全国扩展不覆盖江苏数据。",
+}
+
+export function getProvinceConfigs() {
+  const configs = readJsonFile<ProvinceConfig[]>(
+    dataPath("config", "provinces.json"),
+    [],
+  ).filter((item) => item.province !== "江苏")
+
+  return [jiangsuConfig, ...configs]
+}
+
+function statusFor(
+  sources: SourceManifestEntry[],
+  province: string,
+  dataType: string,
+  year: number,
+) {
+  return (
+    sources.find(
+      (source) =>
+        sameProvince(source.province, province) &&
+        source.data_type === dataType &&
+        Number(source.year) === year,
+    )?.status ?? "missing"
+  )
+}
+
+function sourcesForProvince(sources: SourceManifestEntry[], province: string) {
+  return sources.filter((source) => sameProvince(source.province, province))
+}
+
+function sourceIsUsable(source?: SourceManifestEntry) {
+  return Boolean(
+    source &&
+      ["verified", "imported"].includes(source.status) &&
+      (source.queryable || source.usable_for_score_reference),
+  )
+}
+
+function getBestAdmissionScoreSource(
+  sources: SourceManifestEntry[],
+  province: string,
+) {
+  return sources.find(
+    (source) =>
+      sameProvince(source.province, province) &&
+      source.data_type === "admission_scores" &&
+      sourceIsUsable(source),
+  )
+}
+
+export function getProvinceDataOverview() {
+  const configs = getProvinceConfigs()
+  const sources = getSourceManifest()
+  const universitiesVerified = sources.some(
+    (source) =>
+      source.province === "全国" &&
+      source.data_type === "universities" &&
+      ["verified", "imported"].includes(source.status),
+  )
+
+  return configs.map((config) => {
+    const provinceSources = sourcesForProvince(sources, config.province)
+    const bestAdmissionScore = getBestAdmissionScoreSource(
+      sources,
+      config.province,
+    )
+    const scoreSegmentsStatus = statusFor(
+      sources,
+      config.province,
+      "score_segments",
+      2026,
+    )
+    const admissionPlansStatus = statusFor(
+      sources,
+      config.province,
+      "admission_plans",
+      2026,
+    )
+    const provinceRulesStatus = statusFor(
+      sources,
+      config.province,
+      "province_rules",
+      2026,
+    )
+    const admissionScoresByYear = {
+      "2023": statusFor(sources, config.province, "admission_scores", 2023),
+      "2024": statusFor(sources, config.province, "admission_scores", 2024),
+      "2025": statusFor(sources, config.province, "admission_scores", 2025),
+    }
+    const supportCapabilities = ["仅院校查询"]
+    const unavailableReasons: string[] = []
+
+    if (bestAdmissionScore) {
+      supportCapabilities.push("可查投档线", "可做分数参考")
+    } else {
+      unavailableReasons.push("当前暂未导入该省可信历史投档线，无法生成推荐。")
+    }
+
+    if (provinceSources.some((source) => source.usable_for_rank_recommendation)) {
+      supportCapabilities.push("可做位次参考")
+    } else {
+      unavailableReasons.push(
+        "当前该省投档线数据未包含最低位次，暂不能基于位次生成冲稳保分析。",
+      )
+    }
+
+    if (
+      provinceSources.some(
+        (source) =>
+          source.data_type === "score_segments" &&
+          source.status === "verified",
+      )
+    ) {
+      supportCapabilities.push("可做可信位次换算")
+    } else {
+      unavailableReasons.push(
+        "暂无已校验的一分一段数据，无法进行可信位次换算。",
+      )
+    }
+
+    if (
+      provinceSources.some(
+        (source) =>
+          source.data_type === "admission_plans" &&
+          ["verified", "imported"].includes(source.status),
+      )
+    ) {
+      supportCapabilities.push("可做招生计划辅助")
+    } else {
+      unavailableReasons.push(
+        "当前未导入该省当年官方招生计划，本结果不能代表今年实际可报专业、专业组或招生人数。",
+      )
+    }
+
+    if (
+      scoreSegmentsStatus === "verified" &&
+      provinceSources.some((source) => source.usable_for_rank_recommendation) &&
+      ["verified", "imported"].includes(admissionPlansStatus)
+    ) {
+      supportCapabilities.push("可做完整志愿辅助分析")
+    }
+
+    return {
+      province: config.province,
+      province_slug: config.province_slug,
+      priority_batch: config.priority_batch,
+      exam_authority_name: config.exam_authority_name,
+      official_site: config.official_site,
+      gaokao_channel_url: config.gaokao_channel_url,
+      config_status: config.status,
+      universities_status: universitiesVerified ? "全国可用" : "missing",
+      score_segments_status: scoreSegmentsStatus,
+      admission_scores_by_year: admissionScoresByYear,
+      admission_plans_status: admissionPlansStatus,
+      province_rules_status: provinceRulesStatus,
+      support_capabilities: supportCapabilities,
+      unavailable_reasons: Array.from(new Set(unavailableReasons)),
+      sources: provinceSources,
+      handled_independently: config.province === "江苏",
+    } satisfies ProvinceDataOverview
+  })
 }
 
 export function findUniversities(params: {
@@ -269,7 +520,8 @@ export function findUniversities(params: {
   return getTrustedUniversities()
     .filter((university) => {
       if (keyword) {
-        const haystack = `${university.name} ${university.school_code} ${university.city}`.toLowerCase()
+        const haystack =
+          `${university.name} ${university.school_code} ${university.city}`.toLowerCase()
 
         if (!haystack.includes(keyword)) {
           return false
@@ -328,13 +580,7 @@ export function rankFromScore(params: {
   score: number
 }) {
   const rows = findScoreSegments(params)
-  const exact = rows.find((row) => row.score === params.score)
-
-  if (!exact) {
-    return null
-  }
-
-  return exact
+  return rows.find((row) => row.score === params.score) ?? null
 }
 
 export function findAdmissionScores(params: {
@@ -349,6 +595,7 @@ export function findAdmissionScores(params: {
     ? normalizeSubjectType(params.subject_type)
     : undefined
   const keyword = params.keyword?.trim().toLowerCase()
+  const batchName = params.batch_name?.trim()
 
   return getTrustedAdmissionScores().filter((score) => {
     if (params.province && !sameProvince(score.province, params.province)) {
@@ -363,7 +610,7 @@ export function findAdmissionScores(params: {
       return false
     }
 
-    if (params.batch_name && score.batch_name !== params.batch_name) {
+    if (batchName && !score.batch_name.includes(batchName)) {
       return false
     }
 
@@ -372,7 +619,8 @@ export function findAdmissionScores(params: {
     }
 
     if (keyword) {
-      const haystack = `${score.university_code} ${score.university_name} ${score.major_group_code} ${score.major_name}`.toLowerCase()
+      const haystack =
+        `${score.university_code} ${score.university_name} ${score.major_group_code} ${score.major_name}`.toLowerCase()
 
       if (!haystack.includes(keyword)) {
         return false
@@ -422,6 +670,7 @@ export function recommendFromTrustedData(params: {
   score: number
   rank?: number
   batch_name?: string
+  converted_rank_from_score?: boolean
 }) {
   const admissionScores = findAdmissionScores({
     province: params.province,
@@ -433,8 +682,11 @@ export function recommendFromTrustedData(params: {
   if (admissionScores.length === 0) {
     return {
       ok: false,
-      message: "暂无可信投档线数据，不能生成院校推荐。",
-      warnings: ["推荐结果只允许基于 admission_scores 表，当前筛选条件下没有可用记录。"],
+      recommendation_mode: "score_reference" as RecommendationMode,
+      message: "当前暂未导入该省可信历史投档线，无法生成推荐。",
+      warnings: [
+        "当前暂未导入该省可信历史投档线，无法生成推荐。",
+      ],
       recommendations: { rush: [], stable: [], safe: [] },
     }
   }
@@ -443,30 +695,59 @@ export function recommendFromTrustedData(params: {
     (plan) =>
       sameProvince(plan.province, params.province) &&
       plan.year === params.year &&
-      normalizeSubjectType(plan.subject_type) === normalizeSubjectType(params.subject_type),
+      normalizeSubjectType(plan.subject_type) ===
+        normalizeSubjectType(params.subject_type),
   )
   const hasPlanData = plans.length > 0
-  const warnings = []
-  const hasMinRank = admissionScores.some((score) => typeof score.min_rank === "number")
+  const hasVerifiedScoreSegments =
+    findScoreSegments({
+      province: params.province,
+      year: params.year,
+      subject_type: params.subject_type,
+    }).length > 0
+  const hasMinRank = admissionScores.some(
+    (score) => typeof score.min_rank === "number",
+  )
+  const canUseRank = Boolean(params.rank && hasMinRank)
+  const recommendationMode: RecommendationMode = canUseRank
+    ? "rank_recommendation"
+    : "score_reference"
+  const warnings: string[] = []
 
   if (!hasPlanData) {
-    warnings.push("当前未导入当年官方招生计划，本结果仅基于历史投档线辅助参考，不能代表今年实际可报专业。")
+    warnings.push(
+      "当前未导入该省当年官方招生计划，本结果不能代表今年实际可报专业、专业组或招生人数。",
+    )
   }
 
-  if (params.rank && !hasMinRank) {
-    warnings.push("当前投档线数据缺少最低位次，已保留用户位次但无法按位次差排序，只能按最低分差辅助筛选。")
+  if (!hasMinRank) {
+    warnings.push(
+      "当前该省投档线数据未包含最低位次，暂不能基于位次生成冲稳保分析。",
+    )
   }
 
-  const recommendations = { rush: [] as TrustedRecommendation[], stable: [] as TrustedRecommendation[], safe: [] as TrustedRecommendation[] }
+  if (!params.rank && !params.converted_rank_from_score) {
+    warnings.push(
+      "暂无已校验的一分一段数据，无法进行可信位次换算。",
+    )
+  }
+
+  const recommendations = {
+    rush: [] as TrustedRecommendation[],
+    stable: [] as TrustedRecommendation[],
+    safe: [] as TrustedRecommendation[],
+  }
 
   for (const item of admissionScores) {
     const scoreGap = item.min_score - params.score
     const rankGap =
-      params.rank && typeof item.min_rank === "number"
+      canUseRank && typeof item.min_rank === "number" && params.rank
         ? params.rank - item.min_rank
         : undefined
     const bucket =
-      typeof rankGap === "number" ? bucketByRank(rankGap) : bucketByScore(scoreGap)
+      recommendationMode === "rank_recommendation" && typeof rankGap === "number"
+        ? bucketByRank(rankGap)
+        : bucketByScore(scoreGap)
 
     if (!bucket) {
       continue
@@ -483,17 +764,34 @@ export function recommendFromTrustedData(params: {
   for (const bucket of Object.keys(recommendations) as RecommendationBucket[]) {
     recommendations[bucket] = recommendations[bucket]
       .sort((left, right) => {
-        const leftRank = typeof left.rank_gap === "number" ? Math.abs(left.rank_gap) : Math.abs(left.score_gap ?? 0)
-        const rightRank = typeof right.rank_gap === "number" ? Math.abs(right.rank_gap) : Math.abs(right.score_gap ?? 0)
-        return leftRank - rightRank
+        const leftDistance =
+          recommendationMode === "rank_recommendation" &&
+          typeof left.rank_gap === "number"
+            ? Math.abs(left.rank_gap)
+            : Math.abs(left.score_gap ?? 0)
+        const rightDistance =
+          recommendationMode === "rank_recommendation" &&
+          typeof right.rank_gap === "number"
+            ? Math.abs(right.rank_gap)
+            : Math.abs(right.score_gap ?? 0)
+        return leftDistance - rightDistance
       })
       .slice(0, 30)
   }
 
   return {
     ok: true,
-    message: "推荐结果已生成。所有院校记录均来自 admission_scores 表。",
+    recommendation_mode: recommendationMode,
+    message:
+      recommendationMode === "rank_recommendation" && hasPlanData
+        && hasVerifiedScoreSegments
+        ? "完整志愿辅助分析。"
+        : recommendationMode === "rank_recommendation"
+          ? "已生成基于官方位次字段的辅助参考。"
+        : "已生成仅基于历史投档最低分的参考结果。",
     warnings,
+    can_use_rank: canUseRank,
+    has_admission_plans: hasPlanData,
     recommendations,
   }
 }
