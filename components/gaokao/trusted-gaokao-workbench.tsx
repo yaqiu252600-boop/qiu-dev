@@ -84,10 +84,10 @@ export function TrustedGaokaoWorkbench({
   const [keyword, setKeyword] = useState("")
   const [universities, setUniversities] = useState<University[]>([])
   const [universityMessage, setUniversityMessage] = useState(
-    "输入学校名称或学校标识码，只查询教育部官方高校名单。",
+    "可留空查看当前省份高校，也可输入学校名称、学校标识码或城市。",
   )
   const [province, setProvince] = useState(
-    provinceStatuses.find((item) => item.province === "浙江")?.province ??
+    provinceStatuses.find((item) => item.province === "江苏")?.province ??
       provinceStatuses[0]?.province ??
       "江苏",
   )
@@ -109,16 +109,23 @@ export function TrustedGaokaoWorkbench({
 
   async function handleUniversitySearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const response = await fetch(
-      `/api/universities?keyword=${encodeURIComponent(keyword)}`,
-    )
+    const params = new URLSearchParams({ province })
+
+    if (keyword.trim()) {
+      params.set("keyword", keyword.trim())
+    }
+
+    const response = await fetch(`/api/universities?${params.toString()}`)
     const result = (await response.json()) as {
       data?: University[]
       message?: string
     }
 
     setUniversities(result.data ?? [])
-    setUniversityMessage(result.message ?? "查询完成。")
+    setUniversityMessage(
+      result.message ??
+        `已按${province}筛选教育部 2026 年全国普通高等学校名单。`,
+    )
   }
 
   async function handleRecommend(event: FormEvent<HTMLFormElement>) {
@@ -157,7 +164,7 @@ export function TrustedGaokaoWorkbench({
           <CardHeader>
             <CardTitle>院校搜索</CardTitle>
             <CardDescription>
-              数据来自教育部 2026 年全国普通高等学校名单。
+              按右侧当前省份筛选教育部 2026 年全国普通高等学校名单。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -165,14 +172,17 @@ export function TrustedGaokaoWorkbench({
               <input
                 value={keyword}
                 onChange={(event) => setKeyword(event.target.value)}
-                placeholder="例如：南京大学、4132010284、苏州"
+                placeholder={`例如：${province === "江苏" ? "南京大学、苏州" : "大学、城市名"}；留空查${province}高校`}
                 className="h-10 flex-1 rounded-md border border-input bg-white px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring/20"
               />
               <Button type="submit">
                 <Search className="h-4 w-4" aria-hidden="true" />
-                查询
+                查高校
               </Button>
             </form>
+            <p className="mt-2 text-xs text-muted-foreground">
+              这个功能全国省份都可用；投档线参考、位次换算和招生计划辅助会按右侧数据状态开放。
+            </p>
             <p className="mt-3 text-sm text-muted-foreground">
               {universityMessage}
             </p>
@@ -218,6 +228,10 @@ export function TrustedGaokaoWorkbench({
                 onChange={(event) => {
                   setProvince(event.target.value)
                   setRecommendation(null)
+                  setUniversities([])
+                  setUniversityMessage(
+                    `已切换到${event.target.value}。可留空查看该省高校，投档线/招生计划只在 verified 数据存在时开放。`,
+                  )
                 }}
                 className="h-10 w-full rounded-md border border-input bg-white px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring/20"
               >
