@@ -38,7 +38,7 @@ type AdmissionScore = {
   university_name: string
   major_group_code: string
   major_name: string
-  min_score: number
+  min_score?: number
   min_rank?: number
   source_name: string
   source_url: string
@@ -103,9 +103,13 @@ export function TrustedGaokaoWorkbench({
   const canShowReference = selectedStatus?.support_capabilities.includes(
     "可做分数参考",
   )
+  const canShowRankReference = selectedStatus?.support_capabilities.includes(
+    "可做位次参考",
+  )
   const canShowFull = selectedStatus?.support_capabilities.includes(
     "可做完整志愿辅助分析",
   )
+  const canShowAdmissionForm = canShowReference || canShowRankReference
 
   async function handleUniversitySearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -229,6 +233,11 @@ export function TrustedGaokaoWorkbench({
                   setProvince(event.target.value)
                   setRecommendation(null)
                   setUniversities([])
+                  if (event.target.value === "山东") {
+                    setSubjectType("general")
+                  } else if (subjectType === "general") {
+                    setSubjectType("physics")
+                  }
                   setUniversityMessage(
                     `已切换到${event.target.value}。可留空查看该省高校，投档线/招生计划只在 verified 数据存在时开放。`,
                   )
@@ -245,12 +254,14 @@ export function TrustedGaokaoWorkbench({
 
             {selectedStatus ? <ProvinceStatusPanel status={selectedStatus} /> : null}
 
-            {canShowReference ? (
+            {canShowAdmissionForm ? (
               <form className="grid gap-4 sm:grid-cols-2" onSubmit={handleRecommend}>
                 <div className="sm:col-span-2 rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-700">
                   {canShowFull
                     ? "该省已具备完整志愿辅助分析所需数据。"
-                    : "该省当前只能查看历史投档最低分参考。"}
+                    : canShowRankReference && !canShowReference
+                      ? "该省当前可查看历史投档最低位次参考，请填写官方位次。"
+                      : "该省当前只能查看历史投档最低分参考。"}
                 </div>
               <Field label="省份">
                 <input
@@ -279,6 +290,7 @@ export function TrustedGaokaoWorkbench({
                 >
                   <option value="physics">物理等科目类</option>
                   <option value="history">历史等科目类</option>
+                  <option value="general">普通类 / 综合改革</option>
                 </select>
               </Field>
               <Field label="分数">
@@ -447,7 +459,10 @@ function RecommendationPanel({
                 </div>
                 <div className="mt-1 text-muted-foreground">
                   {item.year} / {item.batch_name} / 院校代码{" "}
-                  {item.university_code} / 最低分 {item.min_score}
+                  {item.university_code} / 最低分{" "}
+                  {typeof item.min_score === "number"
+                    ? item.min_score
+                    : "暂无可信数据"}
                   {typeof item.min_rank === "number"
                     ? ` / 最低位次 ${item.min_rank}`
                     : " / 最低位次 暂无可信数据"}

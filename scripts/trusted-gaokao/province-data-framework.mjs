@@ -544,8 +544,27 @@ function generateReport() {
     const score2025 = sourceStatus(sources, item.province, "admission_scores", 2025)
     const plans = sourceStatus(sources, item.province, "admission_plans", 2026)
     const rules = sourceStatus(sources, item.province, "province_rules", 2026)
+    const provinceSources = sources.filter((source) => source.province === item.province)
+    const capabilities = ["仅院校查询"]
+
+    if (provinceSources.some((source) => source.data_type === "admission_scores" && source.queryable)) {
+      capabilities.push("可查投档线")
+    }
+
+    if (provinceSources.some((source) => source.usable_for_score_reference)) {
+      capabilities.push("可做分数参考")
+    }
+
+    if (provinceSources.some((source) => source.usable_for_rank_recommendation)) {
+      capabilities.push("可做位次参考")
+    }
+
+    if (provinceSources.some((source) => source.usable_for_admission_plan_recommendation)) {
+      capabilities.push("可做招生计划辅助")
+    }
+
     lines.push(
-      `| ${item.province} | ${scoreSegments} | ${score2023} | ${score2024} | ${score2025} | ${plans} | ${rules} | 仅院校查询 |`,
+      `| ${item.province} | ${scoreSegments} | ${score2023} | ${score2024} | ${score2025} | ${plans} | ${rules} | ${capabilities.join("、")} |`,
     )
   }
 

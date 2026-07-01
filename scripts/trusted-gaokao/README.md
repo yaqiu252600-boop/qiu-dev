@@ -17,6 +17,8 @@ Commands:
   Download known official Jiangsu 2023/2024 admission score attachments from JSEEA. If the network cannot reach the official host, the script writes `*.download-error.json` files and exits non-zero.
 - `npm run import:jiangsu-admission-scores`
   Parse already-downloaded official Jiangsu `.xls` files and write processed admission score CSV files. Missing raw files are skipped; no fake rows are generated.
+- `npm run import:shandong-admission-scores`
+  Parse already-downloaded official Shandong `.xls` files for regular-batch first-choice admission lines. Shandong official files contain minimum rank but not minimum score, so `min_score` stays blank and no score is inferred.
 - `npm run ocr:score-segments:jiangsu-2026`
   Attempt the 2026 Jiangsu score-segment OCR pipeline. Without a trusted OCR engine, it only writes pending-review CSV headers and an OCR report.
 - `npm run verify:score-segments:jiangsu-2026`

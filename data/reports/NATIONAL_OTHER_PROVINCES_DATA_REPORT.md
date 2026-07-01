@@ -1,6 +1,6 @@
 # 全国非江苏省份高考数据接入报告
 
-生成时间：2026-07-01T13:14:51.057Z
+生成时间：2026-07-01T16:37:16.275Z
 
 ## 本次边界
 
@@ -43,7 +43,7 @@
 | 安徽 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
 | 福建 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
 | 江西 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
-| 山东 | partial | missing | missing | missing | partial | partial | 仅院校查询 |
+| 山东 | partial | verified | verified | verified | partial | partial | 仅院校查询、可查投档线、可做位次参考 |
 | 河南 | failed | failed | failed | failed | failed | failed | 仅院校查询 |
 | 湖北 | partial | missing | missing | missing | missing | missing | 仅院校查询 |
 | 湖南 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
@@ -63,7 +63,9 @@
 
 ## verified 数据
 
-- 无
+- 山东 / 2023 / admission_scores / 山东省教育招生考试院 / https://www.sdzk.cn/NewsInfo.aspx?NewsID=6297
+- 山东 / 2024 / admission_scores / 山东省教育招生考试院 / https://www.sdzk.cn/NewsInfo.aspx?NewsID=6680
+- 山东 / 2025 / admission_scores / 山东省教育招生考试院 / https://www.sdzk.cn/NewsInfo.aspx?NewsID=6996
 
 ## imported 数据
 
@@ -96,9 +98,6 @@
 - 安徽 / 2025 / admission_scores / 安徽省教育招生考试院 / https://www.ahzsks.cn/ptgxzs/
 - 安徽 / 2026 / province_rules / 安徽省教育招生考试院 / https://www.ahzsks.cn/ptgxzs/
 - 安徽 / 2026 / score_segments / 安徽省教育招生考试院 / https://www.ahzsks.cn/ptgxzs/
-- 山东 / 2023 / admission_scores / 山东省教育招生考试院 / https://www.sdzk.cn/NewsList.aspx?BCID=4
-- 山东 / 2024 / admission_scores / 山东省教育招生考试院 / https://www.sdzk.cn/NewsList.aspx?BCID=4
-- 山东 / 2025 / admission_scores / 山东省教育招生考试院 / https://www.sdzk.cn/NewsList.aspx?BCID=4
 - 湖北 / 2026 / admission_plans / 湖北省教育考试院 / http://www.hbea.edu.cn/html/ptgk/
 - 湖北 / 2023 / admission_scores / 湖北省教育考试院 / http://www.hbea.edu.cn/html/ptgk/
 - 湖北 / 2024 / admission_scores / 湖北省教育考试院 / http://www.hbea.edu.cn/html/ptgk/

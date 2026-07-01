@@ -9,6 +9,7 @@
     "start": "next start",
     "download:jiangsu-official": "node scripts/trusted-gaokao/download-jiangsu-official.mjs",
     "import:jiangsu-admission-scores": "node scripts/trusted-gaokao/run-python.mjs scripts/trusted-gaokao/import-jiangsu-admission-scores.py",
+    "import:shandong-admission-scores": "node scripts/trusted-gaokao/run-python.mjs scripts/trusted-gaokao/import-shandong-admission-scores.py",
     "ocr:score-segments:jiangsu-2026": "node scripts/trusted-gaokao/run-python.mjs scripts/trusted-gaokao/ocr-jiangsu-2026-score-segments.py",
     "verify:score-segments:jiangsu-2026": "node scripts/trusted-gaokao/verify-score-segments-jiangsu-2026.mjs",
     "import:gaokao-csv": "node scripts/trusted-gaokao/import-local-csv.mjs",

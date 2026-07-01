@@ -550,28 +550,29 @@
     "year": 2023,
     "data_type": "admission_scores",
     "source_name": "山东省教育招生考试院",
-    "source_url": "https://www.sdzk.cn/NewsList.aspx?BCID=4",
-    "source_updated_at": "unknown",
+    "source_url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=6297",
+    "source_updated_at": "2023-07-19",
     "downloaded_at": "2026-07-01T13:08:36.049Z",
-    "raw_file_path": "",
-    "processed_file_path": "",
-    "raw_files": [],
-    "processed_files": [],
-    "total_rows": 0,
-    "imported_rows": 0,
-    "row_count": 0,
-    "status": "missing",
-    "missing_fields": [
-      "university_code",
-      "university_name",
-      "min_score",
-      "min_rank"
+    "raw_file_path": "data/raw/provinces/shandong/2023-admission-scores/shandong_2023_regular_batch_first_choice.xls",
+    "processed_file_path": "data/processed/admission-scores/shandong_2023_regular_batch_first_choice.csv",
+    "raw_files": [
+      "data/raw/provinces/shandong/2023-admission-scores/shandong_2023_regular_batch_first_choice.xls"
     ],
-    "queryable": false,
+    "processed_files": [
+      "data/processed/admission-scores/shandong_2023_regular_batch_first_choice.csv"
+    ],
+    "total_rows": 19230,
+    "imported_rows": 19230,
+    "row_count": 19230,
+    "status": "verified",
+    "missing_fields": [
+      "min_score"
+    ],
+    "queryable": true,
     "usable_for_score_reference": false,
-    "usable_for_rank_recommendation": false,
+    "usable_for_rank_recommendation": true,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次在官方站点首页/高考栏目未发现可直接确认的数据文件；不会使用非官方来源或推测补全。"
+    "notes": "已从山东省教育招生考试院官方 xls 附件清洗普通类常规批第1次志愿投档情况表。官方表提供投档最低位次和投档计划数，但不提供最低分；min_score 留空，不做分数反推。"
   },
   {
     "id": "shandong_2024_admission_scores",
@@ -579,28 +580,29 @@
     "year": 2024,
     "data_type": "admission_scores",
     "source_name": "山东省教育招生考试院",
-    "source_url": "https://www.sdzk.cn/NewsList.aspx?BCID=4",
-    "source_updated_at": "unknown",
+    "source_url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=6680",
+    "source_updated_at": "2024-07-19",
     "downloaded_at": "2026-07-01T13:08:36.050Z",
-    "raw_file_path": "",
-    "processed_file_path": "",
-    "raw_files": [],
-    "processed_files": [],
-    "total_rows": 0,
-    "imported_rows": 0,
-    "row_count": 0,
-    "status": "missing",
-    "missing_fields": [
-      "university_code",
-      "university_name",
-      "min_score",
-      "min_rank"
+    "raw_file_path": "data/raw/provinces/shandong/2024-admission-scores/shandong_2024_regular_batch_first_choice.xls",
+    "processed_file_path": "data/processed/admission-scores/shandong_2024_regular_batch_first_choice.csv",
+    "raw_files": [
+      "data/raw/provinces/shandong/2024-admission-scores/shandong_2024_regular_batch_first_choice.xls"
     ],
-    "queryable": false,
+    "processed_files": [
+      "data/processed/admission-scores/shandong_2024_regular_batch_first_choice.csv"
+    ],
+    "total_rows": 20299,
+    "imported_rows": 20299,
+    "row_count": 20299,
+    "status": "verified",
+    "missing_fields": [
+      "min_score"
+    ],
+    "queryable": true,
     "usable_for_score_reference": false,
-    "usable_for_rank_recommendation": false,
+    "usable_for_rank_recommendation": true,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次在官方站点首页/高考栏目未发现可直接确认的数据文件；不会使用非官方来源或推测补全。"
+    "notes": "已从山东省教育招生考试院官方 xls 附件清洗普通类常规批第1次志愿投档情况表。官方表提供投档最低位次和投档计划数，但不提供最低分；min_score 留空，不做分数反推。"
   },
   {
     "id": "shandong_2025_admission_scores",
@@ -608,28 +610,29 @@
     "year": 2025,
     "data_type": "admission_scores",
     "source_name": "山东省教育招生考试院",
-    "source_url": "https://www.sdzk.cn/NewsList.aspx?BCID=4",
-    "source_updated_at": "unknown",
+    "source_url": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=6996",
+    "source_updated_at": "2025-07-19",
     "downloaded_at": "2026-07-01T13:08:36.051Z",
-    "raw_file_path": "",
-    "processed_file_path": "",
-    "raw_files": [],
-    "processed_files": [],
-    "total_rows": 0,
-    "imported_rows": 0,
-    "row_count": 0,
-    "status": "missing",
-    "missing_fields": [
-      "university_code",
-      "university_name",
-      "min_score",
-      "min_rank"
+    "raw_file_path": "data/raw/provinces/shandong/2025-admission-scores/shandong_2025_regular_batch_first_choice.xls",
+    "processed_file_path": "data/processed/admission-scores/shandong_2025_regular_batch_first_choice.csv",
+    "raw_files": [
+      "data/raw/provinces/shandong/2025-admission-scores/shandong_2025_regular_batch_first_choice.xls"
     ],
-    "queryable": false,
+    "processed_files": [
+      "data/processed/admission-scores/shandong_2025_regular_batch_first_choice.csv"
+    ],
+    "total_rows": 21380,
+    "imported_rows": 21380,
+    "row_count": 21380,
+    "status": "verified",
+    "missing_fields": [
+      "min_score"
+    ],
+    "queryable": true,
     "usable_for_score_reference": false,
-    "usable_for_rank_recommendation": false,
+    "usable_for_rank_recommendation": true,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次在官方站点首页/高考栏目未发现可直接确认的数据文件；不会使用非官方来源或推测补全。"
+    "notes": "已从山东省教育招生考试院官方 xls 附件清洗普通类常规批第1次志愿投档情况表。官方表提供投档最低位次和投档计划数，但不提供最低分；min_score 留空，不做分数反推。"
   },
   {
     "id": "shandong_2026_province_rules",

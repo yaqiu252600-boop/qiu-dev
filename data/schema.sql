@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS admission_scores (
   major_group_code TEXT,
   major_code TEXT,
   major_name TEXT,
-  min_score INTEGER NOT NULL,
+  min_score INTEGER,
   min_rank INTEGER,
   plan_type TEXT,
   source_name TEXT NOT NULL,

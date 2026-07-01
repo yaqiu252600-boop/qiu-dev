@@ -47,7 +47,7 @@ export type TrustedAdmissionScore = {
   major_group_code: string
   major_code: string
   major_name: string
-  min_score: number
+  min_score?: number
   min_rank?: number
   plan_type: string
   source_name: string
@@ -254,6 +254,10 @@ export function normalizeSubjectType(subjectType: string) {
     return "physics"
   }
 
+  if (["general", "普通", "普通类", "综合改革"].includes(value)) {
+    return "general"
+  }
+
   return value
 }
 
@@ -295,7 +299,7 @@ export function getTrustedAdmissionScores() {
     .map((row) => ({
       ...row,
       year: Number(row.year),
-      min_score: Number(row.min_score),
+      min_score: toNumber(row.min_score),
       min_rank: toNumber(row.min_rank),
     })) as TrustedAdmissionScore[]
 }
@@ -438,9 +442,13 @@ export function getProvinceDataOverview() {
     const unavailableReasons: string[] = []
 
     if (bestAdmissionScore) {
-      supportCapabilities.push("可查投档线", "可做分数参考")
+      supportCapabilities.push("可查投档线")
     } else {
       unavailableReasons.push("当前暂未导入该省可信历史投档线，无法生成推荐。")
+    }
+
+    if (provinceSources.some((source) => source.usable_for_score_reference)) {
+      supportCapabilities.push("可做分数参考")
     }
 
     if (provinceSources.some((source) => source.usable_for_rank_recommendation)) {
@@ -708,11 +716,19 @@ export function recommendFromTrustedData(params: {
   const hasMinRank = admissionScores.some(
     (score) => typeof score.min_rank === "number",
   )
+  const hasMinScore = admissionScores.some(
+    (score) => typeof score.min_score === "number",
+  )
   const canUseRank = Boolean(params.rank && hasMinRank)
   const recommendationMode: RecommendationMode = canUseRank
     ? "rank_recommendation"
     : "score_reference"
   const warnings: string[] = []
+  const recommendations = {
+    rush: [] as TrustedRecommendation[],
+    stable: [] as TrustedRecommendation[],
+    safe: [] as TrustedRecommendation[],
+  }
 
   if (!hasPlanData) {
     warnings.push(
@@ -726,20 +742,32 @@ export function recommendFromTrustedData(params: {
     )
   }
 
+  if (!hasMinScore) {
+    warnings.push(
+      "当前该省投档线数据未包含最低分，只能在输入官方位次后查看历史投档最低位次参考。",
+    )
+  }
+
   if (!params.rank && !params.converted_rank_from_score) {
     warnings.push(
       "暂无已校验的一分一段数据，无法进行可信位次换算。",
     )
   }
 
-  const recommendations = {
-    rush: [] as TrustedRecommendation[],
-    stable: [] as TrustedRecommendation[],
-    safe: [] as TrustedRecommendation[],
+  if (!canUseRank && !hasMinScore) {
+    return {
+      ok: false,
+      recommendation_mode: "rank_recommendation" as RecommendationMode,
+      message:
+        "当前该省官方投档线只有最低位次，需输入官方位次后才能查看历史位次参考。",
+      warnings,
+      recommendations,
+    }
   }
 
   for (const item of admissionScores) {
-    const scoreGap = item.min_score - params.score
+    const scoreGap =
+      typeof item.min_score === "number" ? item.min_score - params.score : undefined
     const rankGap =
       canUseRank && typeof item.min_rank === "number" && params.rank
         ? params.rank - item.min_rank
@@ -747,7 +775,9 @@ export function recommendFromTrustedData(params: {
     const bucket =
       recommendationMode === "rank_recommendation" && typeof rankGap === "number"
         ? bucketByRank(rankGap)
-        : bucketByScore(scoreGap)
+        : typeof scoreGap === "number"
+          ? bucketByScore(scoreGap)
+          : null
 
     if (!bucket) {
       continue

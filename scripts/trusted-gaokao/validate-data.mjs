@@ -195,7 +195,6 @@ function validateAdmissionScores() {
         "batch_name",
         "university_code",
         "university_name",
-        "min_score",
         "source_name",
         "source_url",
         "source_updated_at",
@@ -203,7 +202,13 @@ function validateAdmissionScores() {
         requireField(row, field, label)
       }
 
-      requireNumber(row, "min_score", label)
+      if (!row.min_score && !row.min_rank) {
+        errors.push(`${label} min_score 或 min_rank 至少需要一个`)
+      }
+
+      if (row.min_score && Number.isNaN(Number(row.min_score))) {
+        errors.push(`${label} min_score 如果存在必须是数字`)
+      }
 
       if (row.min_rank && Number.isNaN(Number(row.min_rank))) {
         errors.push(`${label} min_rank 如果存在必须是数字`)

@@ -26,7 +26,6 @@ const REQUIRED_FIELDS = {
     "year",
     "university_name",
     "subject_type",
-    "min_score",
     "source_name",
     "source_url",
   ],
