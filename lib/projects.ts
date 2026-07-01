@@ -58,6 +58,37 @@ export const projects: Project[] = [
     nextSteps: ["接入自部署 cobalt 服务", "补充更多平台兼容性测试", "增加长视频队列处理"],
   },
   {
+    slug: "droidlink",
+    title: "DroidLink 手机电脑连接工具",
+    description:
+      "Android 手机与 Windows 电脑之间的局域网互联工具，已完成二维码配对、双向文件互传、历史记录和断开连接流程。",
+    longDescription:
+      "DroidLink 是一个 Android 手机与 Windows 电脑之间的本地互联工具。当前 V0.2 已经交付 Windows 单文件程序、原生 Android APK、二维码或 6 位配对码连接、手机到电脑与电脑到手机的双向文件传输、传输历史、接收目录持久化和本地安全授权。手机投屏、鼠标键盘控制、剪贴板同步和更多连接方式属于后续阶段。",
+    status: "dev",
+    type: "Windows / Android 工具",
+    tags: ["Android", "Windows", "局域网互传", "二维码配对"],
+    demoUrl: "/projects/droidlink",
+    githubUrl: "https://github.com/",
+    featured: false,
+    tool: false,
+    progress: 68,
+    updatedAt: "2026-06-21",
+    eta: "V0.2 可用，投屏阶段待开发",
+    completed: [
+      "完成 Windows 单文件 EXE 和原生 Android APK",
+      "完成二维码或手动地址 + 6 位一次性配对码",
+      "完成手机与电脑之间的双向文件传输",
+      "完成传输历史、接收目录持久化和主动断开连接",
+      "完成源码、使用说明和构建文档打包",
+    ],
+    nextSteps: [
+      "加入手机投屏到电脑",
+      "加入鼠标键盘控制手机",
+      "补充 USB、蓝牙等更多连接方式",
+      "增加剪贴板同步和手机文件管理",
+    ],
+  },
+  {
     slug: "gaokao-volunteer",
     title: "高考志愿数据查询与辅助分析工具",
     description: "基于教育部高校名单和省级官方源状态的高考数据查询工具。",
