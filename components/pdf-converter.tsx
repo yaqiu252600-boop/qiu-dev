@@ -1,7 +1,7 @@
 "use client"
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react"
-import { CheckCircle2, Download, FileText, Upload } from "lucide-react"
+import { CheckCircle2, Download, FileText, Loader2, Upload } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,25 +14,36 @@ import {
 import { cn } from "@/lib/utils"
 
 type ConvertState = "idle" | "ready" | "converting" | "done" | "error"
-type EngineState = "checking" | "available" | "unavailable"
+type ServiceState = "checking" | "available" | "unavailable"
+
+function fileNameFromDisposition(header: string | null) {
+  if (!header) {
+    return ""
+  }
+
+  const utf8Match = header.match(/filename\*=UTF-8''([^;]+)/i)
+  const asciiMatch = header.match(/filename="?([^";]+)"?/i)
+  const value = utf8Match?.[1] ?? asciiMatch?.[1]
+
+  return value ? decodeURIComponent(value) : ""
+}
 
 export function PdfConverter() {
   const [file, setFile] = useState<File | null>(null)
   const [state, setState] = useState<ConvertState>("idle")
   const [message, setMessage] = useState("请选择一个 PDF 文件")
-  const [downloadUrl, setDownloadUrl] = useState("")
+  const [serviceState, setServiceState] = useState<ServiceState>("checking")
   const [downloadName, setDownloadName] = useState("")
-  const [engineState, setEngineState] = useState<EngineState>("checking")
 
   const canConvert = useMemo(
-    () => Boolean(file) && state !== "converting" && engineState === "available",
-    [engineState, file, state],
+    () => Boolean(file) && state !== "converting" && serviceState === "available",
+    [file, serviceState, state],
   )
 
   useEffect(() => {
     let mounted = true
 
-    async function checkEngine() {
+    async function checkService() {
       try {
         const response = await fetch("/api/pdf-to-word?status=1", {
           cache: "no-store",
@@ -46,27 +57,21 @@ export function PdfConverter() {
           return
         }
 
-        setEngineState(result.available ? "available" : "unavailable")
-
-        if (!result.available) {
-          setState("error")
-          setMessage(
-            result.message ??
-              "当前环境未配置 PDF 转 Word 转换引擎，线上暂不能直接转换。",
-          )
-        }
+        setServiceState(result.available ? "available" : "unavailable")
+        setMessage(result.message ?? "请选择一个 PDF 文件")
+        setState(result.available ? "idle" : "error")
       } catch {
         if (!mounted) {
           return
         }
 
-        setEngineState("unavailable")
+        setServiceState("unavailable")
         setState("error")
-        setMessage("无法确认转换引擎状态，暂不能开始转换。")
+        setMessage("暂时无法连接转换服务，请稍后再试。")
       }
     }
 
-    checkEngine()
+    checkService()
 
     return () => {
       mounted = false
@@ -75,17 +80,12 @@ export function PdfConverter() {
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const selected = event.target.files?.[0]
-    setDownloadUrl("")
     setDownloadName("")
 
     if (!selected) {
       setFile(null)
-      setState(engineState === "unavailable" ? "error" : "idle")
-      setMessage(
-        engineState === "unavailable"
-          ? "当前环境未配置 PDF 转 Word 转换引擎，线上暂不能直接转换。"
-          : "请选择一个 PDF 文件",
-      )
+      setState(serviceState === "available" ? "idle" : "error")
+      setMessage(serviceState === "available" ? "请选择一个 PDF 文件" : "转换服务暂不可用。")
       return
     }
 
@@ -94,19 +94,17 @@ export function PdfConverter() {
     if (!isPdf) {
       setFile(null)
       setState("error")
-      setMessage("只支持 PDF 文件")
+      setMessage("只支持 PDF 文件。")
       return
     }
 
     setFile(selected)
-    if (engineState === "unavailable") {
-      setState("error")
-      setMessage("文件已选择，但当前环境未配置转换引擎，暂不能在线转换。")
-      return
-    }
-
-    setState("ready")
-    setMessage(`${selected.name} 已准备好`)
+    setState(serviceState === "available" ? "ready" : "error")
+    setMessage(
+      serviceState === "available"
+        ? `${selected.name} 已准备好`
+        : "转换服务暂不可用，请稍后再试。",
+    )
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -114,13 +112,12 @@ export function PdfConverter() {
 
     if (!file) {
       setState("error")
-      setMessage("请先上传 PDF 文件")
+      setMessage("请先上传 PDF 文件。")
       return
     }
 
     setState("converting")
-    setMessage("正在调用本地转换引擎，复杂 PDF 可能需要等待一会儿")
-    setDownloadUrl("")
+    setMessage("正在转换，文本型 PDF 通常只需要几秒钟。")
     setDownloadName("")
 
     const formData = new FormData()
@@ -132,23 +129,32 @@ export function PdfConverter() {
         body: formData,
       })
 
-      const result = (await response.json()) as {
-        downloadUrl?: string
-        fileName?: string
-        error?: string
+      if (!response.ok) {
+        const result = (await response.json().catch(() => null)) as {
+          error?: string
+        } | null
+        throw new Error(result?.error ?? "转换失败，请换一个 PDF 再试。")
       }
 
-      if (!response.ok || !result.downloadUrl) {
-        throw new Error(result.error ?? "转换失败")
-      }
+      const blob = await response.blob()
+      const name =
+        fileNameFromDisposition(response.headers.get("content-disposition")) ??
+        `${file.name.replace(/\.pdf$/i, "") || "converted"}.docx`
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = name
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
 
-      setDownloadUrl(result.downloadUrl)
-      setDownloadName(result.fileName ?? "converted.docx")
+      setDownloadName(name)
       setState("done")
-      setMessage("转换完成，可以下载可编辑的 Word 文件")
+      setMessage(`转换完成，已生成 ${name}`)
     } catch (error) {
       setState("error")
-      setMessage(error instanceof Error ? error.message : "转换失败")
+      setMessage(error instanceof Error ? error.message : "转换失败，请换一个 PDF 再试。")
     }
   }
 
@@ -160,7 +166,7 @@ export function PdfConverter() {
         </div>
         <CardTitle>PDF 转 Word</CardTitle>
         <CardDescription>
-          上传 PDF 后调用本地或自托管转换引擎生成可编辑的 Word 文档。若线上环境未配置转换服务，页面会自动提示不可用。
+          上传文本型 PDF 后，在线生成可编辑的 Word 文件。扫描件图片版暂不支持 OCR。
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -176,7 +182,7 @@ export function PdfConverter() {
               {file ? file.name : "上传 PDF 文件"}
             </span>
             <span className="mt-2 text-sm text-muted-foreground">
-              {file ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : "PDF"}
+              {file ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : "最大 15MB"}
             </span>
             <input
               type="file"
@@ -193,25 +199,26 @@ export function PdfConverter() {
               state === "error" && "border-red-200 bg-red-50 text-red-700",
             )}
           >
-            {state === "done" ? (
+            {state === "converting" ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            ) : state === "done" ? (
               <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
             ) : (
               <FileText className="h-4 w-4" aria-hidden="true" />
             )}
-            <span>{engineState === "checking" ? "正在检查转换引擎状态..." : message}</span>
+            <span>
+              {serviceState === "checking" ? "正在检查转换服务状态..." : message}
+            </span>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button type="submit" disabled={!canConvert}>
               {state === "converting" ? "转换中" : "开始转换"}
             </Button>
-            {downloadUrl ? (
-              <Button asChild variant="outline">
-                <a href={downloadUrl}>
-                  <Download aria-hidden="true" />
-                  下载 Word
-                  {downloadName ? <span className="sr-only">：{downloadName}</span> : null}
-                </a>
+            {downloadName ? (
+              <Button type="button" variant="outline" disabled>
+                <Download aria-hidden="true" />
+                已下载 Word
               </Button>
             ) : null}
           </div>

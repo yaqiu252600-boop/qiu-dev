@@ -21,12 +21,12 @@ export const projects: Project[] = [
   {
     slug: "pdf-to-word",
     title: "PDF 转 Word",
-    description: "上传 PDF 后生成可下载的 Word 文件，线上需配置独立转换服务。",
+    description: "上传文本型 PDF 后在线生成可下载的 Word 文件，适合合同、报告、说明书等带文字层的 PDF。",
     longDescription:
-      "这是 qiu.dev 的第一个可用工具项目。本地环境已接入 PDF 转 Word 转换引擎，支持上传 PDF、生成可编辑 Word 文件并下载。部署到 Vercel 时不能直接运行本地 Windows EXE，需要接入独立转换服务。",
+      "这是 qiu.dev 的在线 PDF 转 Word 工具。当前版本在服务器端提取 PDF 文本并生成可编辑 Word 文件，不再依赖本地 Windows 转换程序；扫描件图片版暂不支持 OCR。",
     status: "live",
     type: "工具",
-    tags: ["Next.js", "TypeScript", "Route Handler"],
+    tags: ["Next.js", "PDF", "Word"],
     demoUrl: "/tools/pdf-to-word",
     githubUrl: "https://github.com/",
     featured: true,
@@ -34,8 +34,8 @@ export const projects: Project[] = [
     progress: 100,
     updatedAt: "2026-06-29",
     eta: "已上线",
-    completed: ["完成上传与转换流程", "完成 Word 文件下载", "接入工具入口页面"],
-    nextSteps: ["接入线上独立转换服务", "优化复杂版式还原"],
+    completed: ["完成上传与转换流程", "完成 Word 文件下载", "改为线上可运行的转换方式"],
+    nextSteps: ["补充扫描件 OCR", "优化复杂版式还原"],
   },
   {
     slug: "video-tools",

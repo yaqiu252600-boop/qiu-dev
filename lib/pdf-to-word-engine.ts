@@ -1,129 +1,169 @@
-import { execFile } from "child_process"
-import { randomUUID } from "crypto"
-import fs from "fs/promises"
-import path from "path"
-import { promisify } from "util"
+import {
+  Document,
+  HeadingLevel,
+  Packer,
+  Paragraph,
+  TextRun,
+} from "docx"
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs"
+import { pathToFileURL } from "url"
 
-const execFileAsync = promisify(execFile)
-
-const jobRoot = path.join(process.cwd(), "work", "pdf-to-word", "jobs")
+type TextItem = {
+  str: string
+  hasEOL?: boolean
+}
 
 export type ConversionResult = {
-  jobId: string
   fileName: string
-  outputPath: string
-  enginePath: string
+  buffer: Buffer
+  pageCount: number
+  textItemCount: number
 }
 
-function safeBaseName(name: string) {
-  return name
-    .replace(/\.pdf$/i, "")
-    .replace(/[^\u4e00-\u9fa5a-zA-Z0-9_-]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60) || "converted"
-}
+const MAX_FILE_SIZE = 15 * 1024 * 1024
+const runtimeRequire = eval("require") as NodeRequire
 
-function getEngineCandidates() {
-  const userProfile = process.env.USERPROFILE ?? ""
-  const configuredPath = process.env.PDF_TO_WORD_ENGINE_PATH
+pdfjsLib.GlobalWorkerOptions.workerSrc = pathToFileURL(
+  runtimeRequire.resolve("pdfjs-dist/legacy/build/pdf.worker.mjs"),
+).toString()
 
-  return [
-    configuredPath,
-    path.join(
-      userProfile,
-      "Documents",
-      "Codex",
-      "2026-06-24",
-      "ba",
-      "outputs",
-      "PDF转Word助手.exe",
-    ),
-    path.join(
-      userProfile,
-      "Documents",
-      "Codex",
-      "2026-06-24",
-      "ba",
-      "work",
-      "dist_final",
-      "PDFToWordAssistant.exe",
-    ),
-  ].filter((candidate): candidate is string => Boolean(candidate))
-}
-
-async function fileExists(filePath: string) {
-  try {
-    const stat = await fs.stat(filePath)
-    return stat.isFile()
-  } catch {
-    return false
+export function getPdfToWordStatus() {
+  return {
+    available: true,
+    mode: "server-text",
+    message: "在线转换服务已可用。当前支持文本型 PDF 转为可编辑 Word；扫描件暂不做 OCR。",
   }
 }
 
-export async function findPdfToWordEngine() {
-  for (const candidate of getEngineCandidates()) {
-    if (await fileExists(candidate)) {
-      return candidate
+export function validatePdfFile(file: File) {
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error("PDF 文件太大，请上传 15MB 以内的文件。")
+  }
+}
+
+export function makeDocxFileName(name: string) {
+  const baseName =
+    name
+      .replace(/\.pdf$/i, "")
+      .replace(/[^\u4e00-\u9fa5a-zA-Z0-9_-]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60) || "converted"
+
+  return `${baseName}.docx`
+}
+
+function normalizeText(text: string) {
+  return text.replace(/\s+/g, " ").trim()
+}
+
+async function extractTextByPage(file: File) {
+  const data = new Uint8Array(await file.arrayBuffer())
+  const loadingTask = pdfjsLib.getDocument({
+    data,
+    disableFontFace: true,
+    isEvalSupported: false,
+    useWorkerFetch: false,
+  })
+  const pdf = await loadingTask.promise
+  const pages: string[][] = []
+  let textItemCount = 0
+
+  for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+    const page = await pdf.getPage(pageNumber)
+    const content = await page.getTextContent()
+    const paragraphs: string[] = []
+    let line = ""
+
+    for (const item of content.items as TextItem[]) {
+      const text = normalizeText(item.str)
+
+      if (text) {
+        line = line ? `${line} ${text}` : text
+        textItemCount += 1
+      }
+
+      if (item.hasEOL && line) {
+        paragraphs.push(line)
+        line = ""
+      }
     }
-  }
 
-  return null
-}
+    if (line) {
+      paragraphs.push(line)
+    }
 
-export async function convertPdfToWord(file: File): Promise<ConversionResult> {
-  const enginePath = await findPdfToWordEngine()
-
-  if (!enginePath) {
-    throw new Error(
-      "未找到 PDF 转 Word 转换引擎。请设置 PDF_TO_WORD_ENGINE_PATH，或保留旧工具输出目录中的 PDF转Word助手.exe。",
-    )
-  }
-
-  const jobId = randomUUID()
-  const baseName = safeBaseName(file.name)
-  const fileName = `${baseName}.docx`
-  const jobDir = path.join(jobRoot, jobId)
-  const inputPath = path.join(jobDir, "input.pdf")
-  const outputPath = path.join(jobDir, fileName)
-
-  await fs.mkdir(jobDir, { recursive: true })
-  await fs.writeFile(inputPath, Buffer.from(await file.arrayBuffer()))
-
-  try {
-    await execFileAsync(enginePath, ["--headless-convert", inputPath, "--output", outputPath], {
-      timeout: 10 * 60 * 1000,
-      windowsHide: true,
-      maxBuffer: 10 * 1024 * 1024,
-    })
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "转换失败"
-    throw new Error(`转换引擎执行失败：${message}`)
-  }
-
-  const stat = await fs.stat(outputPath).catch(() => null)
-
-  if (!stat || stat.size < 1024) {
-    throw new Error("转换引擎没有生成有效的 Word 文件")
+    pages.push(paragraphs.length ? paragraphs : [""])
   }
 
   return {
-    jobId,
-    fileName,
-    outputPath,
-    enginePath,
+    pageCount: pdf.numPages,
+    pages,
+    textItemCount,
   }
 }
 
-export function getConvertedFilePath(jobId: string, fileName: string) {
-  if (!/^[a-f0-9-]{36}$/i.test(jobId)) {
-    return null
+function buildParagraphs(pages: string[][]) {
+  return pages.flatMap((paragraphs, index) => {
+    const section = [
+      new Paragraph({
+        text: `第 ${index + 1} 页`,
+        heading: HeadingLevel.HEADING_2,
+        spacing: { before: index === 0 ? 0 : 320, after: 160 },
+      }),
+    ]
+
+    for (const paragraph of paragraphs) {
+      section.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: paragraph || " ",
+              size: 22,
+            }),
+          ],
+          spacing: { after: 120 },
+        }),
+      )
+    }
+
+    return section
+  })
+}
+
+export async function convertPdfToWord(file: File): Promise<ConversionResult> {
+  validatePdfFile(file)
+
+  const extracted = await extractTextByPage(file)
+
+  if (extracted.textItemCount === 0) {
+    throw new Error(
+      "没有从 PDF 中提取到可编辑文本。这个文件可能是扫描件图片版，当前线上版暂不支持 OCR。",
+    )
   }
 
-  const safeName = fileName.replace(/[/\\]/g, "")
+  const document = new Document({
+    creator: "qiu.dev PDF 转 Word",
+    title: `${file.name} 可编辑版`,
+    description: "由 qiu.dev 在线 PDF 转 Word 工具生成",
+    sections: [
+      {
+        properties: {},
+        children: [
+          new Paragraph({
+            text: file.name.replace(/\.pdf$/i, ""),
+            heading: HeadingLevel.TITLE,
+            spacing: { after: 240 },
+          }),
+          ...buildParagraphs(extracted.pages),
+        ],
+      },
+    ],
+  })
 
-  if (!safeName.endsWith(".docx")) {
-    return null
+  return {
+    fileName: makeDocxFileName(file.name),
+    buffer: await Packer.toBuffer(document),
+    pageCount: extracted.pageCount,
+    textItemCount: extracted.textItemCount,
   }
-
-  return path.join(jobRoot, jobId, safeName)
 }

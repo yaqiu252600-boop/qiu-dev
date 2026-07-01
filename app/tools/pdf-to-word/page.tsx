@@ -9,10 +9,10 @@ export default function PdfToWordPage() {
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <SectionHeading
             title="PDF 转 Word"
-            description="调用本地或自托管转换引擎，把 PDF 转成可编辑的 Word 文档。线上环境需要先配置转换服务。"
+            description="上传文本型 PDF，在线生成可下载的可编辑 Word 文件。当前版本不依赖本机转换程序，部署后可直接在网页使用。"
           />
           <Badge variant="outline" className="bg-white">
-            自托管转换模块
+            在线转换
           </Badge>
         </div>
         <PdfConverter />
