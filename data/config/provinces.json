@@ -1,0 +1,572 @@
+[
+  {
+    "province": "北京",
+    "province_slug": "beijing",
+    "exam_authority_name": "北京教育考试院",
+    "official_site": "https://www.bjeea.cn/",
+    "gaokao_channel_url": "https://www.bjeea.cn/html/gkgz/",
+    "search_keywords": [
+      "北京 2026 一分一段表",
+      "北京 2026 普通高考 一分一段",
+      "北京 2025 普通类 本科批 投档线",
+      "北京 2024 普通类 本科批 投档线",
+      "北京 2023 普通类 本科批 投档线",
+      "北京 2026 普通高校招生计划",
+      "北京 2026 志愿填报 时间"
+    ],
+    "priority_batch": 2,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "天津",
+    "province_slug": "tianjin",
+    "exam_authority_name": "天津市教育招生考试院 / 招考资讯网",
+    "official_site": "https://www.zhaokao.net/",
+    "gaokao_channel_url": "https://www.zhaokao.net/gaokao",
+    "search_keywords": [
+      "天津 2026 一分一段表",
+      "天津 2026 普通高考 一分一段",
+      "天津 2025 普通类 本科批 投档线",
+      "天津 2024 普通类 本科批 投档线",
+      "天津 2023 普通类 本科批 投档线",
+      "天津 2026 普通高校招生计划",
+      "天津 2026 志愿填报 时间"
+    ],
+    "priority_batch": 2,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "河北",
+    "province_slug": "hebei",
+    "exam_authority_name": "河北省教育考试院",
+    "official_site": "https://www.hebeea.edu.cn/",
+    "gaokao_channel_url": "https://www.hebeea.edu.cn/html/ptgk/",
+    "search_keywords": [
+      "河北 2026 一分一段表",
+      "河北 2026 普通高考 一分一段",
+      "河北 2025 普通类 本科批 投档线",
+      "河北 2024 普通类 本科批 投档线",
+      "河北 2023 普通类 本科批 投档线",
+      "河北 2026 普通高校招生计划",
+      "河北 2026 志愿填报 时间"
+    ],
+    "priority_batch": 1,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "山西",
+    "province_slug": "shanxi",
+    "exam_authority_name": "山西省招生考试管理中心",
+    "official_site": "https://www.sxkszx.cn/",
+    "gaokao_channel_url": "https://www.sxkszx.cn/news/ptgk/index.html",
+    "search_keywords": [
+      "山西 2026 一分一段表",
+      "山西 2026 普通高考 一分一段",
+      "山西 2025 普通类 本科批 投档线",
+      "山西 2024 普通类 本科批 投档线",
+      "山西 2023 普通类 本科批 投档线",
+      "山西 2026 普通高校招生计划",
+      "山西 2026 志愿填报 时间"
+    ],
+    "priority_batch": 3,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "内蒙古",
+    "province_slug": "inner-mongolia",
+    "exam_authority_name": "内蒙古自治区教育招生考试中心",
+    "official_site": "https://www.nm.zsks.cn/",
+    "gaokao_channel_url": "https://www.nm.zsks.cn/kszs/ptgk/",
+    "search_keywords": [
+      "内蒙古 2026 一分一段表",
+      "内蒙古 2026 普通高考 一分一段",
+      "内蒙古 2025 普通类 本科批 投档线",
+      "内蒙古 2024 普通类 本科批 投档线",
+      "内蒙古 2023 普通类 本科批 投档线",
+      "内蒙古 2026 普通高校招生计划",
+      "内蒙古 2026 志愿填报 时间"
+    ],
+    "priority_batch": 3,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "辽宁",
+    "province_slug": "liaoning",
+    "exam_authority_name": "辽宁招生考试之窗",
+    "official_site": "https://www.lnzsks.com/",
+    "gaokao_channel_url": "https://www.lnzsks.com/ptgk.html",
+    "search_keywords": [
+      "辽宁 2026 一分一段表",
+      "辽宁 2026 普通高考 一分一段",
+      "辽宁 2025 普通类 本科批 投档线",
+      "辽宁 2024 普通类 本科批 投档线",
+      "辽宁 2023 普通类 本科批 投档线",
+      "辽宁 2026 普通高校招生计划",
+      "辽宁 2026 志愿填报 时间"
+    ],
+    "priority_batch": 2,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "吉林",
+    "province_slug": "jilin",
+    "exam_authority_name": "吉林省教育考试院",
+    "official_site": "http://www.jleea.edu.cn/",
+    "gaokao_channel_url": "http://www.jleea.edu.cn/ptgxzs/",
+    "search_keywords": [
+      "吉林 2026 一分一段表",
+      "吉林 2026 普通高考 一分一段",
+      "吉林 2025 普通类 本科批 投档线",
+      "吉林 2024 普通类 本科批 投档线",
+      "吉林 2023 普通类 本科批 投档线",
+      "吉林 2026 普通高校招生计划",
+      "吉林 2026 志愿填报 时间"
+    ],
+    "priority_batch": 3,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "黑龙江",
+    "province_slug": "heilongjiang",
+    "exam_authority_name": "黑龙江省招生考试信息港",
+    "official_site": "https://www.lzk.hl.cn/",
+    "gaokao_channel_url": "https://www.lzk.hl.cn/gkpd/",
+    "search_keywords": [
+      "黑龙江 2026 一分一段表",
+      "黑龙江 2026 普通高考 一分一段",
+      "黑龙江 2025 普通类 本科批 投档线",
+      "黑龙江 2024 普通类 本科批 投档线",
+      "黑龙江 2023 普通类 本科批 投档线",
+      "黑龙江 2026 普通高校招生计划",
+      "黑龙江 2026 志愿填报 时间"
+    ],
+    "priority_batch": 3,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "上海",
+    "province_slug": "shanghai",
+    "exam_authority_name": "上海市教育考试院 / 上海招考热线",
+    "official_site": "https://www.shmeea.edu.cn/",
+    "gaokao_channel_url": "https://www.shmeea.edu.cn/page/08000/index.html",
+    "search_keywords": [
+      "上海 2026 一分一段表",
+      "上海 2026 普通高考 一分一段",
+      "上海 2025 普通类 本科批 投档线",
+      "上海 2024 普通类 本科批 投档线",
+      "上海 2023 普通类 本科批 投档线",
+      "上海 2026 普通高校招生计划",
+      "上海 2026 志愿填报 时间"
+    ],
+    "priority_batch": 2,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "浙江",
+    "province_slug": "zhejiang",
+    "exam_authority_name": "浙江省教育考试院",
+    "official_site": "https://www.zjzs.net/",
+    "gaokao_channel_url": "https://www.zjzs.net/",
+    "search_keywords": [
+      "浙江 2026 一分一段表",
+      "浙江 2026 普通高考 一分一段",
+      "浙江 2025 普通类 本科批 投档线",
+      "浙江 2024 普通类 本科批 投档线",
+      "浙江 2023 普通类 本科批 投档线",
+      "浙江 2026 普通高校招生计划",
+      "浙江 2026 志愿填报 时间"
+    ],
+    "priority_batch": 1,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "安徽",
+    "province_slug": "anhui",
+    "exam_authority_name": "安徽省教育招生考试院",
+    "official_site": "https://www.ahzsks.cn/",
+    "gaokao_channel_url": "https://www.ahzsks.cn/ptgxzs/",
+    "search_keywords": [
+      "安徽 2026 一分一段表",
+      "安徽 2026 普通高考 一分一段",
+      "安徽 2025 普通类 本科批 投档线",
+      "安徽 2024 普通类 本科批 投档线",
+      "安徽 2023 普通类 本科批 投档线",
+      "安徽 2026 普通高校招生计划",
+      "安徽 2026 志愿填报 时间"
+    ],
+    "priority_batch": 1,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "福建",
+    "province_slug": "fujian",
+    "exam_authority_name": "福建省教育考试院",
+    "official_site": "https://www.eeafj.cn/",
+    "gaokao_channel_url": "https://www.eeafj.cn/gkgsgg/",
+    "search_keywords": [
+      "福建 2026 一分一段表",
+      "福建 2026 普通高考 一分一段",
+      "福建 2025 普通类 本科批 投档线",
+      "福建 2024 普通类 本科批 投档线",
+      "福建 2023 普通类 本科批 投档线",
+      "福建 2026 普通高校招生计划",
+      "福建 2026 志愿填报 时间"
+    ],
+    "priority_batch": 2,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "江西",
+    "province_slug": "jiangxi",
+    "exam_authority_name": "江西省教育考试院",
+    "official_site": "http://www.jxeea.cn/",
+    "gaokao_channel_url": "http://www.jxeea.cn/col/col26671/index.html",
+    "search_keywords": [
+      "江西 2026 一分一段表",
+      "江西 2026 普通高考 一分一段",
+      "江西 2025 普通类 本科批 投档线",
+      "江西 2024 普通类 本科批 投档线",
+      "江西 2023 普通类 本科批 投档线",
+      "江西 2026 普通高校招生计划",
+      "江西 2026 志愿填报 时间"
+    ],
+    "priority_batch": 2,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "山东",
+    "province_slug": "shandong",
+    "exam_authority_name": "山东省教育招生考试院",
+    "official_site": "https://www.sdzk.cn/",
+    "gaokao_channel_url": "https://www.sdzk.cn/NewsList.aspx?BCID=4",
+    "search_keywords": [
+      "山东 2026 一分一段表",
+      "山东 2026 普通高考 一分一段",
+      "山东 2025 普通类 本科批 投档线",
+      "山东 2024 普通类 本科批 投档线",
+      "山东 2023 普通类 本科批 投档线",
+      "山东 2026 普通高校招生计划",
+      "山东 2026 志愿填报 时间"
+    ],
+    "priority_batch": 1,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "河南",
+    "province_slug": "henan",
+    "exam_authority_name": "河南省教育考试院",
+    "official_site": "https://www.haeea.cn/",
+    "gaokao_channel_url": "https://www.haeea.cn/",
+    "search_keywords": [
+      "河南 2026 一分一段表",
+      "河南 2026 普通高考 一分一段",
+      "河南 2025 普通类 本科批 投档线",
+      "河南 2024 普通类 本科批 投档线",
+      "河南 2023 普通类 本科批 投档线",
+      "河南 2026 普通高校招生计划",
+      "河南 2026 志愿填报 时间"
+    ],
+    "priority_batch": 1,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "湖北",
+    "province_slug": "hubei",
+    "exam_authority_name": "湖北省教育考试院",
+    "official_site": "http://www.hbea.edu.cn/",
+    "gaokao_channel_url": "http://www.hbea.edu.cn/html/ptgk/",
+    "search_keywords": [
+      "湖北 2026 一分一段表",
+      "湖北 2026 普通高考 一分一段",
+      "湖北 2025 普通类 本科批 投档线",
+      "湖北 2024 普通类 本科批 投档线",
+      "湖北 2023 普通类 本科批 投档线",
+      "湖北 2026 普通高校招生计划",
+      "湖北 2026 志愿填报 时间"
+    ],
+    "priority_batch": 1,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "湖南",
+    "province_slug": "hunan",
+    "exam_authority_name": "湖南省教育考试院 / 湖南招生考试信息港",
+    "official_site": "https://www.hneeb.cn/",
+    "gaokao_channel_url": "https://www.hneeb.cn/hnxxg/741/index.htm",
+    "search_keywords": [
+      "湖南 2026 一分一段表",
+      "湖南 2026 普通高考 一分一段",
+      "湖南 2025 普通类 本科批 投档线",
+      "湖南 2024 普通类 本科批 投档线",
+      "湖南 2023 普通类 本科批 投档线",
+      "湖南 2026 普通高校招生计划",
+      "湖南 2026 志愿填报 时间"
+    ],
+    "priority_batch": 1,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "广东",
+    "province_slug": "guangdong",
+    "exam_authority_name": "广东省教育考试院",
+    "official_site": "https://eea.gd.gov.cn/",
+    "gaokao_channel_url": "https://eea.gd.gov.cn/ptgk/",
+    "search_keywords": [
+      "广东 2026 一分一段表",
+      "广东 2026 普通高考 一分一段",
+      "广东 2025 普通类 本科批 投档线",
+      "广东 2024 普通类 本科批 投档线",
+      "广东 2023 普通类 本科批 投档线",
+      "广东 2026 普通高校招生计划",
+      "广东 2026 志愿填报 时间"
+    ],
+    "priority_batch": 1,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "广西",
+    "province_slug": "guangxi",
+    "exam_authority_name": "广西壮族自治区招生考试院",
+    "official_site": "https://www.gxeea.cn/",
+    "gaokao_channel_url": "https://www.gxeea.cn/ptgk/",
+    "search_keywords": [
+      "广西 2026 一分一段表",
+      "广西 2026 普通高考 一分一段",
+      "广西 2025 普通类 本科批 投档线",
+      "广西 2024 普通类 本科批 投档线",
+      "广西 2023 普通类 本科批 投档线",
+      "广西 2026 普通高校招生计划",
+      "广西 2026 志愿填报 时间"
+    ],
+    "priority_batch": 2,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "海南",
+    "province_slug": "hainan",
+    "exam_authority_name": "海南省考试局",
+    "official_site": "http://ea.hainan.gov.cn/",
+    "gaokao_channel_url": "http://ea.hainan.gov.cn/ywdt/ptgkyjszsb/",
+    "search_keywords": [
+      "海南 2026 一分一段表",
+      "海南 2026 普通高考 一分一段",
+      "海南 2025 普通类 本科批 投档线",
+      "海南 2024 普通类 本科批 投档线",
+      "海南 2023 普通类 本科批 投档线",
+      "海南 2026 普通高校招生计划",
+      "海南 2026 志愿填报 时间"
+    ],
+    "priority_batch": 3,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "重庆",
+    "province_slug": "chongqing",
+    "exam_authority_name": "重庆市教育考试院",
+    "official_site": "https://www.cqksy.cn/",
+    "gaokao_channel_url": "https://www.cqksy.cn/site/ShowClassArticleList.jsp?ClassID=287",
+    "search_keywords": [
+      "重庆 2026 一分一段表",
+      "重庆 2026 普通高考 一分一段",
+      "重庆 2025 普通类 本科批 投档线",
+      "重庆 2024 普通类 本科批 投档线",
+      "重庆 2023 普通类 本科批 投档线",
+      "重庆 2026 普通高校招生计划",
+      "重庆 2026 志愿填报 时间"
+    ],
+    "priority_batch": 2,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "四川",
+    "province_slug": "sichuan",
+    "exam_authority_name": "四川省教育考试院",
+    "official_site": "https://www.sceea.cn/",
+    "gaokao_channel_url": "https://www.sceea.cn/List/NewsList_30.html",
+    "search_keywords": [
+      "四川 2026 一分一段表",
+      "四川 2026 普通高考 一分一段",
+      "四川 2025 普通类 本科批 投档线",
+      "四川 2024 普通类 本科批 投档线",
+      "四川 2023 普通类 本科批 投档线",
+      "四川 2026 普通高校招生计划",
+      "四川 2026 志愿填报 时间"
+    ],
+    "priority_batch": 1,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "贵州",
+    "province_slug": "guizhou",
+    "exam_authority_name": "贵州省招生考试院",
+    "official_site": "http://zsksy.guizhou.gov.cn/",
+    "gaokao_channel_url": "http://zsksy.guizhou.gov.cn/ptgk/",
+    "search_keywords": [
+      "贵州 2026 一分一段表",
+      "贵州 2026 普通高考 一分一段",
+      "贵州 2025 普通类 本科批 投档线",
+      "贵州 2024 普通类 本科批 投档线",
+      "贵州 2023 普通类 本科批 投档线",
+      "贵州 2026 普通高校招生计划",
+      "贵州 2026 志愿填报 时间"
+    ],
+    "priority_batch": 3,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "云南",
+    "province_slug": "yunnan",
+    "exam_authority_name": "云南省招生考试院",
+    "official_site": "https://www.ynzs.cn/",
+    "gaokao_channel_url": "https://www.ynzs.cn/html/web/gaokao/",
+    "search_keywords": [
+      "云南 2026 一分一段表",
+      "云南 2026 普通高考 一分一段",
+      "云南 2025 普通类 本科批 投档线",
+      "云南 2024 普通类 本科批 投档线",
+      "云南 2023 普通类 本科批 投档线",
+      "云南 2026 普通高校招生计划",
+      "云南 2026 志愿填报 时间"
+    ],
+    "priority_batch": 2,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "西藏",
+    "province_slug": "tibet",
+    "exam_authority_name": "西藏自治区教育考试院",
+    "official_site": "http://zsks.edu.xizang.gov.cn/",
+    "gaokao_channel_url": "http://zsks.edu.xizang.gov.cn/ptgk/",
+    "search_keywords": [
+      "西藏 2026 一分一段表",
+      "西藏 2026 普通高考 一分一段",
+      "西藏 2025 普通类 本科批 投档线",
+      "西藏 2024 普通类 本科批 投档线",
+      "西藏 2023 普通类 本科批 投档线",
+      "西藏 2026 普通高校招生计划",
+      "西藏 2026 志愿填报 时间"
+    ],
+    "priority_batch": 3,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "陕西",
+    "province_slug": "shaanxi",
+    "exam_authority_name": "陕西省教育考试院",
+    "official_site": "https://www.sneea.cn/",
+    "gaokao_channel_url": "https://www.sneea.cn/ptgk.htm",
+    "search_keywords": [
+      "陕西 2026 一分一段表",
+      "陕西 2026 普通高考 一分一段",
+      "陕西 2025 普通类 本科批 投档线",
+      "陕西 2024 普通类 本科批 投档线",
+      "陕西 2023 普通类 本科批 投档线",
+      "陕西 2026 普通高校招生计划",
+      "陕西 2026 志愿填报 时间"
+    ],
+    "priority_batch": 2,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "甘肃",
+    "province_slug": "gansu",
+    "exam_authority_name": "甘肃省教育考试院",
+    "official_site": "https://www.ganseea.cn/",
+    "gaokao_channel_url": "https://www.ganseea.cn/html/ptgk/",
+    "search_keywords": [
+      "甘肃 2026 一分一段表",
+      "甘肃 2026 普通高考 一分一段",
+      "甘肃 2025 普通类 本科批 投档线",
+      "甘肃 2024 普通类 本科批 投档线",
+      "甘肃 2023 普通类 本科批 投档线",
+      "甘肃 2026 普通高校招生计划",
+      "甘肃 2026 志愿填报 时间"
+    ],
+    "priority_batch": 3,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "青海",
+    "province_slug": "qinghai",
+    "exam_authority_name": "青海省教育考试网",
+    "official_site": "http://www.qhjyks.com/",
+    "gaokao_channel_url": "http://www.qhjyks.com/zyym/ptgk.htm",
+    "search_keywords": [
+      "青海 2026 一分一段表",
+      "青海 2026 普通高考 一分一段",
+      "青海 2025 普通类 本科批 投档线",
+      "青海 2024 普通类 本科批 投档线",
+      "青海 2023 普通类 本科批 投档线",
+      "青海 2026 普通高校招生计划",
+      "青海 2026 志愿填报 时间"
+    ],
+    "priority_batch": 3,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "宁夏",
+    "province_slug": "ningxia",
+    "exam_authority_name": "宁夏教育考试院",
+    "official_site": "https://www.nxjyks.cn/",
+    "gaokao_channel_url": "https://www.nxjyks.cn/contents/PTGK/",
+    "search_keywords": [
+      "宁夏 2026 一分一段表",
+      "宁夏 2026 普通高考 一分一段",
+      "宁夏 2025 普通类 本科批 投档线",
+      "宁夏 2024 普通类 本科批 投档线",
+      "宁夏 2023 普通类 本科批 投档线",
+      "宁夏 2026 普通高校招生计划",
+      "宁夏 2026 志愿填报 时间"
+    ],
+    "priority_batch": 3,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  },
+  {
+    "province": "新疆",
+    "province_slug": "xinjiang",
+    "exam_authority_name": "新疆招生网",
+    "official_site": "https://www.xjzk.gov.cn/",
+    "gaokao_channel_url": "https://www.xjzk.gov.cn/gnq/ptgk/",
+    "search_keywords": [
+      "新疆 2026 一分一段表",
+      "新疆 2026 普通高考 一分一段",
+      "新疆 2025 普通类 本科批 投档线",
+      "新疆 2024 普通类 本科批 投档线",
+      "新疆 2023 普通类 本科批 投档线",
+      "新疆 2026 普通高校招生计划",
+      "新疆 2026 志愿填报 时间"
+    ],
+    "priority_batch": 3,
+    "status": "todo",
+    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+  }
+]
