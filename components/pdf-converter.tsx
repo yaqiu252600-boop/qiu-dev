@@ -4,12 +4,10 @@ import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react"
 import { AlertCircle, CheckCircle2, Download, FileText, Loader2, UploadCloud } from "lucide-react"
 import {
   Document,
-  HeadingLevel,
   ImageRun,
   Packer,
   PageBreak,
   Paragraph,
-  TextRun,
 } from "docx"
 
 import { Badge } from "@/components/ui/badge"
@@ -20,9 +18,8 @@ import { cn } from "@/lib/utils"
 const MAX_FILE_SIZE_MB = 10
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 const MAX_OCR_PAGES = 10
-const OCR_LANGUAGES = "eng+chi_sim"
-const OCR_RENDER_SCALE = 2
-const OCR_IMAGE_QUALITY = 0.92
+const RENDER_SCALE = 2.4
+const IMAGE_QUALITY = 0.96
 
 type ConvertState =
   | "idle"
@@ -45,22 +42,16 @@ type ProgressInfo = {
 type StatusPayload = {
   available?: boolean
   mode?: string
-  supportsTextPdf?: boolean
   supportsOcr?: boolean
-  ocrMode?: string
-  ocrLanguages?: string[]
   maxOcrPages?: number
   maxFileSizeMb?: number
-  message?: string
 }
 
-type OcrPageResult = {
+type RenderedPage = {
   pageNumber: number
-  text: string
   image: Uint8Array
   width: number
   height: number
-  failed?: boolean
 }
 
 const stateLabel: Record<ConvertState, string> = {
@@ -68,8 +59,8 @@ const stateLabel: Record<ConvertState, string> = {
   ready: "开始转换",
   checking: "正在检查文件...",
   "extracting-text": "正在提取 PDF 文字...",
-  "detecting-ocr": "正在检测是否需要 OCR...",
-  ocr: "正在 OCR 识别扫描件文字...",
+  "detecting-ocr": "正在检测扫描件...",
+  ocr: "正在优化扫描件版式...",
   "generating-word": "正在生成 Word 文件...",
   done: "下载 Word 文件",
   error: "重新选择文件",
@@ -140,28 +131,6 @@ function isNoTextError(message: string) {
   )
 }
 
-function splitTextIntoParagraphs(text: string) {
-  const normalized = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim()
-  if (!normalized) return ["本页未识别到文字。"]
-
-  return normalized
-    .split(/\n{2,}/)
-    .map((block) => block.trim())
-    .filter(Boolean)
-}
-
-function buildTextParagraph(block: string) {
-  const lines = block.split("\n")
-
-  return new Paragraph({
-    spacing: { after: 160 },
-    children: lines.flatMap((line, index) => {
-      const run = new TextRun({ text: line })
-      return index === 0 ? [run] : [new TextRun({ break: 1 }), run]
-    }),
-  })
-}
-
 function dataUrlToUint8Array(dataUrl: string) {
   const base64 = dataUrl.split(",")[1] || ""
   const binary = atob(base64)
@@ -174,11 +143,67 @@ function dataUrlToUint8Array(dataUrl: string) {
   return bytes
 }
 
+function cropCanvasWhitespace(source: HTMLCanvasElement) {
+  const context = source.getContext("2d", { willReadFrequently: true })
+  if (!context) return source
+
+  const { width, height } = source
+  const image = context.getImageData(0, 0, width, height)
+  const data = image.data
+  let left = width
+  let top = height
+  let right = -1
+  let bottom = -1
+
+  for (let y = 0; y < height; y += 2) {
+    for (let x = 0; x < width; x += 2) {
+      const index = (y * width + x) * 4
+      const r = data[index]
+      const g = data[index + 1]
+      const b = data[index + 2]
+
+      if (r < 250 || g < 250 || b < 250) {
+        left = Math.min(left, x)
+        top = Math.min(top, y)
+        right = Math.max(right, x)
+        bottom = Math.max(bottom, y)
+      }
+    }
+  }
+
+  if (right < left || bottom < top) {
+    return source
+  }
+
+  const padding = Math.round(Math.min(width, height) * 0.025)
+  left = Math.max(0, left - padding)
+  top = Math.max(0, top - padding)
+  right = Math.min(width - 1, right + padding)
+  bottom = Math.min(height - 1, bottom + padding)
+
+  const cropWidth = right - left + 1
+  const cropHeight = bottom - top + 1
+  if (cropWidth < width * 0.08 || cropHeight < height * 0.08) {
+    return source
+  }
+
+  const cropped = document.createElement("canvas")
+  cropped.width = cropWidth
+  cropped.height = cropHeight
+  const croppedContext = cropped.getContext("2d", { alpha: false })
+  if (!croppedContext) return source
+
+  croppedContext.fillStyle = "#ffffff"
+  croppedContext.fillRect(0, 0, cropWidth, cropHeight)
+  croppedContext.drawImage(source, left, top, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
+  return cropped
+}
+
 function getFittedImageSize(width: number, height: number) {
   const landscape = width > height
-  const maxWidth = landscape ? 920 : 650
-  const maxHeight = landscape ? 620 : 910
-  const scale = Math.min(maxWidth / width, maxHeight / height, 1)
+  const maxWidth = landscape ? 980 : 720
+  const maxHeight = landscape ? 680 : 960
+  const scale = Math.min(maxWidth / width, maxHeight / height)
 
   return {
     width: Math.round(width * scale),
@@ -186,44 +211,18 @@ function getFittedImageSize(width: number, height: number) {
   }
 }
 
-async function createOcrWord(fileName: string, pages: OcrPageResult[]) {
-  const visualChildren: Paragraph[] = [
-    new Paragraph({
-      text: "PDF OCR 转 Word 结果",
-      heading: HeadingLevel.TITLE,
-      spacing: { after: 200 },
-    }),
-    new Paragraph({
-      children: [new TextRun({ text: `文件名：${fileName}` })],
-      spacing: { after: 160 },
-    }),
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: "为避免扫描件、表格和复杂版式被拆散，正文按原 PDF 页面图片保留版面；OCR 识别文字放在文末附录，便于复制和校对。",
-        }),
-      ],
-      spacing: { after: 280 },
-    }),
-  ]
+async function createScannedWord(pages: RenderedPage[]) {
+  const children: Paragraph[] = []
 
   pages.forEach((page, index) => {
     if (index > 0) {
-      visualChildren.push(new Paragraph({ children: [new PageBreak()] }))
+      children.push(new Paragraph({ children: [new PageBreak()] }))
     }
 
-    visualChildren.push(
-      new Paragraph({
-        text: `第 ${page.pageNumber} 页`,
-        heading: HeadingLevel.HEADING_2,
-        spacing: { before: 120, after: 120 },
-      }),
-    )
-
     const fitted = getFittedImageSize(page.width, page.height)
-    visualChildren.push(
+    children.push(
       new Paragraph({
-        spacing: { after: 160 },
+        spacing: { before: 0, after: 0 },
         children: [
           new ImageRun({
             data: page.image,
@@ -235,53 +234,20 @@ async function createOcrWord(fileName: string, pages: OcrPageResult[]) {
     )
   })
 
-  const appendixChildren: Paragraph[] = [
-    new Paragraph({ children: [new PageBreak()] }),
-    new Paragraph({
-      text: "OCR 识别文字附录",
-      heading: HeadingLevel.HEADING_1,
-      spacing: { after: 240 },
-    }),
-  ]
-
-  pages.forEach((page) => {
-    appendixChildren.push(
-      new Paragraph({
-        text: `第 ${page.pageNumber} 页`,
-        heading: HeadingLevel.HEADING_2,
-        spacing: { before: 160, after: 120 },
-      }),
-    )
-
-    if (page.failed) {
-      appendixChildren.push(
-        new Paragraph({
-          children: [new TextRun({ text: "本页识别失败。", italics: true })],
-          spacing: { after: 160 },
-        }),
-      )
-      return
-    }
-
-    splitTextIntoParagraphs(page.text).forEach((block) => {
-      appendixChildren.push(buildTextParagraph(block))
-    })
-  })
-
   const document = new Document({
     sections: [
       {
         properties: {
           page: {
             margin: {
-              top: 720,
-              right: 720,
-              bottom: 720,
-              left: 720,
+              top: 360,
+              right: 360,
+              bottom: 360,
+              left: 360,
             },
           },
         },
-        children: [...visualChildren, ...appendixChildren],
+        children,
       },
     ],
   })
@@ -306,7 +272,7 @@ export function PdfConverter() {
   const [file, setFile] = useState<File | null>(null)
   const [state, setState] = useState<ConvertState>("idle")
   const [error, setError] = useState("")
-  const [message, setMessage] = useState("文本型 PDF 会优先走快速转换；扫描件会自动切换到浏览器 OCR。")
+  const [message, setMessage] = useState("文本型 PDF 会优先走快速转换；扫描件会自动切换到版式保留模式。")
   const [progress, setProgress] = useState<ProgressInfo>({ label: "等待上传", percent: 0 })
   const [downloadUrl, setDownloadUrl] = useState("")
   const [downloadName, setDownloadName] = useState("")
@@ -349,7 +315,7 @@ export function PdfConverter() {
     setDownloadName("")
     setError("")
     setProgress({ label: "等待上传", percent: 0 })
-    setMessage("文本型 PDF 会优先走快速转换；扫描件会自动切换到浏览器 OCR。")
+    setMessage("文本型 PDF 会优先走快速转换；扫描件会自动切换到版式保留模式。")
   }
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -370,7 +336,7 @@ export function PdfConverter() {
     }
 
     setState("ready")
-    setMessage("已选择 PDF。点击开始后会先尝试快速文字提取，必要时自动 OCR。")
+    setMessage("已选择 PDF。点击开始后会先尝试快速文字提取，必要时自动保留扫描件版式。")
   }
 
   async function runServerTextConversion(selectedFile: File) {
@@ -403,9 +369,9 @@ export function PdfConverter() {
     throw new Error(serverMessage)
   }
 
-  async function runBrowserOcr(selectedFile: File) {
+  async function runScannedPdfConversion(selectedFile: File) {
     setState("detecting-ocr")
-    setMessage("未检测到可编辑文字层，正在检测是否需要 OCR...")
+    setMessage("未检测到可编辑文字层，正在切换到扫描件版式保留模式...")
     setProgress({ label: "正在读取 PDF", percent: 12 })
 
     const pdfjs = await import("pdfjs-dist")
@@ -417,97 +383,61 @@ export function PdfConverter() {
     const pageCount = pdf.numPages
 
     if (pageCount > MAX_OCR_PAGES) {
-      throw new Error("当前免费 OCR 版最多支持 10 页 PDF。请拆分 PDF 后再上传，或等待后续高级版。")
+      throw new Error("当前免费扫描件版最多支持 10 页 PDF。请拆分 PDF 后再上传，或等待后续高级版。")
     }
 
     setState("ocr")
-    setMessage("正在 OCR 识别扫描件文字，并保留原 PDF 页面版式...")
+    setMessage("正在渲染并裁剪页面白边...")
 
-    const { createWorker } = await import("tesseract.js")
-    let currentPage = 1
-    const worker = await createWorker(OCR_LANGUAGES, 1, {
-      logger: (info: { status?: string; progress?: number }) => {
-        if (info.status === "recognizing text" && typeof info.progress === "number") {
-          const pageBase = 20 + ((currentPage - 1) / pageCount) * 65
-          const pageShare = (info.progress / pageCount) * 65
-          setProgress({
-            label: `正在识别第 ${currentPage} / ${pageCount} 页`,
-            percent: Math.min(88, Math.round(pageBase + pageShare)),
-          })
-        }
-      },
-    })
+    const pages: RenderedPage[] = []
 
-    const pages: OcrPageResult[] = []
+    for (let pageNumber = 1; pageNumber <= pageCount; pageNumber += 1) {
+      setProgress({
+        label: `正在处理第 ${pageNumber} / ${pageCount} 页`,
+        percent: Math.round(15 + ((pageNumber - 1) / pageCount) * 75),
+      })
 
-    try {
-      for (let pageNumber = 1; pageNumber <= pageCount; pageNumber += 1) {
-        currentPage = pageNumber
-        setProgress({
-          label: `正在渲染第 ${pageNumber} / ${pageCount} 页`,
-          percent: Math.round(15 + ((pageNumber - 1) / pageCount) * 65),
-        })
+      const page = await pdf.getPage(pageNumber)
+      const viewport = page.getViewport({ scale: RENDER_SCALE })
+      const canvas = document.createElement("canvas")
+      const context = canvas.getContext("2d", { alpha: false })
 
-        const page = await pdf.getPage(pageNumber)
-        const viewport = page.getViewport({ scale: OCR_RENDER_SCALE })
-        const canvas = document.createElement("canvas")
-        const context = canvas.getContext("2d", { alpha: false })
+      if (!context) continue
 
-        if (!context) {
-          continue
-        }
+      canvas.width = Math.ceil(viewport.width)
+      canvas.height = Math.ceil(viewport.height)
+      context.fillStyle = "#ffffff"
+      context.fillRect(0, 0, canvas.width, canvas.height)
 
-        canvas.width = Math.ceil(viewport.width)
-        canvas.height = Math.ceil(viewport.height)
-        context.fillStyle = "#ffffff"
-        context.fillRect(0, 0, canvas.width, canvas.height)
+      await page.render({ canvas, canvasContext: context, viewport }).promise
 
-        await page.render({ canvas, canvasContext: context, viewport }).promise
+      const cropped = cropCanvasWhitespace(canvas)
+      const image = dataUrlToUint8Array(cropped.toDataURL("image/jpeg", IMAGE_QUALITY))
+      pages.push({
+        pageNumber,
+        image,
+        width: cropped.width,
+        height: cropped.height,
+      })
 
-        const image = dataUrlToUint8Array(canvas.toDataURL("image/jpeg", OCR_IMAGE_QUALITY))
-
-        setProgress({
-          label: `正在识别第 ${pageNumber} / ${pageCount} 页`,
-          percent: Math.round(20 + ((pageNumber - 1) / pageCount) * 65),
-        })
-
-        try {
-          const result = await worker.recognize(canvas)
-          pages.push({
-            pageNumber,
-            text: result.data.text.trim(),
-            image,
-            width: canvas.width,
-            height: canvas.height,
-          })
-        } catch {
-          pages.push({
-            pageNumber,
-            text: "本页识别失败。",
-            image,
-            width: canvas.width,
-            height: canvas.height,
-            failed: true,
-          })
-        } finally {
-          canvas.width = 0
-          canvas.height = 0
-        }
+      canvas.width = 0
+      canvas.height = 0
+      if (cropped !== canvas) {
+        cropped.width = 0
+        cropped.height = 0
       }
-    } finally {
-      await worker.terminate()
     }
 
     if (pages.length === 0) {
-      throw new Error("OCR 未能渲染 PDF 页面，可能是加密 PDF 或浏览器无法读取该文件。")
+      throw new Error("未能渲染 PDF 页面，可能是加密 PDF 或浏览器无法读取该文件。")
     }
 
     setState("generating-word")
-    setMessage("OCR 完成，正在生成版式优先的 Word 文件...")
-    setProgress({ label: "正在生成 Word", percent: 92 })
+    setMessage("正在生成可查看的 Word 文件...")
+    setProgress({ label: "正在生成 Word", percent: 94 })
 
-    const blob = await createOcrWord(selectedFile.name, pages)
-    const outputName = getDocxName(selectedFile.name, "-ocr-visual")
+    const blob = await createScannedWord(pages)
+    const outputName = getDocxName(selectedFile.name, "-scan-layout")
     const url = downloadBlob(blob, outputName)
     setDownloadUrl(url)
     setDownloadName(outputName)
@@ -550,13 +480,13 @@ export function PdfConverter() {
       }
 
       try {
-        await runBrowserOcr(file)
+        await runScannedPdfConversion(file)
         setState("done")
-        setMessage("OCR 转换完成，Word 文件已生成。")
+        setMessage("扫描件转换完成，Word 文件已生成。")
         setProgress({ label: "已完成", percent: 100 })
-      } catch (ocrError) {
+      } catch (scanError) {
         setState("error")
-        setError(ocrError instanceof Error ? ocrError.message : "OCR 转换失败，请换一个 PDF 再试。")
+        setError(scanError instanceof Error ? scanError.message : "扫描件转换失败，请换一个 PDF 再试。")
         setProgress({ label: "转换失败", percent: 0 })
       }
     }
@@ -571,12 +501,12 @@ export function PdfConverter() {
       <CardHeader className="space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary">免费版</Badge>
-          <Badge variant="outline">文本 PDF + 扫描件 OCR</Badge>
+          <Badge variant="outline">文本 PDF + 扫描件版式保留</Badge>
         </div>
         <div className="space-y-2">
           <CardTitle className="text-2xl">PDF 转 Word</CardTitle>
           <CardDescription className="text-base">
-            文本型 PDF 会走服务端转换；扫描件 OCR 在浏览器端识别，并优先保留原 PDF 页面版式。
+            文本型 PDF 会走服务端转换；扫描件会在浏览器端渲染、裁掉白边并放大写入 Word，优先保证可查看。
           </CardDescription>
         </div>
       </CardHeader>
@@ -599,7 +529,7 @@ export function PdfConverter() {
             <UploadCloud className="mb-3 h-10 w-10 text-muted-foreground" aria-hidden="true" />
             <span className="text-base font-medium">选择 PDF 文件</span>
             <span className="mt-1 text-sm text-muted-foreground">
-              免费版：OCR 最多 {status?.maxOcrPages || MAX_OCR_PAGES} 页，最大{" "}
+              免费版：扫描件最多 {status?.maxOcrPages || MAX_OCR_PAGES} 页，最大{" "}
               {status?.maxFileSizeMb || MAX_FILE_SIZE_MB}MB
             </span>
           </label>
@@ -664,10 +594,10 @@ export function PdfConverter() {
             <h3 className="text-sm font-semibold">当前免费版支持</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>文本型 PDF 转 Word</li>
-              <li>扫描件 PDF OCR 转 Word</li>
-              <li>图片版 PDF OCR 转 Word</li>
-              <li>中文和英文识别</li>
-              <li>扫描件优先保留原 PDF 版式</li>
+              <li>扫描件 PDF 转 Word</li>
+              <li>图片版 PDF 转 Word</li>
+              <li>自动裁掉页面白边</li>
+              <li>扫描件优先保证版式可查看</li>
             </ul>
           </section>
 
@@ -675,10 +605,9 @@ export function PdfConverter() {
             <h3 className="text-sm font-semibold">免费版限制</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>文件最大 {status?.maxFileSizeMb || MAX_FILE_SIZE_MB}MB</li>
-              <li>OCR 最多 {status?.maxOcrPages || MAX_OCR_PAGES} 页</li>
-              <li>OCR 速度比普通 PDF 慢</li>
-              <li>模糊、歪斜、手写内容可能影响附录文字识别</li>
-              <li>扫描件正文保留页面图片，文末附 OCR 文本方便复制</li>
+              <li>扫描件最多 {status?.maxOcrPages || MAX_OCR_PAGES} 页</li>
+              <li>扫描件输出为页面图片，主要解决能看和不散版</li>
+              <li>需要真正可编辑表格时，仍需要桌面版那类后端引擎</li>
             </ul>
           </section>
         </div>
