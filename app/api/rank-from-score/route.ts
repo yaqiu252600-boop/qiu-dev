@@ -1,11 +1,25 @@
 import { NextResponse } from "next/server"
 
-import { rankFromScore } from "@/lib/trusted-gaokao"
+import {
+  getTrustedDataServiceStatus,
+  rankFromScore,
+} from "@/lib/trusted-gaokao"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
 export function GET(request: Request) {
+  const serviceStatus = getTrustedDataServiceStatus()
+  if (!serviceStatus.ok) {
+    return NextResponse.json(
+      {
+        error: serviceStatus.message,
+        message: serviceStatus.message,
+      },
+      { status: 503 },
+    )
+  }
+
   const url = new URL(request.url)
   const province = url.searchParams.get("province")
   const year = Number(url.searchParams.get("year"))

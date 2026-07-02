@@ -13,6 +13,7 @@ import {
 import {
   getProvinceDataOverview,
   getSourceManifest,
+  getTrustedDataServiceStatus,
 } from "@/lib/trusted-gaokao"
 
 export const metadata: Metadata = {
@@ -39,11 +40,34 @@ const provinceNotices: Record<string, string> = {
     "山东官方投档表包含最低位次和投档计划数，未包含最低分。本工具不会反推最低分，仅提供历史位次参考。",
 }
 
+export const dynamic = "force-dynamic"
+
 export default function DataSourcesPage({
   searchParams,
 }: {
   searchParams?: { province?: string }
 }) {
+  const serviceStatus = getTrustedDataServiceStatus()
+
+  if (!serviceStatus.ok) {
+    return (
+      <section className="page-section">
+        <div className="container">
+          <SectionHeading
+            title="数据来源"
+            description="按省份查看官方源发现、导入状态和不可用原因。正式入库数据必须保留 source_name、source_url 和 source_updated_at。"
+          />
+          <Card className="border-amber-200 bg-amber-50">
+            <CardHeader>
+              <CardTitle>数据服务暂不可用</CardTitle>
+              <CardDescription>{serviceStatus.message}</CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </section>
+    )
+  }
+
   const sources = getSourceManifest()
   const provinceStatuses = getProvinceDataOverview()
   const selectedProvince = searchParams?.province

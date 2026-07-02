@@ -8,6 +8,6 @@ This directory stores only official, trusted, pending-review, or explicitly miss
 - `rejected/`: invalid files or rows that failed validation.
 - `sources/`: source manifest and provenance records.
 - `schema.sql`: SQLite schema for local snapshots.
-- `gaokao-trusted.sqlite`: current local SQLite snapshot generated from processed CSV files.
+- `gaokao-trusted.sqlite`: generated local SQLite snapshot. It is ignored by Git and can be rebuilt with `npm run build:gaokao-sqlite`.
 
 No AI-generated school, major, score, rank, or admission plan data should be placed in `processed/`.

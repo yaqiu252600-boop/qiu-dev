@@ -23,13 +23,17 @@ const candidates = [
     "python.exe",
   ),
   "python",
+  "python3",
   "py",
 ].filter(Boolean)
 
 for (const candidate of candidates) {
   const command = candidate
   const exists =
-    command === "python" || command === "py" || fs.existsSync(command)
+    command === "python" ||
+    command === "python3" ||
+    command === "py" ||
+    fs.existsSync(command)
 
   if (!exists) {
     continue

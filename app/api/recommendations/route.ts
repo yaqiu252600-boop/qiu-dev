@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 
 import {
+  getTrustedDataServiceStatus,
   rankFromScore,
   recommendFromTrustedData,
 } from "@/lib/trusted-gaokao"
@@ -9,6 +10,19 @@ export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
 export function GET(request: Request) {
+  const serviceStatus = getTrustedDataServiceStatus()
+  if (!serviceStatus.ok) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: serviceStatus.message,
+        message: serviceStatus.message,
+        recommendations: { rush: [], stable: [], safe: [] },
+      },
+      { status: 503 },
+    )
+  }
+
   const url = new URL(request.url)
   const province = url.searchParams.get("province")
   const year = Number(url.searchParams.get("year"))

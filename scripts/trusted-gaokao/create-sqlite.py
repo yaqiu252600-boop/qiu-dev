@@ -1,10 +1,19 @@
 import csv
+import json
 import sqlite3
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DB_PATH = ROOT / "data" / "gaokao-trusted.sqlite"
 SCHEMA_PATH = ROOT / "data" / "schema.sql"
+
+EXPECTED_MINIMUMS = {
+    "universities": 2952,
+    "admission_scores": 124792,
+    "admission_scores:江苏": 11944,
+    "admission_scores:山东": 60909,
+    "admission_scores:浙江": 51939,
+}
 
 
 def read_csv(path: Path):
@@ -25,16 +34,80 @@ def read_csv_dir(path: Path):
     return rows
 
 
+def table_columns(connection, table):
+    return {
+        row[1]
+        for row in connection.execute(f"PRAGMA table_info({table})").fetchall()
+    }
+
+
 def insert_rows(connection, table, rows):
     if not rows:
         return 0
 
-    keys = sorted({key for row in rows for key in row.keys()})
+    allowed_columns = table_columns(connection, table)
+    keys = sorted({key for row in rows for key in row.keys()} & allowed_columns)
+
+    if not keys:
+        raise RuntimeError(f"No importable columns for {table}")
+
     placeholders = ",".join(["?"] * len(keys))
     columns = ",".join(keys)
     sql = f"INSERT OR REPLACE INTO {table} ({columns}) VALUES ({placeholders})"
     connection.executemany(sql, [[row.get(key) or None for key in keys] for row in rows])
     return len(rows)
+
+
+def create_indexes(connection):
+    connection.executescript(
+        """
+        CREATE INDEX IF NOT EXISTS idx_universities_name_province
+          ON universities(name, province);
+        CREATE INDEX IF NOT EXISTS idx_universities_school_code
+          ON universities(school_code);
+        CREATE INDEX IF NOT EXISTS idx_admission_scores_lookup
+          ON admission_scores(province, year, subject_type, university_name);
+        CREATE INDEX IF NOT EXISTS idx_admission_scores_score
+          ON admission_scores(province, year, subject_type, min_score);
+        CREATE INDEX IF NOT EXISTS idx_admission_scores_rank
+          ON admission_scores(province, year, subject_type, min_rank);
+        CREATE INDEX IF NOT EXISTS idx_score_segments_lookup
+          ON score_segments(province, year, subject_type, score);
+        CREATE INDEX IF NOT EXISTS idx_admission_plans_lookup
+          ON admission_plans(province, year, subject_type, university_name);
+        """
+    )
+
+
+def scalar(connection, sql, params=()):
+    return connection.execute(sql, params).fetchone()[0]
+
+
+def verify_counts(connection, counts):
+    province_counts = {
+        province: scalar(
+            connection,
+            "SELECT COUNT(*) FROM admission_scores WHERE province = ?",
+            (province,),
+        )
+        for province in ["江苏", "山东", "浙江"]
+    }
+
+    failures = []
+    for key, minimum in EXPECTED_MINIMUMS.items():
+        if ":" in key:
+            table, province = key.split(":", 1)
+            actual = province_counts[province] if table == "admission_scores" else 0
+        else:
+            actual = counts.get(key, 0)
+
+        if actual < minimum:
+            failures.append(f"{key} expected >= {minimum}, got {actual}")
+
+    if failures:
+        raise RuntimeError("SQLite verification failed: " + "; ".join(failures))
+
+    return province_counts
 
 
 def main():
@@ -67,10 +140,22 @@ def main():
         ),
     }
 
+    create_indexes(connection)
+    province_counts = verify_counts(connection, counts)
     connection.commit()
     connection.close()
-    print(counts)
-    print(DB_PATH)
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "database": str(DB_PATH),
+                "counts": counts,
+                "admission_scores_by_province": province_counts,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":

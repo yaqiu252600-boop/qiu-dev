@@ -16,6 +16,50 @@
 - 浙江 2026 年普通高校招生成绩分数段表已保存官方 PDF；尚未清洗为正式 `score_segments`，不参与分数到位次换算。
 - 江苏 2026 招生计划只确认到总量说明页面，未找到公开可批量下载的分学校、分专业组、分专业结构化数据，已记录为 `missing`。
 - 当前推荐接口只基于已导入的 `admission_scores` 数据；没有 `min_rank` 时只输出“历史投档最低分参考”，不输出“位次冲稳保”。
+- `data/gaokao-trusted.sqlite` 已改为本地/构建产物，不再作为长期源码数据提交到 Git；仓库保存官方 raw 文件、清洗 CSV、source manifest、报告和构建脚本。
+
+## 当前数据存储策略
+
+- Git 仓库长期保存：
+  - `data/raw/` 下的官方原始文件。
+  - `data/processed/` 下的清洗 CSV。
+  - `data/sources/` 下的 source manifest 和数据发现状态。
+  - 数据报告和构建脚本。
+- Git 仓库不再长期保存：
+  - `data/gaokao-trusted.sqlite`
+  - `data/*.sqlite`
+  - `data/*.sqlite3`
+- SQLite 用途：本地开发、Vercel 构建和运行前的数据就绪快照。它由 `npm run build:gaokao-sqlite` 根据已提交 CSV 全量重建。
+- 当前 API 查询逻辑仍通过 `lib/trusted-gaokao.ts` 的封装读取清洗 CSV；SQLite 不作为唯一运行时数据源，但作为构建完成标记。若缺少 `data/gaokao-trusted.sqlite`，API 返回“可信高考数据库尚未构建，请先运行 npm run build:gaokao-sqlite。”，页面显示“数据服务暂不可用”。
+- 不直接提交 SQLite 的原因：
+  - 文件已超过 GitHub 50MB 建议阈值，继续导入其他省份后可能接近或超过 GitHub 100MB 单文件限制。
+  - SQLite 是可由 CSV 重建的派生产物，提交会增加仓库体积和 Vercel 部署包体积风险。
+  - CSV/raw/manifest 更适合做可审计、可 diff 的长期可信数据记录。
+
+## 重建和验证
+
+本地重建数据库：
+
+```bash
+npm run build:gaokao-sqlite
+```
+
+推荐验证顺序：
+
+```bash
+npm run data:validate
+npm run build:gaokao-sqlite
+npm run lint
+npm run build
+```
+
+`npm run build` 和 `vercel-build` 都会先运行 `npm run build:gaokao-sqlite`，再执行 `next build`。当前 SQLite 生成脚本只依赖已清洗 CSV 和 Python 标准库 `sqlite3`/`csv`，不依赖 raw xls 解析。
+
+## 已接入省份能力
+
+- 江苏：历史分数参考；官方投档线不含 `min_rank`，不做位次参考。
+- 山东：历史位次参考；官方投档表不含最低分，不反推最低分。
+- 浙江：历史分数参考 + 历史位次参考；未导入当年官方招生计划，不开放完整推荐。
 
 ## 已验证数据
 

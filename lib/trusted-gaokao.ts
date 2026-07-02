@@ -159,9 +159,29 @@ export type TrustedRecommendation = TrustedAdmissionScore & {
 }
 
 const root = process.cwd()
+export const trustedGaokaoDatabaseMissingMessage =
+  "可信高考数据库尚未构建，请先运行 npm run build:gaokao-sqlite。"
 
 function dataPath(...parts: string[]) {
   return path.join(root, "data", ...parts)
+}
+
+export function getTrustedDataServiceStatus() {
+  const sqlitePath = dataPath("gaokao-trusted.sqlite")
+
+  if (!fs.existsSync(sqlitePath)) {
+    return {
+      ok: false,
+      message: trustedGaokaoDatabaseMissingMessage,
+      sqlite_path: sqlitePath,
+    }
+  }
+
+  return {
+    ok: true,
+    message: "可信高考数据库已构建。",
+    sqlite_path: sqlitePath,
+  }
 }
 
 function listCsvFiles(dir: string): string[] {

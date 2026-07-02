@@ -32,7 +32,7 @@ Commands:
 - `npm run validate:gaokao-data`
   Validate all processed trusted data currently in the repository.
 - `npm run build:gaokao-sqlite`
-  Rebuild `data/gaokao-trusted.sqlite` from processed CSV files.
+  Rebuild the ignored local `data/gaokao-trusted.sqlite` artifact from processed CSV files. The script deletes any old snapshot, recreates tables and indexes, imports CSV data, and verifies the current Jiangsu/Shandong/Zhejiang row counts.
 - `npm run data:discover-provinces`
   Create or refresh `data/config/provinces.json` for non-Jiangsu provinces and ensure the national data folders exist.
 - `npm run data:fetch-province -- --province=浙江 --year=2026`

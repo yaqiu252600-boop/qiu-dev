@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "lint": "tsc --noEmit",
-    "build": "next build",
+    "build": "npm run build:gaokao-sqlite && next build",
+    "next:build": "next build",
+    "vercel-build": "npm run build:gaokao-sqlite && next build",
     "start": "next start",
     "download:jiangsu-official": "node scripts/trusted-gaokao/download-jiangsu-official.mjs",
     "import:jiangsu-admission-scores": "node scripts/trusted-gaokao/run-python.mjs scripts/trusted-gaokao/import-jiangsu-admission-scores.py",

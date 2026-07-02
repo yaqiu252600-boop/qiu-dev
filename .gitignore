@@ -48,6 +48,9 @@ pnpm-debug.log*
 
 # runtime files
 /work/
+data/gaokao-trusted.sqlite
+data/*.sqlite
+data/*.sqlite3
 
 # gaokao raw downloads
 /data/gaokao/raw/*

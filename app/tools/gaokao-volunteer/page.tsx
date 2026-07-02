@@ -5,7 +5,10 @@ import { TrustedGaokaoWorkbench } from "@/components/gaokao/trusted-gaokao-workb
 import { SectionHeading } from "@/components/section-heading"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { getProvinceDataOverview } from "@/lib/trusted-gaokao"
+import {
+  getProvinceDataOverview,
+  getTrustedDataServiceStatus,
+} from "@/lib/trusted-gaokao"
 
 export const metadata: Metadata = {
   title: "高考志愿数据查询与辅助分析工具 | qiu.dev",
@@ -13,8 +16,11 @@ export const metadata: Metadata = {
     "基于官方公开数据的高考志愿数据查询、投档线参考和数据来源核验工具。",
 }
 
+export const dynamic = "force-dynamic"
+
 export default function GaokaoVolunteerToolPage() {
-  const provinceStatuses = getProvinceDataOverview()
+  const serviceStatus = getTrustedDataServiceStatus()
+  const provinceStatuses = serviceStatus.ok ? getProvinceDataOverview() : []
 
   return (
     <section className="page-section">
@@ -36,7 +42,14 @@ export default function GaokaoVolunteerToolPage() {
             </Button>
           </div>
         </div>
-        <TrustedGaokaoWorkbench provinceStatuses={provinceStatuses} />
+        {serviceStatus.ok ? (
+          <TrustedGaokaoWorkbench provinceStatuses={provinceStatuses} />
+        ) : (
+          <div className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+            <div className="font-medium">数据服务暂不可用</div>
+            <p>{serviceStatus.message}</p>
+          </div>
+        )}
       </div>
     </section>
   )
