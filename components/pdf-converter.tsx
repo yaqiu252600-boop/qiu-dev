@@ -3,11 +3,19 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react"
 import { AlertCircle, CheckCircle2, Download, FileText, Loader2, UploadCloud } from "lucide-react"
 import {
+  AlignmentType,
+  BorderStyle,
   Document,
   ImageRun,
   Packer,
   PageBreak,
   Paragraph,
+  Table,
+  TableCell,
+  TableLayoutType,
+  TableRow,
+  VerticalAlignTable,
+  WidthType,
 } from "docx"
 
 import { Badge } from "@/components/ui/badge"
@@ -17,9 +25,14 @@ import { cn } from "@/lib/utils"
 
 const MAX_FILE_SIZE_MB = 10
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
-const MAX_OCR_PAGES = 10
-const RENDER_SCALE = 2.4
-const IMAGE_QUALITY = 0.96
+const MAX_SCAN_PAGES = 10
+const RENDER_SCALE = 2.6
+const JPEG_QUALITY = 0.96
+const PAGE_IMAGE_WIDTH_PX = 780
+const PAGE_IMAGE_HEIGHT_PX = 980
+const TABLE_IMAGE_WIDTH_PX = 780
+const WORD_TABLE_WIDTH_DXA = 10800
+const MAX_TABLE_CELLS = 240
 
 type ConvertState =
   | "idle"
@@ -43,13 +56,47 @@ type StatusPayload = {
   available?: boolean
   mode?: string
   supportsOcr?: boolean
+  supportsScannedPdf?: boolean
+  supportsBrowserLayout?: boolean
   maxOcrPages?: number
   maxFileSizeMb?: number
 }
 
+type RenderedImage = {
+  data: Uint8Array
+  width: number
+  height: number
+  type: "jpg" | "png"
+}
+
+type TableRegion = {
+  x: number
+  y: number
+  width: number
+  height: number
+  xs: number[]
+  ys: number[]
+}
+
+type PageElement =
+  | {
+      kind: "image"
+      image: RenderedImage
+    }
+  | {
+      kind: "table"
+      region: TableRegion
+      cells: (RenderedImage | null)[][]
+    }
+
 type RenderedPage = {
   pageNumber: number
-  image: Uint8Array
+  elements: PageElement[]
+  fallback: RenderedImage
+}
+
+type CanvasPixels = {
+  data: Uint8ClampedArray
   width: number
   height: number
 }
@@ -59,11 +106,17 @@ const stateLabel: Record<ConvertState, string> = {
   ready: "开始转换",
   checking: "正在检查文件...",
   "extracting-text": "正在提取 PDF 文字...",
-  "detecting-ocr": "正在检测扫描件...",
-  ocr: "正在优化扫描件版式...",
+  "detecting-ocr": "正在检测扫描件版式...",
+  ocr: "正在重建扫描件版式...",
   "generating-word": "正在生成 Word 文件...",
   done: "下载 Word 文件",
   error: "重新选择文件",
+}
+
+const tableBorder = {
+  style: BorderStyle.SINGLE,
+  size: 4,
+  color: "9CA3AF",
 }
 
 function formatFileSize(bytes: number) {
@@ -143,26 +196,50 @@ function dataUrlToUint8Array(dataUrl: string) {
   return bytes
 }
 
-function cropCanvasWhitespace(source: HTMLCanvasElement) {
-  const context = source.getContext("2d", { willReadFrequently: true })
-  if (!context) return source
+function getCanvasPixels(canvas: HTMLCanvasElement): CanvasPixels | null {
+  const context = canvas.getContext("2d", { willReadFrequently: true })
+  if (!context) return null
 
-  const { width, height } = source
-  const image = context.getImageData(0, 0, width, height)
-  const data = image.data
-  let left = width
-  let top = height
+  const image = context.getImageData(0, 0, canvas.width, canvas.height)
+  return {
+    data: image.data,
+    width: canvas.width,
+    height: canvas.height,
+  }
+}
+
+function isInk(data: Uint8ClampedArray, index: number, threshold = 245) {
+  return data[index] < threshold || data[index + 1] < threshold || data[index + 2] < threshold
+}
+
+function hasInk(canvas: HTMLCanvasElement, threshold = 245, step = 2) {
+  const pixels = getCanvasPixels(canvas)
+  if (!pixels) return false
+
+  for (let y = 0; y < pixels.height; y += step) {
+    for (let x = 0; x < pixels.width; x += step) {
+      const index = (y * pixels.width + x) * 4
+      if (isInk(pixels.data, index, threshold)) return true
+    }
+  }
+
+  return false
+}
+
+function findContentBounds(canvas: HTMLCanvasElement) {
+  const pixels = getCanvasPixels(canvas)
+  if (!pixels) return null
+
+  let left = pixels.width
+  let top = pixels.height
   let right = -1
   let bottom = -1
 
-  for (let y = 0; y < height; y += 2) {
-    for (let x = 0; x < width; x += 2) {
-      const index = (y * width + x) * 4
-      const r = data[index]
-      const g = data[index + 1]
-      const b = data[index + 2]
+  for (let y = 0; y < pixels.height; y += 2) {
+    for (let x = 0; x < pixels.width; x += 2) {
+      const index = (y * pixels.width + x) * 4
 
-      if (r < 250 || g < 250 || b < 250) {
+      if (isInk(pixels.data, index, 250)) {
         left = Math.min(left, x)
         top = Math.min(top, y)
         right = Math.max(right, x)
@@ -171,70 +248,439 @@ function cropCanvasWhitespace(source: HTMLCanvasElement) {
     }
   }
 
-  if (right < left || bottom < top) {
-    return source
+  if (right < left || bottom < top) return null
+
+  const padding = Math.round(Math.min(pixels.width, pixels.height) * 0.02)
+  return {
+    left: Math.max(0, left - padding),
+    top: Math.max(0, top - padding),
+    right: Math.min(pixels.width - 1, right + padding),
+    bottom: Math.min(pixels.height - 1, bottom + padding),
   }
-
-  const padding = Math.round(Math.min(width, height) * 0.025)
-  left = Math.max(0, left - padding)
-  top = Math.max(0, top - padding)
-  right = Math.min(width - 1, right + padding)
-  bottom = Math.min(height - 1, bottom + padding)
-
-  const cropWidth = right - left + 1
-  const cropHeight = bottom - top + 1
-  if (cropWidth < width * 0.08 || cropHeight < height * 0.08) {
-    return source
-  }
-
-  const cropped = document.createElement("canvas")
-  cropped.width = cropWidth
-  cropped.height = cropHeight
-  const croppedContext = cropped.getContext("2d", { alpha: false })
-  if (!croppedContext) return source
-
-  croppedContext.fillStyle = "#ffffff"
-  croppedContext.fillRect(0, 0, cropWidth, cropHeight)
-  croppedContext.drawImage(source, left, top, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
-  return cropped
 }
 
-function getFittedImageSize(width: number, height: number) {
-  const landscape = width > height
-  const maxWidth = landscape ? 980 : 720
-  const maxHeight = landscape ? 680 : 960
-  const scale = Math.min(maxWidth / width, maxHeight / height)
+function copyCanvasRegion(source: HTMLCanvasElement, x: number, y: number, width: number, height: number) {
+  const left = Math.max(0, Math.floor(x))
+  const top = Math.max(0, Math.floor(y))
+  const right = Math.min(source.width, Math.ceil(x + width))
+  const bottom = Math.min(source.height, Math.ceil(y + height))
+  const targetWidth = Math.max(1, right - left)
+  const targetHeight = Math.max(1, bottom - top)
+  const canvas = document.createElement("canvas")
+  const context = canvas.getContext("2d", { alpha: false })
+
+  canvas.width = targetWidth
+  canvas.height = targetHeight
+
+  if (!context) return canvas
+
+  context.fillStyle = "#ffffff"
+  context.fillRect(0, 0, targetWidth, targetHeight)
+  context.drawImage(source, left, top, targetWidth, targetHeight, 0, 0, targetWidth, targetHeight)
+
+  return canvas
+}
+
+function cropCanvasWhitespace(source: HTMLCanvasElement) {
+  const bounds = findContentBounds(source)
+  if (!bounds) return source
+
+  const cropWidth = bounds.right - bounds.left + 1
+  const cropHeight = bounds.bottom - bounds.top + 1
+
+  if (cropWidth < source.width * 0.06 || cropHeight < source.height * 0.06) {
+    return source
+  }
+
+  return copyCanvasRegion(source, bounds.left, bounds.top, cropWidth, cropHeight)
+}
+
+function canvasToImage(canvas: HTMLCanvasElement, type: "jpg" | "png" = "png"): RenderedImage {
+  const mimeType = type === "jpg" ? "image/jpeg" : "image/png"
+  const dataUrl = type === "jpg" ? canvas.toDataURL(mimeType, JPEG_QUALITY) : canvas.toDataURL(mimeType)
 
   return {
-    width: Math.round(width * scale),
-    height: Math.round(height * scale),
+    data: dataUrlToUint8Array(dataUrl),
+    width: canvas.width,
+    height: canvas.height,
+    type,
   }
+}
+
+function releaseCanvas(canvas: HTMLCanvasElement) {
+  canvas.width = 0
+  canvas.height = 0
+}
+
+function clusterPositions(positions: number[], tolerance = 6) {
+  if (positions.length === 0) return []
+
+  const clusters: number[][] = []
+  let current: number[] = [positions[0]]
+
+  for (let index = 1; index < positions.length; index += 1) {
+    const value = positions[index]
+    const previous = current[current.length - 1]
+
+    if (value - previous <= tolerance) {
+      current.push(value)
+    } else {
+      clusters.push(current)
+      current = [value]
+    }
+  }
+
+  clusters.push(current)
+
+  return clusters.map((cluster) => Math.round(cluster.reduce((sum, value) => sum + value, 0) / cluster.length))
+}
+
+function filterGridLines(lines: number[], minGap = 14) {
+  if (lines.length <= 1) return lines
+
+  const filtered = [lines[0]]
+
+  for (const line of lines.slice(1)) {
+    if (line - filtered[filtered.length - 1] >= minGap) {
+      filtered.push(line)
+    }
+  }
+
+  return filtered
+}
+
+function collectVerticalLines(pixels: CanvasPixels, x0: number, x1: number, y0: number, y1: number, ratio: number) {
+  const positions: number[] = []
+  const left = Math.max(0, Math.floor(x0))
+  const right = Math.min(pixels.width - 1, Math.ceil(x1))
+  const top = Math.max(0, Math.floor(y0))
+  const bottom = Math.min(pixels.height - 1, Math.ceil(y1))
+  const step = 2
+  const required = Math.max(8, Math.round(((bottom - top + 1) / step) * ratio))
+
+  for (let x = left; x <= right; x += 1) {
+    let count = 0
+
+    for (let y = top; y <= bottom; y += step) {
+      const index = (y * pixels.width + x) * 4
+      if (isInk(pixels.data, index, 238)) count += 1
+    }
+
+    if (count >= required) {
+      positions.push(x)
+    }
+  }
+
+  return positions
+}
+
+function collectHorizontalLines(pixels: CanvasPixels, x0: number, x1: number, y0: number, y1: number, ratio: number) {
+  const positions: number[] = []
+  const left = Math.max(0, Math.floor(x0))
+  const right = Math.min(pixels.width - 1, Math.ceil(x1))
+  const top = Math.max(0, Math.floor(y0))
+  const bottom = Math.min(pixels.height - 1, Math.ceil(y1))
+  const step = 2
+  const required = Math.max(8, Math.round(((right - left + 1) / step) * ratio))
+
+  for (let y = top; y <= bottom; y += 1) {
+    let count = 0
+
+    for (let x = left; x <= right; x += step) {
+      const index = (y * pixels.width + x) * 4
+      if (isInk(pixels.data, index, 238)) count += 1
+    }
+
+    if (count >= required) {
+      positions.push(y)
+    }
+  }
+
+  return positions
+}
+
+function detectTableRegion(canvas: HTMLCanvasElement): TableRegion | null {
+  const pixels = getCanvasPixels(canvas)
+  if (!pixels) return null
+
+  const roughVertical = filterGridLines(
+    clusterPositions(collectVerticalLines(pixels, 0, pixels.width - 1, 0, pixels.height - 1, 0.08)),
+  )
+
+  if (roughVertical.length < 3) return null
+
+  const roughX0 = Math.max(0, roughVertical[0] - 12)
+  const roughX1 = Math.min(pixels.width - 1, roughVertical[roughVertical.length - 1] + 12)
+  const horizontal = filterGridLines(
+    clusterPositions(collectHorizontalLines(pixels, roughX0, roughX1, 0, pixels.height - 1, 0.32)),
+  )
+
+  if (horizontal.length < 3) return null
+
+  const roughY0 = Math.max(0, horizontal[0] - 12)
+  const roughY1 = Math.min(pixels.height - 1, horizontal[horizontal.length - 1] + 12)
+  const vertical = filterGridLines(
+    clusterPositions(collectVerticalLines(pixels, roughX0, roughX1, roughY0, roughY1, 0.38)),
+  )
+  const refinedHorizontal = filterGridLines(
+    clusterPositions(collectHorizontalLines(pixels, vertical[0] ?? roughX0, vertical[vertical.length - 1] ?? roughX1, roughY0, roughY1, 0.32)),
+  )
+
+  if (vertical.length < 3 || refinedHorizontal.length < 3) return null
+
+  const x = Math.max(0, vertical[0])
+  const y = Math.max(0, refinedHorizontal[0])
+  const right = Math.min(pixels.width - 1, vertical[vertical.length - 1])
+  const bottom = Math.min(pixels.height - 1, refinedHorizontal[refinedHorizontal.length - 1])
+  const width = right - x
+  const height = bottom - y
+  const columnCount = vertical.length - 1
+  const rowCount = refinedHorizontal.length - 1
+
+  if (columnCount < 2 || rowCount < 2) return null
+  if (columnCount * rowCount > MAX_TABLE_CELLS) return null
+  if (width < pixels.width * 0.25 || height < pixels.height * 0.08) return null
+
+  return {
+    x,
+    y,
+    width,
+    height,
+    xs: vertical,
+    ys: refinedHorizontal,
+  }
+}
+
+function makeImageElementFromRegion(
+  source: HTMLCanvasElement,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  type: "jpg" | "png" = "jpg",
+): PageElement | null {
+  if (width < 16 || height < 16) return null
+
+  const region = copyCanvasRegion(source, x, y, width, height)
+  const cropped = cropCanvasWhitespace(region)
+
+  try {
+    if (!hasInk(cropped)) return null
+
+    return {
+      kind: "image",
+      image: canvasToImage(cropped, type),
+    }
+  } finally {
+    if (cropped !== region) releaseCanvas(cropped)
+    releaseCanvas(region)
+  }
+}
+
+function makeCellImage(source: HTMLCanvasElement, x: number, y: number, width: number, height: number) {
+  const inset = Math.max(2, Math.round(Math.min(width, height) * 0.04))
+  const cell = copyCanvasRegion(source, x + inset, y + inset, width - inset * 2, height - inset * 2)
+  const cropped = cropCanvasWhitespace(cell)
+
+  try {
+    if (!hasInk(cropped, 242)) return null
+    return canvasToImage(cropped, "png")
+  } finally {
+    if (cropped !== cell) releaseCanvas(cropped)
+    releaseCanvas(cell)
+  }
+}
+
+function makeCellImages(source: HTMLCanvasElement, region: TableRegion) {
+  const rows: (RenderedImage | null)[][] = []
+
+  for (let rowIndex = 0; rowIndex < region.ys.length - 1; rowIndex += 1) {
+    const row: (RenderedImage | null)[] = []
+    const y = region.ys[rowIndex]
+    const height = region.ys[rowIndex + 1] - y
+
+    for (let columnIndex = 0; columnIndex < region.xs.length - 1; columnIndex += 1) {
+      const x = region.xs[columnIndex]
+      const width = region.xs[columnIndex + 1] - x
+      row.push(makeCellImage(source, x, y, width, height))
+    }
+
+    rows.push(row)
+  }
+
+  return rows
+}
+
+function makePageElements(canvas: HTMLCanvasElement): PageElement[] {
+  const table = detectTableRegion(canvas)
+
+  if (!table) {
+    return [
+      {
+        kind: "image",
+        image: canvasToImage(canvas, "jpg"),
+      },
+    ]
+  }
+
+  const cells = makeCellImages(canvas, table)
+  const hasCellContent = cells.some((row) => row.some(Boolean))
+
+  if (!hasCellContent) {
+    return [
+      {
+        kind: "image",
+        image: canvasToImage(canvas, "jpg"),
+      },
+    ]
+  }
+
+  const elements: PageElement[] = []
+  const top = makeImageElementFromRegion(canvas, 0, 0, canvas.width, table.y - 8)
+
+  if (top) elements.push(top)
+
+  elements.push({
+    kind: "table",
+    region: table,
+    cells,
+  })
+
+  const bottomStart = table.y + table.height + 8
+  const bottom = makeImageElementFromRegion(canvas, 0, bottomStart, canvas.width, canvas.height - bottomStart)
+
+  if (bottom) elements.push(bottom)
+
+  return elements
+}
+
+function fitImage(width: number, height: number, maxWidth: number, maxHeight: number) {
+  const scale = Math.min(maxWidth / width, maxHeight / height, 1)
+
+  return {
+    width: Math.max(1, Math.round(width * scale)),
+    height: Math.max(1, Math.round(height * scale)),
+  }
+}
+
+function makeImageParagraph(image: RenderedImage, maxWidth = PAGE_IMAGE_WIDTH_PX, maxHeight = PAGE_IMAGE_HEIGHT_PX) {
+  return new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 0, after: 80 },
+    children: [
+      new ImageRun({
+        data: image.data,
+        transformation: fitImage(image.width, image.height, maxWidth, maxHeight),
+        type: image.type,
+      }),
+    ],
+  })
+}
+
+function proportionalWidths(sourceWidths: number[], totalWidth: number) {
+  const sourceTotal = sourceWidths.reduce((sum, width) => sum + width, 0)
+  let usedWidth = 0
+
+  return sourceWidths.map((width, index) => {
+    if (index === sourceWidths.length - 1) {
+      return Math.max(120, totalWidth - usedWidth)
+    }
+
+    const calculated = Math.max(120, Math.round((width / sourceTotal) * totalWidth))
+    usedWidth += calculated
+    return calculated
+  })
+}
+
+function makeWordTable(region: TableRegion, cells: (RenderedImage | null)[][]) {
+  const sourceColumnWidths = region.xs.slice(0, -1).map((line, index) => region.xs[index + 1] - line)
+  const columnWidths = proportionalWidths(sourceColumnWidths, WORD_TABLE_WIDTH_DXA)
+
+  return new Table({
+    width: { size: WORD_TABLE_WIDTH_DXA, type: WidthType.DXA },
+    columnWidths,
+    layout: TableLayoutType.FIXED,
+    alignment: AlignmentType.CENTER,
+    margins: {
+      top: 35,
+      bottom: 35,
+      left: 35,
+      right: 35,
+    },
+    borders: {
+      top: tableBorder,
+      bottom: tableBorder,
+      left: tableBorder,
+      right: tableBorder,
+      insideHorizontal: tableBorder,
+      insideVertical: tableBorder,
+    },
+    rows: cells.map(
+      (row) =>
+        new TableRow({
+          cantSplit: true,
+          children: row.map((cellImage, columnIndex) => {
+            const columnPixelWidth = Math.max(
+              24,
+              Math.round((columnWidths[columnIndex] / WORD_TABLE_WIDTH_DXA) * TABLE_IMAGE_WIDTH_PX) - 8,
+            )
+            const children = cellImage
+              ? [
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    spacing: { before: 0, after: 0 },
+                    children: [
+                      new ImageRun({
+                        data: cellImage.data,
+                        transformation: fitImage(cellImage.width, cellImage.height, columnPixelWidth, 180),
+                        type: cellImage.type,
+                      }),
+                    ],
+                  }),
+                ]
+              : [new Paragraph({ text: "", spacing: { before: 0, after: 0 } })]
+
+            return new TableCell({
+              width: { size: columnWidths[columnIndex], type: WidthType.DXA },
+              verticalAlign: VerticalAlignTable.CENTER,
+              margins: {
+                top: 35,
+                bottom: 35,
+                left: 35,
+                right: 35,
+              },
+              children,
+            })
+          }),
+        }),
+    ),
+  })
 }
 
 async function createScannedWord(pages: RenderedPage[]) {
-  const children: Paragraph[] = []
+  const children: (Paragraph | Table)[] = []
 
   pages.forEach((page, index) => {
     if (index > 0) {
       children.push(new Paragraph({ children: [new PageBreak()] }))
     }
 
-    const fitted = getFittedImageSize(page.width, page.height)
-    children.push(
-      new Paragraph({
-        spacing: { before: 0, after: 0 },
-        children: [
-          new ImageRun({
-            data: page.image,
-            transformation: fitted,
-            type: "jpg",
-          }),
-        ],
-      }),
-    )
+    const pageChildren = page.elements.length > 0 ? page.elements : [{ kind: "image" as const, image: page.fallback }]
+
+    for (const element of pageChildren) {
+      if (element.kind === "image") {
+        children.push(makeImageParagraph(element.image))
+      } else {
+        children.push(makeWordTable(element.region, element.cells))
+        children.push(new Paragraph({ text: "", spacing: { before: 40, after: 60 } }))
+      }
+    }
   })
 
   const document = new Document({
+    creator: "qiu.dev PDF to Word",
+    title: "PDF scan layout conversion",
+    description: "Generated by qiu.dev PDF to Word browser layout converter",
     sections: [
       {
         properties: {
@@ -272,7 +718,7 @@ export function PdfConverter() {
   const [file, setFile] = useState<File | null>(null)
   const [state, setState] = useState<ConvertState>("idle")
   const [error, setError] = useState("")
-  const [message, setMessage] = useState("文本型 PDF 会优先走快速转换；扫描件会自动切换到版式保留模式。")
+  const [message, setMessage] = useState("文本型 PDF 会优先走快速转换；扫描件会自动切换到版式重建模式。")
   const [progress, setProgress] = useState<ProgressInfo>({ label: "等待上传", percent: 0 })
   const [downloadUrl, setDownloadUrl] = useState("")
   const [downloadName, setDownloadName] = useState("")
@@ -315,7 +761,7 @@ export function PdfConverter() {
     setDownloadName("")
     setError("")
     setProgress({ label: "等待上传", percent: 0 })
-    setMessage("文本型 PDF 会优先走快速转换；扫描件会自动切换到版式保留模式。")
+    setMessage("文本型 PDF 会优先走快速转换；扫描件会自动切换到版式重建模式。")
   }
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -336,7 +782,7 @@ export function PdfConverter() {
     }
 
     setState("ready")
-    setMessage("已选择 PDF。点击开始后会先尝试快速文字提取，必要时自动保留扫描件版式。")
+    setMessage("已选择 PDF。点击开始后会先尝试快速文字提取，必要时自动重建扫描件版式。")
   }
 
   async function runServerTextConversion(selectedFile: File) {
@@ -371,30 +817,31 @@ export function PdfConverter() {
 
   async function runScannedPdfConversion(selectedFile: File) {
     setState("detecting-ocr")
-    setMessage("未检测到可编辑文字层，正在切换到扫描件版式保留模式...")
+    setMessage("未检测到可编辑文字层，正在切换到扫描件版式重建...")
     setProgress({ label: "正在读取 PDF", percent: 12 })
 
-    const pdfjs = await import("pdfjs-dist")
-    pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs"
+    const pdfjsUrl = "/pdf.legacy.min.mjs"
+    const pdfjs = (await import(/* webpackIgnore: true */ pdfjsUrl)) as typeof import("pdfjs-dist")
+    pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.legacy.min.mjs"
 
     const bytes = await selectedFile.arrayBuffer()
     const loadingTask = pdfjs.getDocument({ data: bytes })
     const pdf = await loadingTask.promise
     const pageCount = pdf.numPages
 
-    if (pageCount > MAX_OCR_PAGES) {
+    if (pageCount > MAX_SCAN_PAGES) {
       throw new Error("当前免费扫描件版最多支持 10 页 PDF。请拆分 PDF 后再上传，或等待后续高级版。")
     }
 
     setState("ocr")
-    setMessage("正在渲染并裁剪页面白边...")
+    setMessage("正在高清渲染、裁白边并检测表格线...")
 
     const pages: RenderedPage[] = []
 
     for (let pageNumber = 1; pageNumber <= pageCount; pageNumber += 1) {
       setProgress({
-        label: `正在处理第 ${pageNumber} / ${pageCount} 页`,
-        percent: Math.round(15 + ((pageNumber - 1) / pageCount) * 75),
+        label: `正在渲染第 ${pageNumber} / ${pageCount} 页`,
+        percent: Math.round(15 + ((pageNumber - 1) / pageCount) * 70),
       })
 
       const page = await pdf.getPage(pageNumber)
@@ -411,21 +858,23 @@ export function PdfConverter() {
 
       await page.render({ canvas, canvasContext: context, viewport }).promise
 
-      const cropped = cropCanvasWhitespace(canvas)
-      const image = dataUrlToUint8Array(cropped.toDataURL("image/jpeg", IMAGE_QUALITY))
-      pages.push({
-        pageNumber,
-        image,
-        width: cropped.width,
-        height: cropped.height,
+      setProgress({
+        label: `正在重建第 ${pageNumber} / ${pageCount} 页版式`,
+        percent: Math.round(18 + ((pageNumber - 1) / pageCount) * 72),
       })
 
-      canvas.width = 0
-      canvas.height = 0
-      if (cropped !== canvas) {
-        cropped.width = 0
-        cropped.height = 0
-      }
+      const cropped = cropCanvasWhitespace(canvas)
+      const fallback = canvasToImage(cropped, "jpg")
+      const elements = makePageElements(cropped)
+
+      pages.push({
+        pageNumber,
+        elements,
+        fallback,
+      })
+
+      if (cropped !== canvas) releaseCanvas(cropped)
+      releaseCanvas(canvas)
     }
 
     if (pages.length === 0) {
@@ -433,7 +882,7 @@ export function PdfConverter() {
     }
 
     setState("generating-word")
-    setMessage("正在生成可查看的 Word 文件...")
+    setMessage("正在生成 Word 文件...")
     setProgress({ label: "正在生成 Word", percent: 94 })
 
     const blob = await createScannedWord(pages)
@@ -492,21 +941,23 @@ export function PdfConverter() {
     }
   }
 
-  const capabilityText = status?.supportsOcr
-    ? `当前模式：${status.mode || "server-text-plus-browser-ocr"}`
-    : "正在读取转换能力"
+  const capabilityText = status?.mode
+    ? `当前模式：${status.mode}`
+    : serviceState === "checking"
+      ? "正在读取转换能力"
+      : "转换能力读取失败"
 
   return (
     <Card className="mx-auto max-w-3xl border-border/70 shadow-sm">
       <CardHeader className="space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary">免费版</Badge>
-          <Badge variant="outline">文本 PDF + 扫描件版式保留</Badge>
+          <Badge variant="outline">文本 PDF + 扫描件版式重建</Badge>
         </div>
         <div className="space-y-2">
           <CardTitle className="text-2xl">PDF 转 Word</CardTitle>
           <CardDescription className="text-base">
-            文本型 PDF 会走服务端转换；扫描件会在浏览器端渲染、裁掉白边并放大写入 Word，优先保证可查看。
+            文本型 PDF 会走服务端转换；扫描件会在浏览器端高清渲染、裁白边、识别表格线并生成 Word。
           </CardDescription>
         </div>
       </CardHeader>
@@ -529,7 +980,7 @@ export function PdfConverter() {
             <UploadCloud className="mb-3 h-10 w-10 text-muted-foreground" aria-hidden="true" />
             <span className="text-base font-medium">选择 PDF 文件</span>
             <span className="mt-1 text-sm text-muted-foreground">
-              免费版：扫描件最多 {status?.maxOcrPages || MAX_OCR_PAGES} 页，最大{" "}
+              免费版：扫描件最多 {status?.maxOcrPages || MAX_SCAN_PAGES} 页，最大{" "}
               {status?.maxFileSizeMb || MAX_FILE_SIZE_MB}MB
             </span>
           </label>
@@ -593,11 +1044,11 @@ export function PdfConverter() {
           <section className="rounded-lg border bg-background p-4">
             <h3 className="text-sm font-semibold">当前免费版支持</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              <li>文本型 PDF 转 Word</li>
-              <li>扫描件 PDF 转 Word</li>
-              <li>图片版 PDF 转 Word</li>
-              <li>自动裁掉页面白边</li>
-              <li>扫描件优先保证版式可查看</li>
+              <li>文本型 PDF 快速转 Word</li>
+              <li>扫描件 PDF 版式重建</li>
+              <li>图片版 PDF 高清裁剪写入 Word</li>
+              <li>表格线检测与 Word 表格生成</li>
+              <li>本地浏览器处理扫描件，不上传到第三方 OCR</li>
             </ul>
           </section>
 
@@ -605,14 +1056,16 @@ export function PdfConverter() {
             <h3 className="text-sm font-semibold">免费版限制</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>文件最大 {status?.maxFileSizeMb || MAX_FILE_SIZE_MB}MB</li>
-              <li>扫描件最多 {status?.maxOcrPages || MAX_OCR_PAGES} 页</li>
-              <li>扫描件输出为页面图片，主要解决能看和不散版</li>
-              <li>需要真正可编辑表格时，仍需要桌面版那类后端引擎</li>
+              <li>扫描件最多 {status?.maxOcrPages || MAX_SCAN_PAGES} 页</li>
+              <li>在线版优先保证可读和不散版</li>
+              <li>复杂中文表格的完整可编辑文字仍以桌面高保真版为准</li>
             </ul>
           </section>
         </div>
 
-        <p className="text-xs text-muted-foreground">{capabilityText}</p>
+        <p className="text-xs text-muted-foreground">
+          {capabilityText}。扫描件不会再输出乱码 OCR 附录，会优先保留页面和表格视觉结构。
+        </p>
       </CardContent>
     </Card>
   )

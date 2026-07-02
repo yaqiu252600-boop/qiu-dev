@@ -24,14 +24,16 @@ const MAX_FILE_SIZE = PDF_TO_WORD_LIMITS.maxFileSizeMb * 1024 * 1024
 export function getPdfToWordStatus() {
   return {
     available: true,
-    mode: "server-text-plus-browser-ocr",
+    mode: "server-text-plus-browser-layout",
     supportsTextPdf: true,
-    supportsOcr: true,
-    ocrMode: "browser",
+    supportsOcr: false,
+    supportsScannedPdf: true,
+    supportsBrowserLayout: true,
+    ocrMode: "browser-layout",
     ocrLanguages: PDF_TO_WORD_LIMITS.ocrLanguages,
     maxOcrPages: PDF_TO_WORD_LIMITS.maxOcrPages,
     maxFileSizeMb: PDF_TO_WORD_LIMITS.maxFileSizeMb,
-    message: "在线转换服务已可用。文本型 PDF 走服务端快速转换；扫描件 PDF 会在浏览器端 OCR。",
+    message: "在线转换服务已可用。文本型 PDF 走服务端快速转换；扫描件 PDF 会在浏览器端进行高清渲染、裁白边和表格版式重建。",
   }
 }
 
