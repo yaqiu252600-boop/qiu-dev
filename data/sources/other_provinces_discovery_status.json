@@ -503,79 +503,6 @@
     }
   },
   {
-    "province": "四川",
-    "province_slug": "sichuan",
-    "checked_at": "2026-07-01T13:08:38.551Z",
-    "official_site": "https://www.sceea.cn/",
-    "gaokao_channel_url": "https://www.sceea.cn/List/NewsList_30.html",
-    "checks": [
-      {
-        "url": "https://www.sceea.cn/",
-        "ok": true,
-        "status": 200,
-        "final_url": "https://www.sceea.cn/",
-        "content_type": "text/html",
-        "blocked": true,
-        "error": ""
-      },
-      {
-        "url": "https://www.sceea.cn/List/NewsList_30.html",
-        "ok": true,
-        "status": 200,
-        "final_url": "https://www.sceea.cn/List/NewsList_30.html",
-        "content_type": "text/html",
-        "blocked": true,
-        "error": ""
-      }
-    ],
-    "discovered_links": {
-      "sichuan_2026_score_segments": [
-        {
-          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4871.html",
-          "text": "四川省2026年普通高校招生本科艺术类综合成绩、体育类专业成绩分段统计"
-        },
-        {
-          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4858.html",
-          "text": "官方发布！四川省2026年普通高考历史类成绩分段统计表出炉"
-        },
-        {
-          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4857.html",
-          "text": "官方发布！四川省2026年普通高考物理类成绩分段统计表出炉"
-        },
-        {
-          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4857.html",
-          "text": "官方发布！四川省2026年普通高考物理类成绩分段统计表出炉"
-        },
-        {
-          "url": "https://www.sceea.cn/Html/202604/Newsdetail_4722.html",
-          "text": "四川省2026年高职单招普高类考生成绩分段统计表"
-        },
-        {
-          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4858.html",
-          "text": "官方发布！四川省2026年普通高考历史类成绩分段统计表出炉"
-        }
-      ],
-      "sichuan_2023_admission_scores": [],
-      "sichuan_2024_admission_scores": [],
-      "sichuan_2025_admission_scores": [],
-      "sichuan_2026_admission_plans": [
-        {
-          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4852.html",
-          "text": "关于下发2026年普通高校在川招生计划更正及调整的通知"
-        },
-        {
-          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4875.html",
-          "text": "关于下发2026年普通高校在川招生计划更正及调整的通知（二）"
-        },
-        {
-          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4852.html",
-          "text": "关于下发2026年普通高校在川招生计划更正及调整的通知"
-        }
-      ],
-      "sichuan_2026_province_rules": []
-    }
-  },
-  {
     "province": "河南",
     "province_slug": "henan",
     "checked_at": "2026-07-02T03:20:15.628Z",
@@ -678,5 +605,94 @@
       ]
     },
     "notes": "本轮仅使用河南招生考试信息网公开页面和附件。2023/2024/2025 普通本科批投档线或录取统计未找到公开可批量下载文件；数据中心/考生服务入口不可解析或非公开批量数据源，未绕过登录、验证码或考生身份。"
+  },
+  {
+    "province": "四川",
+    "province_slug": "sichuan",
+    "checked_at": "2026-07-02T04:47:43.485Z",
+    "official_site": "https://www.sceea.cn/",
+    "gaokao_channel_url": "https://www.sceea.cn/html/examenrollment.html",
+    "checks": [
+      {
+        "url": "https://www.sceea.cn/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.sceea.cn/",
+        "content_type": "text/html",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://zyfz.sceeic.cn/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://zyfz.sceeic.cn/",
+        "content_type": "text/html",
+        "blocked": true,
+        "error": "页面加载阿里云验证码脚本；未尝试绕过。"
+      }
+    ],
+    "discovered_links": {
+      "sichuan_2023_admission_scores": [
+        {
+          "url": "https://www.sceea.cn/Html/202307/Newsdetail_3281.html",
+          "text": "2023年普通高校在川招生本科一批院校录取调档线"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202308/Newsdetail_3306.html",
+          "text": "2023年普通高校在川招生本科二批次院校录取调档线"
+        }
+      ],
+      "sichuan_2024_admission_scores": [
+        {
+          "url": "https://www.sceea.cn/Html/202407/Newsdetail_3788.html",
+          "text": "2024年普通高校招生本科一批调档线"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202408/Newsdetail_3814.html",
+          "text": "2024年普通高校招生本科二批调档线"
+        }
+      ],
+      "sichuan_2025_admission_scores": [
+        {
+          "url": "https://www.sceea.cn/Html/202507/Newsdetail_4405.html",
+          "text": "2025年普通类本科批次B段投档动态；未发现官方明细调档线附件"
+        }
+      ],
+      "sichuan_2026_score_segments": [
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4858.html",
+          "text": "四川省2026年普通高考历史类成绩分段统计表"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4857.html",
+          "text": "四川省2026年普通高考物理类成绩分段统计表"
+        }
+      ],
+      "sichuan_2026_admission_plans": [
+        {
+          "url": "https://plan.sceea.cn/",
+          "text": "2026年普通高校在川招生专业及名额介绍"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4852.html",
+          "text": "2026年普通高校在川招生计划更正及调整通知"
+        },
+        {
+          "url": "https://www.sceea.cn/Html/202606/Newsdetail_4875.html",
+          "text": "2026年普通高校在川招生计划更正及调整通知（二）"
+        }
+      ],
+      "sichuan_2026_province_rules": [
+        {
+          "url": "https://www.sceea.cn/Html/202604/Newsdetail_4767.html",
+          "text": "关于做好我省2026年普通高校招生工作的通知"
+        },
+        {
+          "url": "https://zyfz.sceeic.cn/",
+          "text": "四川省高考志愿填报辅助系统入口（验证码保护）"
+        }
+      ]
+    }
   }
 ]
