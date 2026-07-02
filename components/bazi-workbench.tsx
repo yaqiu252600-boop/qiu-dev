@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { FileDown, Lock, Share2, Sparkles } from "lucide-react"
+import { FileDown, Share2, Sparkles } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -55,12 +55,14 @@ type BaziResult = {
     description: string
   }
   summary: string
-  monetization: {
-    paidEnabled: boolean
-    baziPriceCny: string
-    namePriceCny: string
-    auspiciousDatePriceCny: string
-    status: string
+  analysis: {
+    personality: string
+    career: string
+    relationship: string
+    wealth: string
+    yearly: string
+    communication: string
+    life: string
   }
   disclaimer: string
 }
@@ -122,7 +124,7 @@ export function BaziWorkbench() {
 
   const shareText = useMemo(() => {
     if (!result) return ""
-    return `八字排盘文化参考\n日主：${result.dayMaster.stem}${result.dayMaster.element}\n四柱：${result.pillars.year} ${result.pillars.month} ${result.pillars.day} ${result.pillars.hour}\n五行参考：${elementLabels.map(([key, label]) => `${label}${result.fiveElements[key]}`).join(" / ")}\n仅供娱乐参考。`
+    return `八字排盘文化参考\n日主：${result.dayMaster.stem}${result.dayMaster.element}\n四柱：${result.pillars.year} ${result.pillars.month} ${result.pillars.day} ${result.pillars.hour}\n五行参考：${elementLabels.map(([key, label]) => `${label}${result.fiveElements[key]}`).join(" / ")}`
   }, [result])
 
   async function copyShareText() {
@@ -238,7 +240,7 @@ export function BaziWorkbench() {
               <CardHeader>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <CardTitle className="text-2xl">八字排盘文化参考报告</CardTitle>
+                    <CardTitle className="text-2xl">八字排盘完整分析</CardTitle>
                     <p className="mt-2 text-sm text-muted-foreground">
                       生肖：{result.zodiac} · 日主：{result.dayMaster.stem}
                       {result.dayMaster.element}
@@ -306,6 +308,27 @@ export function BaziWorkbench() {
                     <p key={paragraph}>{paragraph}</p>
                   ))}
                 </div>
+
+                <SectionTitle title="性格分析" />
+                <AnalysisBlock text={result.analysis.personality} />
+
+                <SectionTitle title="事业方向分析" />
+                <AnalysisBlock text={result.analysis.career} />
+
+                <SectionTitle title="感情相处分析" />
+                <AnalysisBlock text={result.analysis.relationship} />
+
+                <SectionTitle title="财富观念分析" />
+                <AnalysisBlock text={result.analysis.wealth} />
+
+                <SectionTitle title="流年简析" />
+                <AnalysisBlock text={result.analysis.yearly} />
+
+                <SectionTitle title="沟通提醒" />
+                <AnalysisBlock text={result.analysis.communication} />
+
+                <SectionTitle title="生活建议" />
+                <AnalysisBlock text={result.analysis.life} />
               </CardContent>
             </Card>
 
@@ -335,7 +358,6 @@ export function BaziWorkbench() {
               </CardContent>
             </Card>
 
-            <MonetizationPreview result={result} />
           </>
         ) : (
           <Card className="bg-white">
@@ -362,6 +384,16 @@ function InfoBlock({ title, text }: { title: string; text: string }) {
   )
 }
 
+function AnalysisBlock({ text }: { text: string }) {
+  return (
+    <div className="space-y-3 rounded-md border border-border bg-white p-4 text-sm leading-7 text-muted-foreground">
+      {text.split("\n\n").map((paragraph) => (
+        <p key={paragraph}>{paragraph}</p>
+      ))}
+    </div>
+  )
+}
+
 function SharePreview({ result }: { result: BaziResult }) {
   return (
     <div className="rounded-lg border border-primary/20 bg-accent p-5">
@@ -378,7 +410,7 @@ function SharePreview({ result }: { result: BaziResult }) {
           {result.dayMaster.element}
         </div>
         <p className="mx-auto mt-4 max-w-md text-sm leading-7">
-          {result.dayMaster.description}仅供娱乐参考。
+          {result.dayMaster.description}
         </p>
       </div>
       <div className="mt-6 grid grid-cols-4 gap-2 text-center text-sm">
@@ -389,77 +421,7 @@ function SharePreview({ result }: { result: BaziResult }) {
           </div>
         ))}
       </div>
-      <p className="mt-5 text-center text-xs text-muted-foreground">
-        传统文化娱乐参考，不构成现实决策建议。
-      </p>
+      <p className="mt-5 text-center text-xs text-muted-foreground">qiu.dev 八字排盘</p>
     </div>
-  )
-}
-
-function MonetizationPreview({ result }: { result: BaziResult }) {
-  const paidStatus = result.monetization.paidEnabled ? "内测中" : "即将开放"
-  const paidItems = [
-    "详细性格报告",
-    "事业方向报告",
-    "感情相处参考",
-    "财富观念参考",
-    "流年简析",
-    "PDF 报告增强版",
-    "分享海报下载",
-  ]
-  const relatedProducts = [
-    { title: "八字详细报告", price: result.monetization.baziPriceCny },
-    { title: "取名详细报告", price: result.monetization.namePriceCny },
-    { title: "吉日专项报告", price: result.monetization.auspiciousDatePriceCny },
-  ]
-
-  return (
-    <Card className="bg-white print:hidden">
-      <CardHeader>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <CardTitle>详细报告</CardTitle>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              第一版先展示价格与功能范围，不接真实支付平台，不写入支付状态。
-            </p>
-          </div>
-          <Badge variant="outline" className="w-fit bg-white">
-            {paidStatus}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-5">
-        <div className="rounded-md border border-border p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <div className="text-lg font-semibold">八字详细报告</div>
-              <div className="mt-1 text-sm text-muted-foreground">
-                ¥{result.monetization.baziPriceCny} · {result.monetization.status}
-              </div>
-            </div>
-            <Button type="button" disabled>
-              <Lock aria-hidden="true" />
-              解锁详细报告
-            </Button>
-          </div>
-          <div className="mt-4 grid gap-2 sm:grid-cols-2">
-            {paidItems.map((item) => (
-              <div key={item} className="rounded-md bg-background p-3 text-sm text-muted-foreground">
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-3">
-          {relatedProducts.map((item) => (
-            <div key={item.title} className="rounded-md bg-background p-4">
-              <div className="font-medium">{item.title}</div>
-              <div className="mt-2 text-2xl font-semibold">¥{item.price}</div>
-              <div className="mt-2 text-sm text-muted-foreground">展示入口，功能即将开放</div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
   )
 }

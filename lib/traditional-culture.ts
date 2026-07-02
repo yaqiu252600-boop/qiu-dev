@@ -7,7 +7,8 @@ const unsafeAlmanacTerms = new Set(["开光", "法事", "求医", "治病", "安
 const stems = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
 const branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
 const elementNames = ["木", "火", "土", "金", "水"] as const
-const stemElements: Record<string, (typeof elementNames)[number]> = {
+type ElementName = (typeof elementNames)[number]
+const stemElements: Record<string, ElementName> = {
   甲: "木",
   乙: "木",
   丙: "火",
@@ -19,7 +20,7 @@ const stemElements: Record<string, (typeof elementNames)[number]> = {
   壬: "水",
   癸: "水",
 }
-const branchElements: Record<string, (typeof elementNames)[number]> = {
+const branchElements: Record<string, ElementName> = {
   子: "水",
   丑: "土",
   寅: "木",
@@ -407,16 +408,38 @@ const elementLabelMap: Record<FiveElementKey, string> = {
 }
 
 const dayMasterNotes: Record<string, string> = {
-  甲: "甲木如大树，传统命理文化中通常认为其象征向上、生发与原则感。",
-  乙: "乙木如花草，可以理解为一种柔韧、细腻与善于适应的倾向。",
-  丙: "丙火如日光，传统命理文化中通常认为其象征开放、热情与表达力。",
-  丁: "丁火如灯烛，可以理解为一种敏锐、专注与温和照亮他人的倾向。",
-  戊: "戊土如高山，传统命理文化中通常认为其象征承载、稳定与责任感。",
-  己: "己土如田园，可以理解为一种包容、务实与重视秩序的倾向。",
-  庚: "庚金如矿石，传统命理文化中通常认为其象征决断、规则与行动力。",
-  辛: "辛金如珠玉，可以理解为一种审美、精细与重视品质的倾向。",
-  壬: "壬水如江河，传统命理文化中通常认为其象征流动、视野与学习力。",
-  癸: "癸水如雨露，可以理解为一种敏感、观察与润物无声的倾向。",
+  甲: "甲木如大树，重视生长、原则、秩序和长期积累。",
+  乙: "乙木如花草，重视柔韧、审美、适应力和细节经营。",
+  丙: "丙火如日光，重视开放、表达、热情和影响力。",
+  丁: "丁火如灯烛，重视敏锐、专注、感受力和温和照亮。",
+  戊: "戊土如高山，重视承载、稳定、责任感和边界感。",
+  己: "己土如田园，重视包容、务实、照料和秩序维护。",
+  庚: "庚金如矿石，重视决断、规则、行动力和结构化能力。",
+  辛: "辛金如珠玉，重视品质、审美、精细度和分寸感。",
+  壬: "壬水如江河，重视流动、视野、学习力和信息整合。",
+  癸: "癸水如雨露，重视观察、敏感、渗透力和安静滋养。",
+}
+
+const elementTraits: Record<ElementName, string> = {
+  木: "成长、规划、学习、创意和关系伸展",
+  火: "表达、热情、看见、传播和现场感染力",
+  土: "稳定、承载、信用、管理和资源整合",
+  金: "规则、判断、效率、品质和边界意识",
+  水: "流动、思考、信息、洞察和适应变化",
+}
+
+const tenGodMeanings: Record<string, string> = {
+  比肩: "自我意识、同辈关系、独立性和竞争感",
+  劫财: "行动冲劲、资源争取、合作拉扯和即时反应",
+  食神: "表达、享受、输出、审美和稳定的创造力",
+  伤官: "突破、才华、锋芒、质疑精神和表达欲",
+  偏财: "机会、流动资源、人情往来和市场敏感度",
+  正财: "秩序、稳定收益、责任意识和现实经营",
+  七杀: "压力、挑战、执行力、速度和风险意识",
+  正官: "规则、名誉、责任、规范和组织位置",
+  偏印: "直觉、特殊兴趣、独立理解和非线性学习",
+  正印: "学习、保护、贵人、体系知识和稳定支持",
+  日主: "自我核心、主观感受和表达中心",
 }
 
 function countFiveElements(pillars: string[]) {
@@ -446,10 +469,110 @@ function describeElementBalance(counts: Record<FiveElementKey, number>) {
   const leading = sorted.filter(([, value]) => value === sorted[0][1])
   const quiet = sorted.filter(([, value]) => value === sorted[sorted.length - 1][1])
 
+  const leadingElements = leading.map(([key]) => elementLabelMap[key]) as ElementName[]
+  const quietElements = quiet.map(([key]) => elementLabelMap[key]) as ElementName[]
+
   return {
-    leading: leading.map(([key]) => elementLabelMap[key]),
-    quiet: quiet.map(([key]) => elementLabelMap[key]),
-    text: `五行统计中，${leading.map(([key]) => elementLabelMap[key]).join("、")}相对突出，${quiet.map(([key]) => elementLabelMap[key]).join("、")}相对较少。传统命理文化中通常认为，这可以作为观察气质与表达方式的一个民俗参考。`,
+    leading: leadingElements,
+    quiet: quietElements,
+    text: `五行统计中，${leadingElements.join("、")}相对突出，${quietElements.join("、")}相对较少。突出的部分代表更容易被看见的表达方式，较少的部分则适合用环境、习惯和长期训练去补足。`,
+  }
+}
+
+function getElementCount(counts: Record<FiveElementKey, number>, element: ElementName) {
+  return counts[elementKeyMap[element]]
+}
+
+function joinMeanings(gods: string[]) {
+  return Array.from(new Set(gods))
+    .map((god) => `${god}偏向${tenGodMeanings[god] ?? "关系与状态变化"}`)
+    .join("；")
+}
+
+function createBaziAnalysis(params: {
+  dayMaster: string
+  dayElement: ElementName
+  counts: Record<FiveElementKey, number>
+  balance: ReturnType<typeof describeElementBalance>
+  pillars: string[]
+  tenGodStem: string[]
+  tenGodBranch: string[]
+  naYin: string[]
+}) {
+  const { dayMaster, dayElement, counts, balance, pillars, tenGodStem, tenGodBranch, naYin } = params
+  const allGods = [...tenGodStem, ...tenGodBranch]
+  const strongest = balance.leading.join("、")
+  const quiet = balance.quiet.join("、")
+  const dayElementCount = getElementCount(counts, dayElement)
+  const hasOutput = allGods.includes("食神") || allGods.includes("伤官")
+  const hasWealth = allGods.includes("正财") || allGods.includes("偏财")
+  const hasOfficer = allGods.includes("正官") || allGods.includes("七杀")
+  const hasResource = allGods.includes("正印") || allGods.includes("偏印")
+  const hasPeer = allGods.includes("比肩") || allGods.includes("劫财")
+  const currentYear = new Date().getFullYear()
+
+  const personality = [
+    `${dayMasterNotes[dayMaster] ?? "日主代表一个人的核心表达方式。"}本盘日主为${dayMaster}${dayElement}，日主五行在四柱显性统计中出现 ${dayElementCount} 次，说明自我表达并不是孤立存在，而是会受到${strongest}气场牵引。`,
+    `${balance.text}${strongest}偏强时，做事更容易从${balance.leading.map((item) => elementTraits[item]).join("、")}这些方向启动；${quiet}偏少时，遇到相关议题可能需要更刻意地练习和补充。`,
+    `十神组合里，${joinMeanings(allGods)}。这组关系让性格呈现出多层次：一方面看日主本身的稳定倾向，另一方面也要看外界任务、资源关系和表达欲如何把人推向不同状态。`,
+  ].join("\n\n")
+
+  const career = [
+    hasOfficer
+      ? "事业上，盘中带有官杀信息，适合观察自己在规则、责任、目标压力和组织协作中的表现。遇到清晰标准、明确期限或需要承担责任的位置时，反而容易被激发执行力。"
+      : "事业上，盘中官杀压力不算最显眼，路径更适合从兴趣、能力沉淀、作品积累或资源经营里慢慢拉开差距，而不是完全依赖外部头衔推动。",
+    hasOutput
+      ? "食伤信息明显时，表达、策划、内容输出、产品设计、教学展示、审美创作、技术方案解释等方向更值得测试。重点是把想法做成稳定输出，而不是只停留在灵感。"
+      : "食伤信息不强时，工作中可以刻意训练表达和交付能力，把经验沉淀成文档、模板、流程或作品，让别人更容易看见你的价值。",
+    hasResource
+      ? "印星信息给到学习、体系化和吸收能力，适合长期型专业、证书学习、研究型任务、后台支撑、知识服务或需要持续输入的岗位。"
+      : "印星不突出时，不宜完全依赖被动学习，更适合用项目、实战和反馈逼出成长，把知识快速放进真实场景里验证。",
+  ].join("\n\n")
+
+  const relationship = [
+    hasPeer
+      ? "关系相处里，比劫信息会增强自我立场和同辈互动感。优点是讲义气、有参与感，缺点是容易在亲近关系里较劲，或在资源分配上敏感。"
+      : "关系相处里，比劫不算最突出，很多时候不会天然把自己放在对抗位置，更适合通过清晰表达需求来建立边界。",
+    hasOutput
+      ? "表达型十神存在时，感情中的吸引力往往来自真实表达、幽默感、审美和情绪流动。需要注意的是，表达欲强时别把即时感受当成最终结论。"
+      : "表达型十神不强时，感情里可能更偏行动或责任表达。建议主动把关心说出来，避免让对方只能靠猜来理解你的在意。",
+    `从五行看，${strongest}较突出会让关系中的主要能量落在${balance.leading.map((item) => elementTraits[item]).join("、")}；${quiet}较少则提醒你在相关议题上多一点耐心和练习。`,
+  ].join("\n\n")
+
+  const wealth = [
+    hasWealth
+      ? "财富观念上，财星信息出现，说明盘面很重视现实资源、交换关系、机会捕捉和生活经营。适合把赚钱看成长期能力组合：专业、渠道、信用和执行节奏。"
+      : "财富观念上，财星不是最显眼的主轴，早期更适合先建立可复用能力和稳定作品，再通过资源连接与场景选择提升收益质量。",
+    hasOutput && hasWealth
+      ? "食伤与财星同时可见时，适合测试“输出带来机会”的路径，例如内容、产品、销售表达、技术服务、咨询方案、作品变现等。关键是把输出变成可交付、可复购、可被传播的东西。"
+      : "如果想增强财富转化，重点不是追短期机会，而是把能力包装成别人能理解、能购买、能信任的结果。",
+    `五行中${strongest}偏强，资源处理方式会带有${balance.leading.map((item) => elementTraits[item]).join("、")}的色彩；做财务规划时，最好把冲动消费、情绪决策和人情压力拆开看。`,
+  ].join("\n\n")
+
+  const yearly = [
+    `流年简析先以近三年做文化参考。${currentYear} 年适合观察外部环境给你的任务变化：如果正在换方向，重点是先把核心能力和作息节奏稳定下来。`,
+    `${currentYear + 1} 年更适合把前一年试出来的方向做结构化整理，尤其是流程、作品、证据、客户反馈和长期学习路径。`,
+    `${currentYear + 2} 年适合看成果转化：哪些关系值得长期维护，哪些项目值得扩大，哪些消耗需要停止。流年分析更像年度复盘框架，可以拿来做计划检查表。`,
+  ].join("\n\n")
+
+  const communication = [
+    `沟通上，${dayMaster}${dayElement}需要先理解自己的启动方式：${elementTraits[dayElement]}是核心底色。遇到冲突时，先区分“事实问题、情绪问题、边界问题”，会比急着判断对错更有效。`,
+    `${quiet}较少，说明在${balance.quiet.map((item) => elementTraits[item]).join("、")}相关场景里可以更主动补课。比如用固定复盘、运动、阅读、社交练习、表达训练来补齐体验。`,
+  ].join("\n\n")
+
+  const life = [
+    `生活建议上，五行不是要追求绝对平均，而是看哪里太满、哪里太少。${strongest}强的时候，要防止同一种模式反复用力；${quiet}少的时候，要给它留出稳定进入生活的入口。`,
+    `四柱为${pillars.join("、")}，纳音为${naYin.join("、")}。可以把它当作一组象征系统：用来帮助整理自我观察，而不是替代现实行动。真正能改变体验的，仍然是选择、习惯、关系质量和长期训练。`,
+  ].join("\n\n")
+
+  return {
+    personality,
+    career,
+    relationship,
+    wealth,
+    yearly,
+    communication,
+    life,
   }
 }
 
@@ -495,13 +618,21 @@ export function generateBaziReport(input: BaziRequest) {
     day: hiddenStems[dayParts.branch] ?? [],
     hour: hiddenStems[hourParts.branch] ?? [],
   }
+  const analysis = createBaziAnalysis({
+    dayMaster,
+    dayElement: stemElements[dayMaster],
+    counts: fiveElements,
+    balance,
+    pillars: bazi,
+    tenGodStem,
+    tenGodBranch,
+    naYin,
+  })
 
   const summary = [
-    `${dayMasterNotes[dayMaster] ?? "日主可作为观察个人表达方式的传统文化符号。"}这类解读仅供娱乐参考，不建议作为现实重大决策依据。`,
+    `${dayMasterNotes[dayMaster] ?? "日主可作为观察个人表达方式的传统文化符号。"}`,
     balance.text,
-    `从十神关系看，天干显示为${tenGodStem.join("、")}，地支显示为${tenGodBranch.join("、")}。它更适合被理解为传统术语中的关系标签，而不是对现实结果的判断。`,
-    `性格参考上，可以把日主与五行分布看作一种倾向：适合观察自己在沟通、节奏、耐心和行动方式上的偏好。事业方向参考也应回到真实能力、行业机会和长期训练，不宜用排盘结果替代职业选择。`,
-    `生活建议上，若某一类五行特别突出，可以提醒自己保持节奏平衡；若某一类较少，则可以在学习、运动、社交和作息中补充相应的生活体验。`,
+    `从十神关系看，天干显示为${tenGodStem.join("、")}，地支显示为${tenGodBranch.join("、")}。这些标签可以帮助观察自我、表达、资源、压力、学习和关系之间的互动。`,
   ].join("\n\n")
 
   return {
@@ -559,16 +690,7 @@ export function generateBaziReport(input: BaziRequest) {
       description: dayMasterNotes[dayMaster] ?? "日主可作为传统命理文化中的观察符号。",
     },
     summary,
-    monetization: {
-      paidEnabled: process.env.NEXT_PUBLIC_ENABLE_BAZI_PAID === "true",
-      baziPriceCny: process.env.BAZI_REPORT_PRICE_CNY ?? "9.9",
-      namePriceCny: "19.9",
-      auspiciousDatePriceCny: "9.9",
-      status:
-        process.env.NEXT_PUBLIC_ENABLE_BAZI_PAID === "true"
-          ? "支付能力预留中，请接入真实订单后解锁"
-          : "详细报告功能即将开放",
-    },
+    analysis,
     disclaimer: cultureDisclaimer,
   }
 }
