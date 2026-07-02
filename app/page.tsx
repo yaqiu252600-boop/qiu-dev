@@ -12,6 +12,7 @@ import {
 import { ProjectCard } from "@/components/project-card"
 import { SectionHeading } from "@/components/section-heading"
 import { StatusBadge } from "@/components/status-badge"
+import { TraditionalToolsSection } from "@/components/traditional-tools-section"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -148,6 +149,8 @@ export default function HomePage() {
           </Card>
         </div>
       </section>
+
+      <TraditionalToolsSection />
 
       <section className="py-4 sm:py-10">
         <div className="container">
