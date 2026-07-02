@@ -1,10 +1,4 @@
-import {
-  Document,
-  HeadingLevel,
-  Packer,
-  Paragraph,
-  TextRun,
-} from "docx"
+import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx"
 import { inflateSync } from "zlib"
 
 type PdfTextToken = {
@@ -19,19 +13,35 @@ export type ConversionResult = {
   textItemCount: number
 }
 
-const MAX_FILE_SIZE = 15 * 1024 * 1024
+export const PDF_TO_WORD_LIMITS = {
+  maxFileSizeMb: 10,
+  maxOcrPages: 10,
+  ocrLanguages: ["eng", "chi_sim"],
+} as const
+
+const MAX_FILE_SIZE = PDF_TO_WORD_LIMITS.maxFileSizeMb * 1024 * 1024
 
 export function getPdfToWordStatus() {
   return {
     available: true,
-    mode: "server-text",
-    message: "在线转换服务已可用。当前支持文本型 PDF 转为可编辑 Word；扫描件暂不做 OCR。",
+    mode: "server-text-plus-browser-ocr",
+    supportsTextPdf: true,
+    supportsOcr: true,
+    ocrMode: "browser",
+    ocrLanguages: PDF_TO_WORD_LIMITS.ocrLanguages,
+    maxOcrPages: PDF_TO_WORD_LIMITS.maxOcrPages,
+    maxFileSizeMb: PDF_TO_WORD_LIMITS.maxFileSizeMb,
+    message: "在线转换服务已可用。文本型 PDF 走服务端快速转换；扫描件 PDF 会在浏览器端 OCR。",
   }
 }
 
 export function validatePdfFile(file: File) {
+  if (file.size <= 0) {
+    throw new Error("PDF 文件为空，请重新上传。")
+  }
+
   if (file.size > MAX_FILE_SIZE) {
-    throw new Error("PDF 文件太大，请上传 15MB 以内的文件。")
+    throw new Error(`PDF 文件太大，请上传 ${PDF_TO_WORD_LIMITS.maxFileSizeMb}MB 以内的文件。`)
   }
 }
 
@@ -351,9 +361,7 @@ export async function convertPdfToWord(file: File): Promise<ConversionResult> {
   const extracted = extractPdfText(buffer)
 
   if (extracted.textItemCount === 0) {
-    throw new Error(
-      "没有从 PDF 中提取到可编辑文本。这个文件可能是扫描件图片版，当前线上版暂不支持 OCR。",
-    )
+    throw new Error("没有从 PDF 中提取到可编辑文本。这个文件可能是扫描件或图片版 PDF，需要浏览器 OCR。")
   }
 
   const document = new Document({
