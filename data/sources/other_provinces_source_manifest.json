@@ -705,18 +705,24 @@
     "province": "河南",
     "year": 2026,
     "data_type": "admission_plans",
-    "source_name": "河南省教育考试院",
-    "source_url": "https://www.haeea.cn/",
-    "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:36.429Z",
-    "raw_file_path": "",
+    "source_name": "河南招生考试信息网",
+    "source_url": "https://www.heao.com.cn/path/HNptgz/202606/819808524304453.shtml",
+    "source_updated_at": "2026-06-24",
+    "downloaded_at": "2026-07-02T03:20:15.628Z",
+    "raw_file_path": "data/raw/provinces/henan/2026-admission-plans/henan_2026_admission_plan_supplement_page.html",
     "processed_file_path": "",
-    "raw_files": [],
+    "raw_files": [
+      "data/raw/provinces/henan/2026-admission-plans/henan_2026_admission_plan_supplement_page.html",
+      "data/raw/provinces/henan/2026-admission-plans/henan_2026_admission_plan_supplement_tianjin_university.pdf",
+      "data/raw/provinces/henan/2026-admission-plans/henan_2026_admission_plan_supplement_wuhan_technology.pdf",
+      "data/raw/provinces/henan/2026-admission-plans/henan_2026_admission_plan_supplement_jilin_jianzhu.pdf",
+      "data/raw/provinces/henan/2026-admission-plans/henan_2026_admission_plan_supplement_heilongjiang_jiaotong.pdf"
+    ],
     "processed_files": [],
     "total_rows": 0,
     "imported_rows": 0,
     "row_count": 0,
-    "status": "failed",
+    "status": "missing",
     "missing_fields": [
       "university_code",
       "university_name",
@@ -727,25 +733,27 @@
     "usable_for_score_reference": false,
     "usable_for_rank_recommendation": false,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次无法访问官方站点或高考栏目，未获取到可信数据。"
+    "notes": "仅找到2026年招生计划补充说明及少量高校补充PDF，不是完整分学校、分专业、分计划数招生计划；官方招生计划查询入口当前不可解析为空白页面，未导入admission_plans。"
   },
   {
     "id": "henan_2023_admission_scores",
     "province": "河南",
     "year": 2023,
     "data_type": "admission_scores",
-    "source_name": "河南省教育考试院",
-    "source_url": "https://www.haeea.cn/",
+    "source_name": "河南省教育考试院 / 河南招生考试信息网",
+    "source_url": "https://datacenter.haeea.cn/PagePZQuery/ShowPZLQ.aspx",
     "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:36.429Z",
-    "raw_file_path": "",
+    "downloaded_at": "2026-07-02T03:20:15.628Z",
+    "raw_file_path": "data/raw/provinces/henan/2023-admission-scores/source_status.json",
     "processed_file_path": "",
-    "raw_files": [],
+    "raw_files": [
+      "data/raw/provinces/henan/2023-admission-scores/source_status.json"
+    ],
     "processed_files": [],
     "total_rows": 0,
     "imported_rows": 0,
     "row_count": 0,
-    "status": "failed",
+    "status": "blocked",
     "missing_fields": [
       "university_code",
       "university_name",
@@ -756,25 +764,27 @@
     "usable_for_score_reference": false,
     "usable_for_rank_recommendation": false,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次无法访问官方站点或高考栏目，未获取到可信数据。"
+    "notes": "官方数据中心录取统计入口当前为空白/不可解析；本轮未找到官方公开可批量下载的普通类本科批投档线/录取线文件，未使用非官方来源。"
   },
   {
     "id": "henan_2024_admission_scores",
     "province": "河南",
     "year": 2024,
     "data_type": "admission_scores",
-    "source_name": "河南省教育考试院",
-    "source_url": "https://www.haeea.cn/",
+    "source_name": "河南省教育考试院 / 河南招生考试信息网",
+    "source_url": "https://datacenter.haeea.cn/PagePZQuery/ShowPZLQ.aspx",
     "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:36.429Z",
-    "raw_file_path": "",
+    "downloaded_at": "2026-07-02T03:20:15.628Z",
+    "raw_file_path": "data/raw/provinces/henan/2024-admission-scores/source_status.json",
     "processed_file_path": "",
-    "raw_files": [],
+    "raw_files": [
+      "data/raw/provinces/henan/2024-admission-scores/source_status.json"
+    ],
     "processed_files": [],
     "total_rows": 0,
     "imported_rows": 0,
     "row_count": 0,
-    "status": "failed",
+    "status": "blocked",
     "missing_fields": [
       "university_code",
       "university_name",
@@ -785,25 +795,27 @@
     "usable_for_score_reference": false,
     "usable_for_rank_recommendation": false,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次无法访问官方站点或高考栏目，未获取到可信数据。"
+    "notes": "官方数据中心录取统计入口当前为空白/不可解析；本轮未找到官方公开可批量下载的普通类本科批投档线/录取线文件，未使用非官方来源。"
   },
   {
     "id": "henan_2025_admission_scores",
     "province": "河南",
     "year": 2025,
     "data_type": "admission_scores",
-    "source_name": "河南省教育考试院",
-    "source_url": "https://www.haeea.cn/",
+    "source_name": "河南省教育考试院 / 河南招生考试信息网",
+    "source_url": "https://pzwb.haeea.cn/PZService/default.aspx",
     "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:36.429Z",
-    "raw_file_path": "",
+    "downloaded_at": "2026-07-02T03:20:15.628Z",
+    "raw_file_path": "data/raw/provinces/henan/2025-admission-scores/source_status.json",
     "processed_file_path": "",
-    "raw_files": [],
+    "raw_files": [
+      "data/raw/provinces/henan/2025-admission-scores/source_status.json"
+    ],
     "processed_files": [],
     "total_rows": 0,
     "imported_rows": 0,
     "row_count": 0,
-    "status": "failed",
+    "status": "blocked",
     "missing_fields": [
       "university_code",
       "university_name",
@@ -814,55 +826,65 @@
     "usable_for_score_reference": false,
     "usable_for_rank_recommendation": false,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次无法访问官方站点或高考栏目，未获取到可信数据。"
+    "notes": "河南招生考试信息网2026考生指南说明，考生本人所填报的普通本科批相关专业组投档分数线通过河南省普通高校招生考生服务平台查询；本轮未找到官方公开可批量下载的2025普通本科批投档线/录取线文件，未绕过考生登录。"
   },
   {
     "id": "henan_2026_province_rules",
     "province": "河南",
     "year": 2026,
     "data_type": "province_rules",
-    "source_name": "河南省教育考试院",
-    "source_url": "https://www.haeea.cn/",
-    "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:36.429Z",
-    "raw_file_path": "",
+    "source_name": "河南招生考试信息网",
+    "source_url": "https://www.heao.com.cn/path/HNptgz/202606/819815591440453.shtml",
+    "source_updated_at": "2026-06-24",
+    "downloaded_at": "2026-07-02T03:20:15.628Z",
+    "raw_file_path": "data/raw/provinces/henan/2026-rules/819815591440453.html",
     "processed_file_path": "",
-    "raw_files": [],
+    "raw_files": [
+      "data/raw/provinces/henan/2026-rules/819815591440453.html",
+      "data/raw/provinces/henan/2026-rules/816663211892805.html",
+      "data/raw/provinces/henan/2026-rules/820436374315077.html",
+      "data/raw/provinces/henan/2026-rules/henan_2026_gaokao_q_and_a.pdf"
+    ],
     "processed_files": [],
     "total_rows": 0,
     "imported_rows": 0,
     "row_count": 0,
-    "status": "failed",
+    "status": "partial",
     "missing_fields": [
-      "volunteer_mode",
-      "fill_time_start",
-      "fill_time_end"
+      "structured_volunteer_rule_csv"
     ],
     "queryable": false,
     "usable_for_score_reference": false,
     "usable_for_rank_recommendation": false,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次无法访问官方站点或高考栏目，未获取到可信数据。"
+    "notes": "已保存河南招生考试信息网公开的2026考生指南、百问百答和志愿填报系统使用指南页面/PDF。用于规则说明，不作为结构化推荐数据。"
   },
   {
     "id": "henan_2026_score_segments",
     "province": "河南",
     "year": 2026,
     "data_type": "score_segments",
-    "source_name": "河南省教育考试院",
-    "source_url": "https://www.haeea.cn/",
-    "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:36.429Z",
-    "raw_file_path": "",
+    "source_name": "河南招生考试信息网",
+    "source_url": "https://www.heao.com.cn/path/HNptgz/202606/820045207449669.shtml",
+    "source_updated_at": "2026-06-25",
+    "downloaded_at": "2026-07-02T03:20:15.628Z",
+    "raw_file_path": "data/raw/provinces/henan/2026-score-segments/henan_2026_score_segments_history.pdf",
     "processed_file_path": "",
-    "raw_files": [],
+    "raw_files": [
+      "data/raw/provinces/henan/2026-score-segments/henan_2026_score_segments_page.html",
+      "data/raw/provinces/henan/2026-score-segments/henan_2026_score_segments_history.pdf",
+      "data/raw/provinces/henan/2026-score-segments/henan_2026_score_segments_physics.pdf"
+    ],
     "processed_files": [],
+    "pending_review_files": [
+      "data/pending-review/henan_2026_score_segments_history_pending_review.csv",
+      "data/pending-review/henan_2026_score_segments_physics_pending_review.csv"
+    ],
     "total_rows": 0,
     "imported_rows": 0,
     "row_count": 0,
-    "status": "failed",
+    "status": "pending_review",
     "missing_fields": [
-      "score",
       "same_score_count",
       "cumulative_count"
     ],
@@ -870,7 +892,7 @@
     "usable_for_score_reference": false,
     "usable_for_rank_recommendation": false,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次无法访问官方站点或高考栏目，未获取到可信数据。"
+    "notes": "已保存河南招生考试信息网官方2026年普通高招分数段统计表PDF（历史类、物理类）。PDF无文本层，自动抽取CSV为空，仅保留pending-review记录；人工/OCR复核前不进入processed/score-segments，不参与分数换位次。"
   },
   {
     "id": "hubei_2026_admission_plans",

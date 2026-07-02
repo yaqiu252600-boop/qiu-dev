@@ -1,0 +1,10 @@
+{
+  "province": "河南",
+  "year": 2023,
+  "data_type": "admission_scores",
+  "source_name": "河南省教育考试院 / 河南招生考试信息网",
+  "source_url": "https://datacenter.haeea.cn/PagePZQuery/ShowPZLQ.aspx",
+  "status": "blocked",
+  "checked_at": "2026-07-02",
+  "failure_reason": "官方数据中心录取统计入口在当前环境渲染为空白，未找到公开可批量下载的 2023 普通本科批投档线或录取线文件；未使用非官方来源，未绕过登录或验证码。"
+}

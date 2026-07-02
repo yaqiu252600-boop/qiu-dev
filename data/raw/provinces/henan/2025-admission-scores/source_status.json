@@ -1,0 +1,10 @@
+{
+  "province": "河南",
+  "year": 2025,
+  "data_type": "admission_scores",
+  "source_name": "河南省教育考试院 / 河南招生考试信息网",
+  "source_url": "https://pzwb.haeea.cn/PZService/default.aspx",
+  "status": "blocked",
+  "checked_at": "2026-07-02",
+  "failure_reason": "河南招生考试信息网 2026 考生指南说明，考生本人所填报的普通本科批相关专业组投档分数线通过河南省普通高校招生考生服务平台查询；本轮未找到公开可批量下载的 2025 普通本科批投档线或录取线文件，未绕过考生登录。"
+}

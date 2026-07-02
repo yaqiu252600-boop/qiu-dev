@@ -270,7 +270,7 @@
     "province_slug": "henan",
     "exam_authority_name": "河南省教育考试院",
     "official_site": "https://www.haeea.cn/",
-    "gaokao_channel_url": "https://www.haeea.cn/",
+    "gaokao_channel_url": "https://www.heao.com.cn/path/HNptgz/",
     "search_keywords": [
       "河南 2026 一分一段表",
       "河南 2026 普通高考 一分一段",
@@ -281,8 +281,8 @@
       "河南 2026 志愿填报 时间"
     ],
     "priority_batch": 1,
-    "status": "todo",
-    "notes": "本配置排除江苏；仅使用官方或权威公开来源。"
+    "status": "partial_official_discovery",
+    "notes": "已发现河南招生考试信息网公开2026分数段、规则和招生计划补充说明；2023/2024/2025普通本科批投档线未找到公开可批量下载官方文件，当前不导入。"
   },
   {
     "province": "湖北",

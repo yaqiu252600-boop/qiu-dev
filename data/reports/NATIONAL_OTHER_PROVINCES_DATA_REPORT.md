@@ -20,7 +20,7 @@
 | 浙江 | 浙江省教育考试院 | https://www.zjzs.net/ | https://www.zjzs.net/ | checked |
 | 安徽 | 安徽省教育招生考试院 | https://www.ahzsks.cn/ | https://www.ahzsks.cn/ptgxzs/ | checked |
 | 山东 | 山东省教育招生考试院 | https://www.sdzk.cn/ | https://www.sdzk.cn/NewsList.aspx?BCID=4 | checked |
-| 河南 | 河南省教育考试院 | https://www.haeea.cn/ | https://www.haeea.cn/ | failed |
+| 河南 | 河南省教育考试院 / 河南招生考试信息网 | https://www.haeea.cn/ | https://www.heao.com.cn/path/HNptgz/ | checked |
 | 湖北 | 湖北省教育考试院 | http://www.hbea.edu.cn/ | http://www.hbea.edu.cn/html/ptgk/ | checked |
 | 湖南 | 湖南省教育考试院 / 湖南招生考试信息港 | https://www.hneeb.cn/ | https://www.hneeb.cn/hnxxg/741/index.htm | checked |
 | 广东 | 广东省教育考试院 | https://eea.gd.gov.cn/ | https://eea.gd.gov.cn/ptgk/ | checked |
@@ -44,7 +44,7 @@
 | 福建 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
 | 江西 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
 | 山东 | partial | verified | verified | verified | partial | partial | 仅院校查询、可查投档线、可做位次参考 |
-| 河南 | failed | failed | failed | failed | failed | failed | 仅院校查询 |
+| 河南 | pending_review | blocked | blocked | blocked | missing | partial | 仅院校查询 |
 | 湖北 | partial | missing | missing | missing | missing | missing | 仅院校查询 |
 | 湖南 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
 | 广东 | missing | missing | missing | missing | partial | partial | 仅院校查询 |
@@ -128,14 +128,18 @@
 - 四川 / 2026 / province_rules / 四川省教育考试院 / https://www.sceea.cn/
 - 四川 / 2026 / score_segments / 四川省教育考试院 / https://www.sceea.cn/
 
-## failed 数据
+## 河南本轮更新
 
-- 河南 / 2026 / admission_plans / 河南省教育考试院 / https://www.haeea.cn/
-- 河南 / 2023 / admission_scores / 河南省教育考试院 / https://www.haeea.cn/
-- 河南 / 2024 / admission_scores / 河南省教育考试院 / https://www.haeea.cn/
-- 河南 / 2025 / admission_scores / 河南省教育考试院 / https://www.haeea.cn/
-- 河南 / 2026 / province_rules / 河南省教育考试院 / https://www.haeea.cn/
-- 河南 / 2026 / score_segments / 河南省教育考试院 / https://www.haeea.cn/
+- 河南 / 2026 / score_segments / 河南招生考试信息网 / https://www.heao.com.cn/path/HNptgz/202606/820045207449669.shtml / pending_review
+- 河南 / 2023 / admission_scores / 河南省教育考试院 / 河南招生考试信息网 / https://datacenter.haeea.cn/PagePZQuery/ShowPZLQ.aspx / blocked
+- 河南 / 2024 / admission_scores / 河南省教育考试院 / 河南招生考试信息网 / https://datacenter.haeea.cn/PagePZQuery/ShowPZLQ.aspx / blocked
+- 河南 / 2025 / admission_scores / 河南省教育考试院 / 河南招生考试信息网 / https://pzwb.haeea.cn/PZService/default.aspx / blocked
+- 河南 / 2026 / admission_plans / 河南招生考试信息网 / https://www.heao.com.cn/path/HNptgz/202606/819808524304453.shtml / missing
+- 河南 / 2026 / province_rules / 河南招生考试信息网 / https://www.heao.com.cn/path/HNptgz/202606/819815591440453.shtml / partial
+
+说明：本轮已保存河南 2026 分数段 PDF、招生计划补充说明、志愿填报指南和百问百答等官方 raw 文件；未找到 2023/2024/2025 普通本科批公开可批量下载的官方投档线或录取线，因此未导入河南 `admission_scores`。PDF 分数段没有文本层，待人工/OCR 复核前不进入正式 `score_segments`。
+
+## failed 数据
 
 ## 下一步建议
 

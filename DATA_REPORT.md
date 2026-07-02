@@ -60,6 +60,41 @@ npm run build
 - 江苏：历史分数参考；官方投档线不含 `min_rank`，不做位次参考。
 - 山东：历史位次参考；官方投档表不含最低分，不反推最低分。
 - 浙江：历史分数参考 + 历史位次参考；未导入当年官方招生计划，不开放完整推荐。
+- 河南：本轮仅完成官方源发现和 raw 证据保存；未找到 2023/2024/2025 普通本科批公开可批量下载的官方投档线或录取线文件，暂不开放历史分数参考、历史位次参考或完整推荐。
+
+## 河南官方源发现状态
+
+- 官方入口：
+  - 河南省教育考试院：https://www.haeea.cn/
+  - 河南招生考试信息网：https://www.heao.com.cn/path/HNptgz/
+- 2026 一分一段/分数段：
+  - 来源页面：https://www.heao.com.cn/path/HNptgz/202606/820045207449669.shtml
+  - 已保存 raw：
+    - `data/raw/provinces/henan/2026-score-segments/henan_2026_score_segments_page.html`
+    - `data/raw/provinces/henan/2026-score-segments/henan_2026_score_segments_history.pdf`
+    - `data/raw/provinces/henan/2026-score-segments/henan_2026_score_segments_physics.pdf`
+  - PDF 无文本层，自动抽取到 `data/pending-review/henan_2026_score_segments_*_pending_review.csv` 为空；状态为 `pending_review`，人工/OCR 复核前不进入 `processed/score-segments`，不参与分数换位次。
+- 2023/2024/2025 普通类本科批投档线/录取线：
+  - 未找到河南招生考试信息网公开可批量下载的官方 Excel/CSV/PDF/网页表格。
+  - 官方数据中心录取统计入口 `https://datacenter.haeea.cn/PagePZQuery/ShowPZLQ.aspx` 在当前环境渲染为空白，无法解析结构化表格。
+  - 河南 2026 考生指南说明“考生本人所填报的普通本科批相关专业组投档分数线”通过河南省普通高校招生考生服务平台查询；本轮未绕过考生登录、验证码、考生号或动态口令。
+  - 因未获得可信官方批量数据，河南 `admission_scores` 导入 0 条，状态为 `blocked`。
+- 2026 招生计划：
+  - 来源页面：https://www.heao.com.cn/path/HNptgz/202606/819808524304453.shtml
+  - 已保存“2026年招生计划补充说明”页面及 4 个高校补充说明 PDF。
+  - 这不是完整分学校、分专业、分计划数的招生计划；官方招生计划查询入口当前不可解析为空白页面，未导入 `admission_plans`。
+- 2026 志愿规则：
+  - 已保存：
+    - `data/raw/provinces/henan/2026-rules/819815591440453.html`
+    - `data/raw/provinces/henan/2026-rules/816663211892805.html`
+    - `data/raw/provinces/henan/2026-rules/820436374315077.html`
+    - `data/raw/provinces/henan/2026-rules/henan_2026_gaokao_q_and_a.pdf`
+  - 状态为 `partial`，只作为规则说明和来源证据，不作为结构化推荐数据。
+- 河南当前能力：
+  - 可用：教育部全国院校名单查询。
+  - 不可用：历史分数参考、历史位次参考、分数换位次、招生计划辅助、完整志愿推荐。
+  - 不可用原因：缺少 verified/imported 的河南 2023/2024/2025 投档线；2026 分数段 PDF 待人工复核；缺少完整 2026 官方招生计划。
+- SQLite 仍是构建产物：`data/gaokao-trusted.sqlite` 不提交到 Git。
 
 ## 已验证数据
 

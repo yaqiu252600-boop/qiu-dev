@@ -273,41 +273,6 @@
     }
   },
   {
-    "province": "河南",
-    "province_slug": "henan",
-    "checked_at": "2026-07-01T13:08:36.429Z",
-    "official_site": "https://www.haeea.cn/",
-    "gaokao_channel_url": "https://www.haeea.cn/",
-    "checks": [
-      {
-        "url": "https://www.haeea.cn/",
-        "ok": false,
-        "status": 400,
-        "final_url": "https://www.haeea.cn/",
-        "content_type": "text/html",
-        "blocked": false,
-        "error": ""
-      },
-      {
-        "url": "https://www.haeea.cn/",
-        "ok": false,
-        "status": 400,
-        "final_url": "https://www.haeea.cn/",
-        "content_type": "text/html",
-        "blocked": false,
-        "error": ""
-      }
-    ],
-    "discovered_links": {
-      "henan_2026_score_segments": [],
-      "henan_2023_admission_scores": [],
-      "henan_2024_admission_scores": [],
-      "henan_2025_admission_scores": [],
-      "henan_2026_admission_plans": [],
-      "henan_2026_province_rules": []
-    }
-  },
-  {
     "province": "湖北",
     "province_slug": "hubei",
     "checked_at": "2026-07-01T13:08:37.065Z",
@@ -547,5 +512,109 @@
       ],
       "sichuan_2026_province_rules": []
     }
+  },
+  {
+    "province": "河南",
+    "province_slug": "henan",
+    "checked_at": "2026-07-02T03:20:15.628Z",
+    "official_site": "https://www.haeea.cn/",
+    "gaokao_channel_url": "https://www.heao.com.cn/path/HNptgz/",
+    "checks": [
+      {
+        "url": "https://www.haeea.cn/",
+        "ok": false,
+        "status": 0,
+        "final_url": "https://www.haeea.cn/",
+        "content_type": "",
+        "blocked": false,
+        "error": "Local DNS resolved to 28.0.0.21 and browser portal rendered blank; not used as import source."
+      },
+      {
+        "url": "https://www.heao.com.cn/path/HNptgz/",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://www.heao.com.cn/path/HNptgz/",
+        "content_type": "text/html",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://datacenter.haeea.cn/PagePZQuery/ShowPZLQ.aspx",
+        "ok": false,
+        "status": 0,
+        "final_url": "https://datacenter.haeea.cn/PagePZQuery/ShowPZLQ.aspx",
+        "content_type": "",
+        "blocked": true,
+        "error": "Official data center page rendered blank; no login, captcha, or candidate-only flow was bypassed."
+      },
+      {
+        "url": "https://pzwb.haeea.cn/PZService/default.aspx",
+        "ok": false,
+        "status": 0,
+        "final_url": "https://pzwb.haeea.cn/PZService/default.aspx",
+        "content_type": "",
+        "blocked": true,
+        "error": "Candidate service / volunteer filing platform is not a public batch-download source; no candidate credentials or login flow used."
+      }
+    ],
+    "discovered_links": {
+      "henan_2026_score_segments": [
+        {
+          "url": "https://www.heao.com.cn/path/HNptgz/202606/820045207449669.shtml",
+          "text": "2026年河南省普通高招分数段统计表"
+        },
+        {
+          "url": "https://www.heao.com.cn/prod-api/preview/hnPath/resources/file/2026/06/25/820046032842821.PDF",
+          "text": "2026年河南省普通高招分数段统计表(历史类)"
+        },
+        {
+          "url": "https://www.heao.com.cn/prod-api/preview/hnPath/resources/file/2026/06/25/820046178889797.PDF",
+          "text": "2026年河南省普通高招分数段统计表(物理类)"
+        }
+      ],
+      "henan_2023_admission_scores": [
+        {
+          "url": "https://datacenter.haeea.cn/PagePZQuery/ShowPZLQ.aspx",
+          "text": "官方数据中心录取统计入口，当前不可解析为空白页面"
+        }
+      ],
+      "henan_2024_admission_scores": [
+        {
+          "url": "https://datacenter.haeea.cn/PagePZQuery/ShowPZLQ.aspx",
+          "text": "官方数据中心录取统计入口，当前不可解析为空白页面"
+        }
+      ],
+      "henan_2025_admission_scores": [
+        {
+          "url": "https://pzwb.haeea.cn/PZService/default.aspx",
+          "text": "河南省普通高校招生考生服务平台，考生本人普通本科批相关专业组投档分数线查询"
+        }
+      ],
+      "henan_2026_admission_plans": [
+        {
+          "url": "https://www.heao.com.cn/path/HNptgz/202606/819808524304453.shtml",
+          "text": "2026年招生计划补充说明"
+        },
+        {
+          "url": "https://datacenter.haeea.cn/PagePZQuery/ShowPZJH.aspx",
+          "text": "官方招生计划查询入口，当前不可解析为空白页面"
+        }
+      ],
+      "henan_2026_province_rules": [
+        {
+          "url": "https://www.heao.com.cn/path/HNptgz/202606/819815591440453.shtml",
+          "text": "河南省2026年普通高校招生考生指南（二）填报志愿和录取注意事项"
+        },
+        {
+          "url": "https://www.heao.com.cn/path/HNptgz/202606/816663211892805.shtml",
+          "text": "2026年高考百问百答"
+        },
+        {
+          "url": "https://www.heao.com.cn/path/HNptgz/202606/820436374315077.shtml",
+          "text": "2026年普通高校招生志愿填报系统使用指南"
+        }
+      ]
+    },
+    "notes": "本轮仅使用河南招生考试信息网公开页面和附件。2023/2024/2025 普通本科批投档线或录取统计未找到公开可批量下载文件；数据中心/考生服务入口不可解析或非公开批量数据源，未绕过登录、验证码或考生身份。"
   }
 ]
