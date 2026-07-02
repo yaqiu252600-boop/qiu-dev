@@ -2,7 +2,15 @@
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react"
 import { AlertCircle, CheckCircle2, Download, FileText, Loader2, UploadCloud } from "lucide-react"
-import { Document, HeadingLevel, Packer, PageBreak, Paragraph, TextRun } from "docx"
+import {
+  Document,
+  HeadingLevel,
+  ImageRun,
+  Packer,
+  PageBreak,
+  Paragraph,
+  TextRun,
+} from "docx"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,6 +21,8 @@ const MAX_FILE_SIZE_MB = 10
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 const MAX_OCR_PAGES = 10
 const OCR_LANGUAGES = "eng+chi_sim"
+const OCR_RENDER_SCALE = 2
+const OCR_IMAGE_QUALITY = 0.92
 
 type ConvertState =
   | "idle"
@@ -47,6 +57,9 @@ type StatusPayload = {
 type OcrPageResult = {
   pageNumber: number
   text: string
+  image: Uint8Array
+  width: number
+  height: number
   failed?: boolean
 }
 
@@ -149,34 +162,99 @@ function buildTextParagraph(block: string) {
   })
 }
 
+function dataUrlToUint8Array(dataUrl: string) {
+  const base64 = dataUrl.split(",")[1] || ""
+  const binary = atob(base64)
+  const bytes = new Uint8Array(binary.length)
+
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index)
+  }
+
+  return bytes
+}
+
+function getFittedImageSize(width: number, height: number) {
+  const landscape = width > height
+  const maxWidth = landscape ? 920 : 650
+  const maxHeight = landscape ? 620 : 910
+  const scale = Math.min(maxWidth / width, maxHeight / height, 1)
+
+  return {
+    width: Math.round(width * scale),
+    height: Math.round(height * scale),
+  }
+}
+
 async function createOcrWord(fileName: string, pages: OcrPageResult[]) {
-  const children: Paragraph[] = [
+  const visualChildren: Paragraph[] = [
     new Paragraph({
       text: "PDF OCR 转 Word 结果",
       heading: HeadingLevel.TITLE,
-      spacing: { after: 240 },
+      spacing: { after: 200 },
     }),
     new Paragraph({
       children: [new TextRun({ text: `文件名：${fileName}` })],
-      spacing: { after: 320 },
+      spacing: { after: 160 },
+    }),
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "为避免扫描件、表格和复杂版式被拆散，正文按原 PDF 页面图片保留版面；OCR 识别文字放在文末附录，便于复制和校对。",
+        }),
+      ],
+      spacing: { after: 280 },
     }),
   ]
 
   pages.forEach((page, index) => {
     if (index > 0) {
-      children.push(new Paragraph({ children: [new PageBreak()] }))
+      visualChildren.push(new Paragraph({ children: [new PageBreak()] }))
     }
 
-    children.push(
+    visualChildren.push(
       new Paragraph({
         text: `第 ${page.pageNumber} 页`,
         heading: HeadingLevel.HEADING_2,
-        spacing: { before: 160, after: 160 },
+        spacing: { before: 120, after: 120 },
+      }),
+    )
+
+    const fitted = getFittedImageSize(page.width, page.height)
+    visualChildren.push(
+      new Paragraph({
+        spacing: { after: 160 },
+        children: [
+          new ImageRun({
+            data: page.image,
+            transformation: fitted,
+            type: "jpg",
+          }),
+        ],
+      }),
+    )
+  })
+
+  const appendixChildren: Paragraph[] = [
+    new Paragraph({ children: [new PageBreak()] }),
+    new Paragraph({
+      text: "OCR 识别文字附录",
+      heading: HeadingLevel.HEADING_1,
+      spacing: { after: 240 },
+    }),
+  ]
+
+  pages.forEach((page) => {
+    appendixChildren.push(
+      new Paragraph({
+        text: `第 ${page.pageNumber} 页`,
+        heading: HeadingLevel.HEADING_2,
+        spacing: { before: 160, after: 120 },
       }),
     )
 
     if (page.failed) {
-      children.push(
+      appendixChildren.push(
         new Paragraph({
           children: [new TextRun({ text: "本页识别失败。", italics: true })],
           spacing: { after: 160 },
@@ -186,12 +264,26 @@ async function createOcrWord(fileName: string, pages: OcrPageResult[]) {
     }
 
     splitTextIntoParagraphs(page.text).forEach((block) => {
-      children.push(buildTextParagraph(block))
+      appendixChildren.push(buildTextParagraph(block))
     })
   })
 
   const document = new Document({
-    sections: [{ properties: {}, children }],
+    sections: [
+      {
+        properties: {
+          page: {
+            margin: {
+              top: 720,
+              right: 720,
+              bottom: 720,
+              left: 720,
+            },
+          },
+        },
+        children: [...visualChildren, ...appendixChildren],
+      },
+    ],
   })
 
   return Packer.toBlob(document)
@@ -329,7 +421,7 @@ export function PdfConverter() {
     }
 
     setState("ocr")
-    setMessage("正在 OCR 识别扫描件文字...")
+    setMessage("正在 OCR 识别扫描件文字，并保留原 PDF 页面版式...")
 
     const { createWorker } = await import("tesseract.js")
     let currentPage = 1
@@ -357,12 +449,11 @@ export function PdfConverter() {
         })
 
         const page = await pdf.getPage(pageNumber)
-        const viewport = page.getViewport({ scale: 1.6 })
+        const viewport = page.getViewport({ scale: OCR_RENDER_SCALE })
         const canvas = document.createElement("canvas")
         const context = canvas.getContext("2d", { alpha: false })
 
         if (!context) {
-          pages.push({ pageNumber, text: "本页识别失败。", failed: true })
           continue
         }
 
@@ -373,6 +464,8 @@ export function PdfConverter() {
 
         await page.render({ canvas, canvasContext: context, viewport }).promise
 
+        const image = dataUrlToUint8Array(canvas.toDataURL("image/jpeg", OCR_IMAGE_QUALITY))
+
         setProgress({
           label: `正在识别第 ${pageNumber} / ${pageCount} 页`,
           percent: Math.round(20 + ((pageNumber - 1) / pageCount) * 65),
@@ -380,9 +473,22 @@ export function PdfConverter() {
 
         try {
           const result = await worker.recognize(canvas)
-          pages.push({ pageNumber, text: result.data.text.trim() })
+          pages.push({
+            pageNumber,
+            text: result.data.text.trim(),
+            image,
+            width: canvas.width,
+            height: canvas.height,
+          })
         } catch {
-          pages.push({ pageNumber, text: "本页识别失败。", failed: true })
+          pages.push({
+            pageNumber,
+            text: "本页识别失败。",
+            image,
+            width: canvas.width,
+            height: canvas.height,
+            failed: true,
+          })
         } finally {
           canvas.width = 0
           canvas.height = 0
@@ -392,17 +498,16 @@ export function PdfConverter() {
       await worker.terminate()
     }
 
-    const hasRecognizedText = pages.some((page) => !page.failed && page.text.trim().length > 0)
-    if (!hasRecognizedText) {
-      throw new Error("OCR 未识别到文字，可能是图片太模糊、文字太小、页面倾斜、加密 PDF 或手写内容导致。")
+    if (pages.length === 0) {
+      throw new Error("OCR 未能渲染 PDF 页面，可能是加密 PDF 或浏览器无法读取该文件。")
     }
 
     setState("generating-word")
-    setMessage("OCR 完成，正在生成 Word 文件...")
+    setMessage("OCR 完成，正在生成版式优先的 Word 文件...")
     setProgress({ label: "正在生成 Word", percent: 92 })
 
     const blob = await createOcrWord(selectedFile.name, pages)
-    const outputName = getDocxName(selectedFile.name, "-ocr")
+    const outputName = getDocxName(selectedFile.name, "-ocr-visual")
     const url = downloadBlob(blob, outputName)
     setDownloadUrl(url)
     setDownloadName(outputName)
@@ -471,7 +576,7 @@ export function PdfConverter() {
         <div className="space-y-2">
           <CardTitle className="text-2xl">PDF 转 Word</CardTitle>
           <CardDescription className="text-base">
-            文本型 PDF 会走服务端转换；扫描件 OCR 在浏览器端识别，速度取决于你的设备性能。
+            文本型 PDF 会走服务端转换；扫描件 OCR 在浏览器端识别，并优先保留原 PDF 页面版式。
           </CardDescription>
         </div>
       </CardHeader>
@@ -562,7 +667,7 @@ export function PdfConverter() {
               <li>扫描件 PDF OCR 转 Word</li>
               <li>图片版 PDF OCR 转 Word</li>
               <li>中文和英文识别</li>
-              <li>在线生成 .docx</li>
+              <li>扫描件优先保留原 PDF 版式</li>
             </ul>
           </section>
 
@@ -572,8 +677,8 @@ export function PdfConverter() {
               <li>文件最大 {status?.maxFileSizeMb || MAX_FILE_SIZE_MB}MB</li>
               <li>OCR 最多 {status?.maxOcrPages || MAX_OCR_PAGES} 页</li>
               <li>OCR 速度比普通 PDF 慢</li>
-              <li>模糊、歪斜、手写、复杂表格可能影响识别效果</li>
-              <li>当前版本主要保证文字可编辑，不承诺 100% 还原原 PDF 排版</li>
+              <li>模糊、歪斜、手写内容可能影响附录文字识别</li>
+              <li>扫描件正文保留页面图片，文末附 OCR 文本方便复制</li>
             </ul>
           </section>
         </div>
