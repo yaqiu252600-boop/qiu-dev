@@ -38,6 +38,8 @@ function capabilityText(value: boolean) {
 const provinceNotices: Record<string, string> = {
   山东:
     "山东官方投档表包含最低位次和投档计划数，未包含最低分。本工具不会反推最低分，仅提供历史位次参考。",
+  广东:
+    "广东官方本科普通类投档表包含投档最低分和投档最低排位，可提供历史分数参考和历史位次参考；2026 一分一段仍为 pending_review，未导入完整招生计划，因此不提供分数换位次和完整志愿推荐。",
 }
 
 export const dynamic = "force-dynamic"

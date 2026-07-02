@@ -354,7 +354,7 @@
   {
     "province": "广东",
     "province_slug": "guangdong",
-    "checked_at": "2026-07-01T13:08:38.091Z",
+    "checked_at": "2026-07-02T04:00:39.273034+00:00",
     "official_site": "https://eea.gd.gov.cn/",
     "gaokao_channel_url": "https://eea.gd.gov.cn/ptgk/",
     "checks": [
@@ -375,67 +375,129 @@
         "content_type": "text/html; charset=utf-8",
         "blocked": false,
         "error": ""
+      },
+      {
+        "url": "https://eea.gd.gov.cn/news/content/post_4221647.html",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://eea.gd.gov.cn/news/content/post_4221647.html",
+        "content_type": "text/html; charset=utf-8",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://eea.gd.gov.cn/zwgk/sjfb/tjsj/content/post_4458419.html",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://eea.gd.gov.cn/zwgk/sjfb/tjsj/content/post_4458419.html",
+        "content_type": "text/html; charset=utf-8",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://eea.gd.gov.cn/ptgk/content/post_4746781.html",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://eea.gd.gov.cn/ptgk/content/post_4746781.html",
+        "content_type": "text/html; charset=utf-8",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://eea.gd.gov.cn/ptgk/content/post_4916165.html",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://eea.gd.gov.cn/ptgk/content/post_4916165.html",
+        "content_type": "text/html; charset=utf-8",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://eea.gd.gov.cn/tzgg/content/post_4917333.html",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://eea.gd.gov.cn/tzgg/content/post_4917333.html",
+        "content_type": "text/html; charset=utf-8",
+        "blocked": false,
+        "error": ""
+      },
+      {
+        "url": "https://eea.gd.gov.cn/news/content/post_4915636.html",
+        "ok": true,
+        "status": 200,
+        "final_url": "https://eea.gd.gov.cn/news/content/post_4915636.html",
+        "content_type": "text/html; charset=utf-8",
+        "blocked": false,
+        "error": ""
       }
     ],
     "discovered_links": {
-      "guangdong_2026_score_segments": [],
-      "guangdong_2023_admission_scores": [],
-      "guangdong_2024_admission_scores": [],
-      "guangdong_2025_admission_scores": [],
+      "guangdong_2023_admission_scores": [
+        {
+          "url": "https://eea.gd.gov.cn/news/content/post_4221647.html",
+          "text": "??2023?????????????"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/attachment/0/526/526559/4221647.zip",
+          "text": "??????????"
+        }
+      ],
+      "guangdong_2024_admission_scores": [
+        {
+          "url": "https://eea.gd.gov.cn/zwgk/sjfb/tjsj/content/post_4458419.html",
+          "text": "??2024?????????????"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/attachment/0/554/554636/4458419.zip",
+          "text": "????????"
+        }
+      ],
+      "guangdong_2025_admission_scores": [
+        {
+          "url": "https://eea.gd.gov.cn/ptgk/content/post_4746781.html",
+          "text": "??2025?????????????"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/attachment/0/585/585885/4746781.pdf",
+          "text": "???2025??????????????"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/attachment/0/585/585886/4746781.pdf",
+          "text": "???2025??????????????"
+        }
+      ],
+      "guangdong_2026_score_segments": [
+        {
+          "url": "https://eea.gd.gov.cn/ptgk/content/post_4916165.html",
+          "text": "???????2026????????????????"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/attachment/0/618/618107/4916165.pdf",
+          "text": "???2026????????????????"
+        },
+        {
+          "url": "https://eea.gd.gov.cn/attachment/0/618/618126/4916165.pdf",
+          "text": "???2026????????????????"
+        }
+      ],
       "guangdong_2026_admission_plans": [
         {
           "url": "https://eea.gd.gov.cn/tzgg/content/post_4917333.html",
-          "text": "关于《广东省2026年普通高等学校招生专业目录》更正的通知"
+          "text": "??????2026???????????????????"
         },
         {
-          "url": "https://eea.gd.gov.cn/ptgk/content/post_4917051.html",
-          "text": "关于《广东省2026年普通高等学校招生专业目录》更正的通知"
-        },
-        {
-          "url": "https://eea.gd.gov.cn/ptgk/content/post_4917051.html",
-          "text": "关于《广东省2026年普通高等学校招生专业目录》更正的通知"
+          "url": "https://eea.gd.gov.cn/attachment/0/618/618298/4917333.pdf",
+          "text": "?????????? PDF????????????"
         }
       ],
       "guangdong_2026_province_rules": [
         {
           "url": "https://eea.gd.gov.cn/news/content/post_4915636.html",
-          "text": "广东省招生委员会办公室关于做好2026年普通高校招生志愿填报工作的通知"
+          "text": "???????????????2026????????????????"
         },
         {
-          "url": "https://eea.gd.gov.cn/news/content/post_4913870.html",
-          "text": "2026年全国联招考试成绩查询、志愿填报及录取安排的通知"
-        },
-        {
-          "url": "https://eea.gd.gov.cn/tzgg/content/post_4915637.html",
-          "text": "广东省招生委员会办公室关于做好2026年普通高校招生志愿填报工作的通知"
-        },
-        {
-          "url": "https://eea.gd.gov.cn/ptgk/content/post_4915574.html",
-          "text": "广东省招生委员会办公室关于做好2026年普通高校招生志愿填报工作的通知"
-        },
-        {
-          "url": "https://eea.gd.gov.cn/lhzs/content/post_4913853.html",
-          "text": "2026年全国联招考试成绩查询、志愿填报及录取安排的通知"
-        },
-        {
-          "url": "https://eea.gd.gov.cn/bmbk_sksywj/content/post_4915635.html",
-          "text": "广东省招生委员会办公室关于做好2026年普通高校招生志愿填报工作的通知"
-        },
-        {
-          "url": "https://eea.gd.gov.cn/bmbk_sksywj/content/post_4866862.html",
-          "text": "关于做好2026年普通高等学校春季考试招生志愿填报工作的通知"
-        },
-        {
-          "url": "https://eea.gd.gov.cn/bmbk_sksywj/content/post_4802375.html",
-          "text": "广东省2026年普通高等学校专升本招生工作规定"
-        },
-        {
-          "url": "https://eea.gd.gov.cn/ptgk/content/post_4915574.html",
-          "text": "广东省招生委员会办公室关于做好2026年普通高校招生志愿填报工作的通知"
-        },
-        {
-          "url": "https://eea.gd.gov.cn/ptgk/content/post_4896456.html",
-          "text": "广东省2026年普通专升本志愿填报答疑"
+          "url": "https://pg.eeagd.edu.cn/ks",
+          "text": "?????????????????????????"
         }
       ]
     }

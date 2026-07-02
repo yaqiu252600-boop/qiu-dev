@@ -524,5 +524,157 @@
     "usable_for_rank_recommendation": false,
     "usable_for_admission_plan_recommendation": false,
     "notes": "已保存河南招生考试信息网官方2026年普通高招分数段统计表PDF（历史类、物理类）。PDF无文本层，自动抽取CSV为空，仅保留pending-review记录；人工/OCR复核前不进入processed/score-segments，不参与分数换位次。"
+  },
+  {
+    "data_type": "admission_scores",
+    "province": "广东",
+    "year": 2023,
+    "source_name": "广东省教育考试院",
+    "source_url": "https://eea.gd.gov.cn/news/content/post_4221647.html",
+    "downloaded_at": "2026-07-02T04:00:39.273034+00:00",
+    "source_updated_at": "2023-07-19",
+    "raw_files": [
+      "data/raw/provinces/guangdong/2023-admission-scores/guangdong_2023_undergraduate_page.html",
+      "data/raw/provinces/guangdong/2023-admission-scores/guangdong_2023_undergraduate_admission_scores.zip",
+      "data/raw/provinces/guangdong/2023-admission-scores/extracted/???2023??????????????.pdf",
+      "data/raw/provinces/guangdong/2023-admission-scores/extracted/???2023??????????????.pdf"
+    ],
+    "processed_files": [
+      "data/processed/admission-scores/guangdong/guangdong_2023_undergraduate.csv"
+    ],
+    "status": "verified",
+    "row_count": 4177,
+    "queryable": true,
+    "usable_for_score_reference": true,
+    "usable_for_rank_recommendation": true,
+    "usable_for_admission_plan_recommendation": false,
+    "notes": "??????????? PDF ??????????????????????????????????????????????????????",
+    "raw_file_path": "data/raw/provinces/guangdong/2023-admission-scores/guangdong_2023_undergraduate_page.html",
+    "processed_file_path": "data/processed/admission-scores/guangdong/guangdong_2023_undergraduate.csv"
+  },
+  {
+    "data_type": "admission_scores",
+    "province": "广东",
+    "year": 2024,
+    "source_name": "广东省教育考试院",
+    "source_url": "https://eea.gd.gov.cn/zwgk/sjfb/tjsj/content/post_4458419.html",
+    "downloaded_at": "2026-07-02T04:00:39.273034+00:00",
+    "source_updated_at": "2024-07-19",
+    "raw_files": [
+      "data/raw/provinces/guangdong/2024-admission-scores/guangdong_2024_undergraduate_page.html",
+      "data/raw/provinces/guangdong/2024-admission-scores/guangdong_2024_undergraduate_admission_scores.zip",
+      "data/raw/provinces/guangdong/2024-admission-scores/extracted/???2024??????????????.pdf",
+      "data/raw/provinces/guangdong/2024-admission-scores/extracted/???2024??????????????.pdf"
+    ],
+    "processed_files": [
+      "data/processed/admission-scores/guangdong/guangdong_2024_undergraduate.csv"
+    ],
+    "status": "verified",
+    "row_count": 4676,
+    "queryable": true,
+    "usable_for_score_reference": true,
+    "usable_for_rank_recommendation": true,
+    "usable_for_admission_plan_recommendation": false,
+    "notes": "??????????? PDF ??????????????????????????????????????????????????????",
+    "raw_file_path": "data/raw/provinces/guangdong/2024-admission-scores/guangdong_2024_undergraduate_page.html",
+    "processed_file_path": "data/processed/admission-scores/guangdong/guangdong_2024_undergraduate.csv"
+  },
+  {
+    "data_type": "admission_scores",
+    "province": "广东",
+    "year": 2025,
+    "source_name": "广东省教育考试院",
+    "source_url": "https://eea.gd.gov.cn/ptgk/content/post_4746781.html",
+    "downloaded_at": "2026-07-02T04:00:39.273034+00:00",
+    "source_updated_at": "2025-07-19",
+    "raw_files": [
+      "data/raw/provinces/guangdong/2025-admission-scores/guangdong_2025_undergraduate_page.html",
+      "data/raw/provinces/guangdong/2025-admission-scores/guangdong_2025_undergraduate_history.pdf",
+      "data/raw/provinces/guangdong/2025-admission-scores/guangdong_2025_undergraduate_physics.pdf"
+    ],
+    "processed_files": [
+      "data/processed/admission-scores/guangdong/guangdong_2025_undergraduate.csv"
+    ],
+    "status": "verified",
+    "row_count": 5137,
+    "queryable": true,
+    "usable_for_score_reference": true,
+    "usable_for_rank_recommendation": true,
+    "usable_for_admission_plan_recommendation": false,
+    "notes": "??????????? PDF ??????????????????????????????????????????????????????",
+    "raw_file_path": "data/raw/provinces/guangdong/2025-admission-scores/guangdong_2025_undergraduate_page.html",
+    "processed_file_path": "data/processed/admission-scores/guangdong/guangdong_2025_undergraduate.csv"
+  },
+  {
+    "data_type": "score_segments",
+    "province": "广东",
+    "year": 2026,
+    "source_name": "广东省教育考试院",
+    "source_url": "https://eea.gd.gov.cn/ptgk/content/post_4916165.html",
+    "downloaded_at": "2026-07-02T04:00:39.273034+00:00",
+    "source_updated_at": "2026-06-25",
+    "raw_files": [
+      "data/raw/provinces/guangdong/2026-score-segments/guangdong_2026_score_segments_page.html",
+      "data/raw/provinces/guangdong/2026-score-segments/guangdong_2026_score_segments_history.pdf",
+      "data/raw/provinces/guangdong/2026-score-segments/guangdong_2026_score_segments_physics.pdf"
+    ],
+    "processed_files": [
+      "data/pending-review/guangdong_2026_score_segments_history_pending_review.csv",
+      "data/pending-review/guangdong_2026_score_segments_physics_pending_review.csv"
+    ],
+    "status": "pending_review",
+    "row_count": 1170,
+    "queryable": false,
+    "usable_for_score_reference": false,
+    "usable_for_rank_recommendation": false,
+    "usable_for_admission_plan_recommendation": false,
+    "notes": "?? PDF ??????? pending-review??????????????? score_segments??????????",
+    "raw_file_path": "data/raw/provinces/guangdong/2026-score-segments/guangdong_2026_score_segments_page.html",
+    "processed_file_path": "data/pending-review/guangdong_2026_score_segments_history_pending_review.csv"
+  },
+  {
+    "data_type": "admission_plans",
+    "province": "广东",
+    "year": 2026,
+    "source_name": "广东省教育考试院",
+    "source_url": "https://eea.gd.gov.cn/tzgg/content/post_4917333.html",
+    "downloaded_at": "2026-07-02T04:00:39.273034+00:00",
+    "source_updated_at": "2026-06-29",
+    "raw_files": [
+      "data/raw/provinces/guangdong/2026-admission-plans/guangdong_2026_admission_plan_correction_page.html",
+      "data/raw/provinces/guangdong/2026-admission-plans/guangdong_2026_admission_plan_correction.pdf"
+    ],
+    "processed_files": [],
+    "status": "missing",
+    "row_count": 0,
+    "queryable": false,
+    "usable_for_score_reference": false,
+    "usable_for_rank_recommendation": false,
+    "usable_for_admission_plan_recommendation": false,
+    "notes": "????????????????????????????????????????????????????????",
+    "raw_file_path": "data/raw/provinces/guangdong/2026-admission-plans/guangdong_2026_admission_plan_correction_page.html",
+    "processed_file_path": ""
+  },
+  {
+    "data_type": "province_rules",
+    "province": "广东",
+    "year": 2026,
+    "source_name": "广东省教育考试院",
+    "source_url": "https://eea.gd.gov.cn/news/content/post_4915636.html",
+    "downloaded_at": "2026-07-02T04:00:39.273034+00:00",
+    "source_updated_at": "2026-06-24",
+    "raw_files": [
+      "data/raw/provinces/guangdong/2026-rules/guangdong_2026_volunteer_rules_page.html"
+    ],
+    "processed_files": [],
+    "status": "partial",
+    "row_count": 0,
+    "queryable": false,
+    "usable_for_score_reference": false,
+    "usable_for_rank_recommendation": false,
+    "usable_for_admission_plan_recommendation": false,
+    "notes": "????????????????????????????????? province_rules ??",
+    "raw_file_path": "data/raw/provinces/guangdong/2026-rules/guangdong_2026_volunteer_rules_page.html",
+    "processed_file_path": ""
   }
 ]

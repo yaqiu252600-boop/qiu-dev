@@ -9,10 +9,11 @@ SCHEMA_PATH = ROOT / "data" / "schema.sql"
 
 EXPECTED_MINIMUMS = {
     "universities": 2952,
-    "admission_scores": 124792,
+    "admission_scores": 138782,
     "admission_scores:江苏": 11944,
     "admission_scores:山东": 60909,
     "admission_scores:浙江": 51939,
+    "admission_scores:广东": 13990,
 }
 
 
@@ -90,7 +91,7 @@ def verify_counts(connection, counts):
             "SELECT COUNT(*) FROM admission_scores WHERE province = ?",
             (province,),
         )
-        for province in ["江苏", "山东", "浙江"]
+        for province in ["江苏", "山东", "浙江", "广东"]
     }
 
     failures = []
