@@ -63,8 +63,37 @@ type BaziResult = {
     yearly: string
     communication: string
     life: string
+    nodes: {
+      peachBranch: string
+      spouseSignalCount: number
+      childSignalCount: number
+      childSignalText: string
+      spouseSignalText: string
+      relationshipNodes: NodeSignal[]
+      stableNodes: NodeSignal[]
+      careerNodes: NodeSignal[]
+      directWealthNodes: NodeSignal[]
+      windfallWealthNodes: NodeSignal[]
+      wealthCount: number
+    }
+    wealthProfile: {
+      directWealthCount: number
+      windfallWealthCount: number
+      totalWealthCount: number
+      directWealthRatio: number
+      windfallWealthRatio: number
+    }
   }
   disclaimer: string
+}
+
+type NodeSignal = {
+  year: number
+  ganZhi: string
+  age: number
+  level: "强" | "中" | "弱"
+  label: string
+  reason: string
 }
 
 const inputClass =
@@ -317,9 +346,64 @@ export function BaziWorkbench() {
 
                 <SectionTitle title="感情相处分析" />
                 <AnalysisBlock text={result.analysis.relationship} />
+                <div className="grid gap-4 md:grid-cols-2">
+                  <SignalBlock
+                    title={`桃花窗口，桃花位 ${result.analysis.nodes.peachBranch}`}
+                    items={result.analysis.nodes.relationshipNodes}
+                    empty="未来 16 年桃花信号不集中。"
+                  />
+                  <SignalBlock
+                    title="常伴良人 / 稳定关系窗口"
+                    items={result.analysis.nodes.stableNodes}
+                    empty="未来 16 年稳定关系窗口不集中。"
+                  />
+                </div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <InfoBlock
+                    title="伴侣星信号"
+                    text={`原局伴侣星出现 ${result.analysis.nodes.spouseSignalCount} 处。${result.analysis.nodes.spouseSignalText}`}
+                  />
+                  <InfoBlock
+                    title="子女缘 / 作品输出信号"
+                    text={`原局子女缘/作品输出信号出现 ${result.analysis.nodes.childSignalCount} 处。${result.analysis.nodes.childSignalText}`}
+                  />
+                </div>
 
                 <SectionTitle title="财富观念分析" />
                 <AnalysisBlock text={result.analysis.wealth} />
+                <div className="grid gap-3 md:grid-cols-3">
+                  <InfoBlock
+                    title="财星总量"
+                    text={`原局财星共 ${result.analysis.wealthProfile.totalWealthCount} 处。`}
+                  />
+                  <InfoBlock
+                    title="正财占比"
+                    text={`${result.analysis.wealthProfile.directWealthRatio}% · ${result.analysis.wealthProfile.directWealthCount} 处，偏稳定收入、合同回款和长期经营。`}
+                  />
+                  <InfoBlock
+                    title="偏财占比"
+                    text={`${result.analysis.wealthProfile.windfallWealthRatio}% · ${result.analysis.wealthProfile.windfallWealthCount} 处，偏项目机会、资源流动和副业外快。`}
+                  />
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <SignalBlock
+                    title="正财节点"
+                    items={result.analysis.nodes.directWealthNodes}
+                    empty="未来 16 年正财节点不集中。"
+                  />
+                  <SignalBlock
+                    title="偏财 / 机会财节点"
+                    items={result.analysis.nodes.windfallWealthNodes}
+                    empty="未来 16 年偏财节点不集中。"
+                  />
+                </div>
+
+                <SectionTitle title="事业节点" />
+                <SignalBlock
+                  title="事业变动 / 突破窗口"
+                  items={result.analysis.nodes.careerNodes}
+                  empty="未来 16 年事业节点不集中。"
+                />
 
                 <SectionTitle title="流年简析" />
                 <AnalysisBlock text={result.analysis.yearly} />
@@ -390,6 +474,41 @@ function AnalysisBlock({ text }: { text: string }) {
       {text.split("\n\n").map((paragraph) => (
         <p key={paragraph}>{paragraph}</p>
       ))}
+    </div>
+  )
+}
+
+function SignalBlock({
+  title,
+  items,
+  empty,
+}: {
+  title: string
+  items: NodeSignal[]
+  empty: string
+}) {
+  return (
+    <div className="rounded-md border border-border bg-white p-4">
+      <div className="font-medium">{title}</div>
+      {items.length ? (
+        <div className="mt-3 space-y-3">
+          {items.map((item) => (
+            <div key={`${title}-${item.year}-${item.label}`} className="rounded-md bg-background p-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant={item.level === "强" ? "default" : "outline"}>
+                  {item.level}
+                </Badge>
+                <span className="font-medium">
+                  {item.year} 年 {item.ganZhi} · {item.age} 岁
+                </span>
+              </div>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.reason}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-3 text-sm text-muted-foreground">{empty}</p>
+      )}
     </div>
   )
 }

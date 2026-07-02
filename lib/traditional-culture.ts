@@ -442,6 +442,45 @@ const tenGodMeanings: Record<string, string> = {
   日主: "自我核心、主观感受和表达中心",
 }
 
+const elementCycle: ElementName[] = ["木", "火", "土", "金", "水"]
+const branch六合: Record<string, string> = {
+  子: "丑",
+  丑: "子",
+  寅: "亥",
+  亥: "寅",
+  卯: "戌",
+  戌: "卯",
+  辰: "酉",
+  酉: "辰",
+  巳: "申",
+  申: "巳",
+  午: "未",
+  未: "午",
+}
+const peachBlossomByBranchGroup: Record<string, string> = {
+  申: "酉",
+  子: "酉",
+  辰: "酉",
+  寅: "卯",
+  午: "卯",
+  戌: "卯",
+  巳: "午",
+  酉: "午",
+  丑: "午",
+  亥: "子",
+  卯: "子",
+  未: "子",
+}
+
+type NodeSignal = {
+  year: number
+  ganZhi: string
+  age: number
+  level: "强" | "中" | "弱"
+  label: string
+  reason: string
+}
+
 function countFiveElements(pillars: string[]) {
   const counts: Record<FiveElementKey, number> = {
     wood: 0,
@@ -489,9 +528,215 @@ function joinMeanings(gods: string[]) {
     .join("；")
 }
 
+function getStemPolarity(stem: string) {
+  return stems.indexOf(stem) % 2 === 0 ? "yang" : "yin"
+}
+
+function getElementRelation(dayElement: ElementName, otherElement: ElementName) {
+  const dayIndex = elementCycle.indexOf(dayElement)
+  const otherIndex = elementCycle.indexOf(otherElement)
+  if (dayIndex === otherIndex) return "same"
+  if ((dayIndex + 1) % 5 === otherIndex) return "output"
+  if ((dayIndex + 2) % 5 === otherIndex) return "wealth"
+  if ((dayIndex + 3) % 5 === otherIndex) return "officer"
+  return "resource"
+}
+
+function getTenGodForStem(dayStem: string, otherStem: string) {
+  const dayElement = stemElements[dayStem]
+  const otherElement = stemElements[otherStem]
+  const samePolarity = getStemPolarity(dayStem) === getStemPolarity(otherStem)
+  const relation = getElementRelation(dayElement, otherElement)
+  if (relation === "same") return samePolarity ? "比肩" : "劫财"
+  if (relation === "output") return samePolarity ? "食神" : "伤官"
+  if (relation === "wealth") return samePolarity ? "偏财" : "正财"
+  if (relation === "officer") return samePolarity ? "七杀" : "正官"
+  return samePolarity ? "偏印" : "正印"
+}
+
+function getGanZhiYear(year: number) {
+  return Solar.fromYmd(year, 7, 1).getLunar().getYearInGanZhi()
+}
+
+function getNodeLevel(score: number): NodeSignal["level"] {
+  if (score >= 4) return "强"
+  if (score >= 2) return "中"
+  return "弱"
+}
+
+function compareNodeStrength(a: NodeSignal, b: NodeSignal) {
+  const rank: Record<NodeSignal["level"], number> = { 强: 3, 中: 2, 弱: 1 }
+  return rank[b.level] - rank[a.level] || a.year - b.year
+}
+
+function makeNode(
+  year: number,
+  birthYear: number,
+  label: string,
+  score: number,
+  reasons: string[],
+): NodeSignal {
+  return {
+    year,
+    ganZhi: getGanZhiYear(year),
+    age: year - birthYear,
+    level: getNodeLevel(score),
+    label,
+    reason: reasons.join("；"),
+  }
+}
+
+function createFutureNodes(params: {
+  birthYear: number
+  gender: BaziRequest["gender"]
+  dayStem: string
+  dayBranch: string
+  yearBranch: string
+  tenGods: string[]
+  counts: Record<FiveElementKey, number>
+}) {
+  const { birthYear, gender, dayStem, dayBranch, yearBranch, tenGods, counts } = params
+  const currentYear = new Date().getFullYear()
+  const peachBranch = peachBlossomByBranchGroup[dayBranch] ?? peachBlossomByBranchGroup[yearBranch]
+  const spouseGods =
+    gender === "男"
+      ? ["正财", "偏财"]
+      : gender === "女"
+        ? ["正官", "七杀"]
+        : ["正财", "偏财", "正官", "七杀"]
+  const wealthGods = ["正财", "偏财"]
+  const careerGods = ["正官", "七杀", "正印", "偏印"]
+  const outputGods = ["食神", "伤官"]
+  const wealthCount = wealthGods.reduce((sum, god) => sum + tenGods.filter((item) => item === god).length, 0)
+  const childSignalCount = outputGods.reduce((sum, god) => sum + tenGods.filter((item) => item === god).length, 0)
+  const spouseSignalCount = spouseGods.reduce((sum, god) => sum + tenGods.filter((item) => item === god).length, 0)
+
+  const relationshipNodes: NodeSignal[] = []
+  const stableNodes: NodeSignal[] = []
+  const careerNodes: NodeSignal[] = []
+  const directWealthNodes: NodeSignal[] = []
+  const windfallWealthNodes: NodeSignal[] = []
+
+  for (let year = currentYear; year <= currentYear + 15; year += 1) {
+    const ganZhi = getGanZhiYear(year)
+    const { stem, branch } = splitPillar(ganZhi)
+    const yearGod = getTenGodForStem(dayStem, stem)
+
+    let peachScore = 0
+    const peachReasons: string[] = []
+    if (branch === peachBranch) {
+      peachScore += 3
+      peachReasons.push(`流年地支 ${branch} 命中桃花位`)
+    }
+    if (spouseGods.includes(yearGod)) {
+      peachScore += 2
+      peachReasons.push(`流年天干为${yearGod}，触发伴侣星`)
+    }
+    if (branch === branch六合[dayBranch]) {
+      peachScore += 1
+      peachReasons.push(`流年地支与日支六合，关系互动感增强`)
+    }
+    if (peachScore > 0) {
+      relationshipNodes.push(makeNode(year, birthYear, "桃花/关系机会窗口", peachScore, peachReasons))
+    }
+
+    let stableScore = 0
+    const stableReasons: string[] = []
+    if (branch === branch六合[dayBranch]) {
+      stableScore += 3
+      stableReasons.push(`流年地支与日支六合，适合观察稳定关系`)
+    }
+    if (spouseGods.includes(yearGod)) {
+      stableScore += 2
+      stableReasons.push(`伴侣星透出，关系议题更容易被摆到台面`)
+    }
+    if (branch === dayBranch) {
+      stableScore += 1
+      stableReasons.push(`流年复临日支，亲密关系与自我选择感更强`)
+    }
+    if (stableScore > 1) {
+      stableNodes.push(makeNode(year, birthYear, "常伴良人/稳定关系窗口", stableScore, stableReasons))
+    }
+
+    let careerScore = 0
+    const careerReasons: string[] = []
+    if (careerGods.includes(yearGod)) {
+      careerScore += 3
+      careerReasons.push(`流年天干为${yearGod}，事业责任、规则或学习议题增强`)
+    }
+    if (outputGods.includes(yearGod)) {
+      careerScore += 2
+      careerReasons.push(`流年天干为${yearGod}，适合输出作品、表达能力和产品化`)
+    }
+    if (branch === yearBranch || branch === dayBranch) {
+      careerScore += 1
+      careerReasons.push(`流年地支触动原局关键地支，容易带来方向调整`)
+    }
+    if (careerScore > 1) {
+      careerNodes.push(makeNode(year, birthYear, "事业变动/突破窗口", careerScore, careerReasons))
+    }
+
+    let directScore = 0
+    const directReasons: string[] = []
+    if (yearGod === "正财") {
+      directScore += 4
+      directReasons.push("正财透出，适合稳定收入、合同、职位收益和长期经营")
+    }
+    if (branchElements[branch] && counts[elementKeyMap[branchElements[branch]]] <= 1) {
+      directScore += 1
+      directReasons.push("流年补到原局较少的五行，资源结构有补位感")
+    }
+    if (directScore > 0) {
+      directWealthNodes.push(makeNode(year, birthYear, "正财窗口", directScore, directReasons))
+    }
+
+    let windfallScore = 0
+    const windfallReasons: string[] = []
+    if (yearGod === "偏财") {
+      windfallScore += 4
+      windfallReasons.push("偏财透出，适合机会型收入、项目外快、市场资源和人脉流动")
+    }
+    if (outputGods.includes(yearGod)) {
+      windfallScore += 1
+      windfallReasons.push("输出星透出，利于通过作品、内容或方案带来额外机会")
+    }
+    if (windfallScore > 0) {
+      windfallWealthNodes.push(makeNode(year, birthYear, "偏财/机会财窗口", windfallScore, windfallReasons))
+    }
+  }
+
+  return {
+    peachBranch,
+    spouseSignalCount,
+    childSignalCount,
+    childSignalText:
+      childSignalCount >= 3
+        ? "子女缘/作品输出信号偏明显，通常表现为照料欲、表达欲、作品生产或对子女议题较敏感。"
+        : childSignalCount >= 1
+          ? "子女缘/作品输出信号有出现，但不算特别重，更多要看后天关系经营与生活选择。"
+          : "子女缘/作品输出信号在原局不明显，更适合从现实关系规划、健康节奏和生活条件来判断。",
+    spouseSignalText:
+      spouseSignalCount >= 3
+        ? "伴侣星信号较多，关系机会不缺，但越多越需要筛选稳定性与价值观一致度。"
+        : spouseSignalCount >= 1
+          ? "伴侣星信号有出现，关系多在特定流年被触发，适合看窗口而不是看固定结论。"
+          : "伴侣星原局不明显，关系更依赖流年触发、主动社交和长期相处质量。",
+    relationshipNodes: relationshipNodes.sort(compareNodeStrength).slice(0, 5),
+    stableNodes: stableNodes.sort(compareNodeStrength).slice(0, 5),
+    careerNodes: careerNodes.slice(0, 6),
+    directWealthNodes: directWealthNodes.slice(0, 5),
+    windfallWealthNodes: windfallWealthNodes.slice(0, 5),
+    wealthCount,
+  }
+}
+
 function createBaziAnalysis(params: {
+  birthYear: number
+  gender: BaziRequest["gender"]
   dayMaster: string
   dayElement: ElementName
+  dayBranch: string
+  yearBranch: string
   counts: Record<FiveElementKey, number>
   balance: ReturnType<typeof describeElementBalance>
   pillars: string[]
@@ -499,7 +744,20 @@ function createBaziAnalysis(params: {
   tenGodBranch: string[]
   naYin: string[]
 }) {
-  const { dayMaster, dayElement, counts, balance, pillars, tenGodStem, tenGodBranch, naYin } = params
+  const {
+    birthYear,
+    gender,
+    dayMaster,
+    dayElement,
+    dayBranch,
+    yearBranch,
+    counts,
+    balance,
+    pillars,
+    tenGodStem,
+    tenGodBranch,
+    naYin,
+  } = params
   const allGods = [...tenGodStem, ...tenGodBranch]
   const strongest = balance.leading.join("、")
   const quiet = balance.quiet.join("、")
@@ -510,6 +768,31 @@ function createBaziAnalysis(params: {
   const hasResource = allGods.includes("正印") || allGods.includes("偏印")
   const hasPeer = allGods.includes("比肩") || allGods.includes("劫财")
   const currentYear = new Date().getFullYear()
+  const nodes = createFutureNodes({
+    birthYear,
+    gender,
+    dayStem: dayMaster,
+    dayBranch,
+    yearBranch,
+    tenGods: allGods,
+    counts,
+  })
+  const directWealthCount = allGods.filter((god) => god === "正财").length
+  const windfallWealthCount = allGods.filter((god) => god === "偏财").length
+  const totalWealthCount = directWealthCount + windfallWealthCount
+  const directWealthRatio = totalWealthCount ? Math.round((directWealthCount / totalWealthCount) * 100) : 0
+  const windfallWealthRatio = totalWealthCount ? 100 - directWealthRatio : 0
+  const topCareerDirections = [
+    hasOfficer ? "制度型岗位、管理协作、项目负责人、风控合规、运营管理" : "",
+    hasOutput ? "内容表达、产品策划、设计创作、教学培训、技术方案、个人 IP" : "",
+    hasResource ? "研究学习、知识服务、咨询顾问、教育培训、资料整理、后台支持" : "",
+    hasWealth ? "销售商务、渠道合作、客户经营、交易撮合、项目制收入" : "",
+    balance.leading.includes("金") ? "工程技术、效率工具、标准化流程、质量控制" : "",
+    balance.leading.includes("水") ? "信息流通、数据分析、跨区域业务、研究策划" : "",
+    balance.leading.includes("木") ? "教育成长、品牌内容、规划咨询、创意产品" : "",
+    balance.leading.includes("火") ? "传播媒体、视觉表达、营销活动、公众展示" : "",
+    balance.leading.includes("土") ? "组织管理、供应链、地产空间、资源整合" : "",
+  ].filter(Boolean)
 
   const personality = [
     `${dayMasterNotes[dayMaster] ?? "日主代表一个人的核心表达方式。"}本盘日主为${dayMaster}${dayElement}，日主五行在四柱显性统计中出现 ${dayElementCount} 次，说明自我表达并不是孤立存在，而是会受到${strongest}气场牵引。`,
@@ -527,6 +810,10 @@ function createBaziAnalysis(params: {
     hasResource
       ? "印星信息给到学习、体系化和吸收能力，适合长期型专业、证书学习、研究型任务、后台支撑、知识服务或需要持续输入的岗位。"
       : "印星不突出时，不宜完全依赖被动学习，更适合用项目、实战和反馈逼出成长，把知识快速放进真实场景里验证。",
+    `更具体的方向可优先测试：${Array.from(new Set(topCareerDirections)).slice(0, 5).join("；")}。这些方向共同点是能把盘里的十神优势转成可交付能力，而不是只停留在兴趣。`,
+    nodes.careerNodes.length
+      ? `未来较值得关注的事业变动窗口：${nodes.careerNodes.map((node) => `${node.year} 年${node.ganZhi}（${node.age}岁，${node.level}）：${node.reason}`).join("；")}。`
+      : "未来 16 年里没有特别集中的事业变动信号，适合用稳定积累和主动项目来制造节点。",
   ].join("\n\n")
 
   const relationship = [
@@ -537,6 +824,11 @@ function createBaziAnalysis(params: {
       ? "表达型十神存在时，感情中的吸引力往往来自真实表达、幽默感、审美和情绪流动。需要注意的是，表达欲强时别把即时感受当成最终结论。"
       : "表达型十神不强时，感情里可能更偏行动或责任表达。建议主动把关心说出来，避免让对方只能靠猜来理解你的在意。",
     `从五行看，${strongest}较突出会让关系中的主要能量落在${balance.leading.map((item) => elementTraits[item]).join("、")}；${quiet}较少则提醒你在相关议题上多一点耐心和练习。`,
+    `桃花位按日支/年支取 ${nodes.peachBranch}，${nodes.spouseSignalText}${nodes.relationshipNodes.length ? `桃花机会窗口集中在：${nodes.relationshipNodes.map((node) => `${node.year} 年${node.ganZhi}（${node.age}岁，${node.level}）：${node.reason}`).join("；")}。` : "未来 16 年桃花信号不算集中，更适合通过主动社交扩大样本。"}`,
+    nodes.stableNodes.length
+      ? `常伴良人/稳定关系窗口更值得看：${nodes.stableNodes.map((node) => `${node.year} 年${node.ganZhi}（${node.age}岁，${node.level}）：${node.reason}`).join("；")}。这里看的是稳定关系形成或关系定调的窗口，不是简单的热闹桃花。`
+      : "稳定关系窗口暂时没有特别突出的年份，重点在筛选价值观、节奏和长期相处能力。",
+    `${nodes.childSignalText}这里不直接断“几个孩子/几个配偶”，更适合用“子女缘/作品输出信号强弱”和“关系窗口数量”来观察。`,
   ].join("\n\n")
 
   const wealth = [
@@ -547,6 +839,13 @@ function createBaziAnalysis(params: {
       ? "食伤与财星同时可见时，适合测试“输出带来机会”的路径，例如内容、产品、销售表达、技术服务、咨询方案、作品变现等。关键是把输出变成可交付、可复购、可被传播的东西。"
       : "如果想增强财富转化，重点不是追短期机会，而是把能力包装成别人能理解、能购买、能信任的结果。",
     `五行中${strongest}偏强，资源处理方式会带有${balance.leading.map((item) => elementTraits[item]).join("、")}的色彩；做财务规划时，最好把冲动消费、情绪决策和人情压力拆开看。`,
+    `正财/偏财比例：原局财星共 ${totalWealthCount} 个，其中正财 ${directWealthCount} 个，占 ${directWealthRatio}%；偏财 ${windfallWealthCount} 个，占 ${windfallWealthRatio}%。正财更偏稳定工资、合同回款、长期客户和确定性经营；偏财更偏项目机会、副业外快、资源差价和市场波动。`,
+    nodes.directWealthNodes.length
+      ? `正财窗口：${nodes.directWealthNodes.map((node) => `${node.year} 年${node.ganZhi}（${node.age}岁，${node.level}）：${node.reason}`).join("；")}。这些年份更适合谈稳定收入、职位回报、长期合同和固定客户。`
+      : "未来 16 年正财窗口不明显，稳定收入更依赖职业能力、资历积累和长期客户维护。",
+    nodes.windfallWealthNodes.length
+      ? `偏财/机会财窗口：${nodes.windfallWealthNodes.map((node) => `${node.year} 年${node.ganZhi}（${node.age}岁，${node.level}）：${node.reason}`).join("；")}。这些年份更适合留意项目制机会，但也要控制杠杆、冲动投入和人情借贷。`
+      : "未来 16 年偏财窗口不明显，不宜把重心放在高波动机会上，更适合先做稳定现金流。",
   ].join("\n\n")
 
   const yearly = [
@@ -573,6 +872,14 @@ function createBaziAnalysis(params: {
     yearly,
     communication,
     life,
+    nodes,
+    wealthProfile: {
+      directWealthCount,
+      windfallWealthCount,
+      totalWealthCount,
+      directWealthRatio,
+      windfallWealthRatio,
+    },
   }
 }
 
@@ -619,8 +926,12 @@ export function generateBaziReport(input: BaziRequest) {
     hour: hiddenStems[hourParts.branch] ?? [],
   }
   const analysis = createBaziAnalysis({
+    birthYear: year,
+    gender: input.gender,
     dayMaster,
     dayElement: stemElements[dayMaster],
+    dayBranch: dayParts.branch,
+    yearBranch: yearParts.branch,
     counts: fiveElements,
     balance,
     pillars: bazi,
