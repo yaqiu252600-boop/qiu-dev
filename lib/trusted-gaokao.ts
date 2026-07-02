@@ -49,7 +49,9 @@ export type TrustedAdmissionScore = {
   major_name: string
   min_score?: number
   min_rank?: number
+  plan_count?: number
   plan_type: string
+  status?: string
   source_name: string
   source_url: string
   source_updated_at: string
@@ -162,15 +164,20 @@ function dataPath(...parts: string[]) {
   return path.join(root, "data", ...parts)
 }
 
-function listCsvFiles(dir: string) {
+function listCsvFiles(dir: string): string[] {
   if (!fs.existsSync(dir)) {
     return []
   }
 
-  return fs
-    .readdirSync(dir)
-    .filter((file) => file.endsWith(".csv"))
-    .map((file) => path.join(dir, file))
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const filePath = path.join(dir, entry.name)
+
+    if (entry.isDirectory()) {
+      return listCsvFiles(filePath)
+    }
+
+    return entry.isFile() && entry.name.endsWith(".csv") ? [filePath] : []
+  })
 }
 
 function parseCsvLine(line: string) {
@@ -301,6 +308,7 @@ export function getTrustedAdmissionScores() {
       year: Number(row.year),
       min_score: toNumber(row.min_score),
       min_rank: toNumber(row.min_rank),
+      plan_count: toNumber(row.plan_count),
     })) as TrustedAdmissionScore[]
 }
 
@@ -324,7 +332,21 @@ export function getSourceManifest() {
     [],
   )
 
-  return [...primary, ...otherProvinces].map((entry) => ({
+  const byKey = new Map<string, RawSourceManifestEntry>()
+
+  for (const entry of [...otherProvinces, ...primary]) {
+    const key =
+      entry.id ??
+      [
+        entry.province,
+        entry.year,
+        entry.data_type,
+        entry.source_url,
+      ].join("|")
+    byKey.set(key, entry)
+  }
+
+  return [...byKey.values()].map((entry) => ({
     ...entry,
     status: entry.status === "success" ? "verified" : entry.status,
     raw_files: entry.raw_files ?? [],
@@ -732,7 +754,7 @@ export function recommendFromTrustedData(params: {
 
   if (!hasPlanData) {
     warnings.push(
-      "当前未导入该省当年官方招生计划，本结果不能代表今年实际可报专业、专业组或招生人数。",
+      "当前未导入当年官方招生计划，本结果不能代表今年实际可报专业或招生人数。",
     )
   }
 
@@ -755,11 +777,15 @@ export function recommendFromTrustedData(params: {
   }
 
   if (!canUseRank && !hasMinScore) {
+    const message =
+      params.province === "山东"
+        ? "山东当前已导入数据未包含最低分，无法基于分数生成可信参考；请填写官方位次。"
+        : "当前该省官方投档线只有最低位次，需输入官方位次后才能查看历史位次参考。"
+
     return {
       ok: false,
       recommendation_mode: "rank_recommendation" as RecommendationMode,
-      message:
-        "当前该省官方投档线只有最低位次，需输入官方位次后才能查看历史位次参考。",
+      message,
       warnings,
       recommendations,
     }
@@ -817,7 +843,7 @@ export function recommendFromTrustedData(params: {
         && hasVerifiedScoreSegments
         ? "完整志愿辅助分析。"
         : recommendationMode === "rank_recommendation"
-          ? "已生成基于官方位次字段的辅助参考。"
+          ? "已生成基于官方位次字段的历史位次参考。"
         : "已生成仅基于历史投档最低分的参考结果。",
     warnings,
     can_use_rank: canUseRank,

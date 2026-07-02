@@ -34,6 +34,11 @@ function capabilityText(value: boolean) {
   return value ? "是" : "否"
 }
 
+const provinceNotices: Record<string, string> = {
+  山东:
+    "山东官方投档表包含最低位次和投档计划数，未包含最低分。本工具不会反推最低分，仅提供历史位次参考。",
+}
+
 export default function DataSourcesPage({
   searchParams,
 }: {
@@ -112,6 +117,19 @@ export default function DataSourcesPage({
                 <div className="font-medium text-foreground">当前支持能力</div>
                 <p>{selectedOverview.support_capabilities.join("、")}</p>
               </div>
+              {provinceNotices[selectedOverview.province] ? (
+                <div className="rounded-md border border-sky-200 bg-sky-50 p-3 text-sky-900">
+                  {provinceNotices[selectedOverview.province]}
+                </div>
+              ) : null}
+              <div>
+                <div className="font-medium text-foreground">数据年份覆盖</div>
+                <p>
+                  2023：{selectedOverview.admission_scores_by_year["2023"]}；2024：
+                  {selectedOverview.admission_scores_by_year["2024"]}；2025：
+                  {selectedOverview.admission_scores_by_year["2025"]}
+                </p>
+              </div>
               <div>
                 <div className="font-medium text-foreground">不可用原因</div>
                 <ul className="mt-2 space-y-1">
@@ -166,15 +184,15 @@ export default function DataSourcesPage({
                 <div className="grid gap-2 rounded-md bg-slate-50 p-3 text-xs text-slate-700 sm:grid-cols-2 lg:grid-cols-4">
                   <Capability label="是否可查询" value={source.queryable} />
                   <Capability
-                    label="是否可参与分数参考"
+                    label="可参与分数参考"
                     value={source.usable_for_score_reference}
                   />
                   <Capability
-                    label="是否可参与位次推荐"
+                    label="可参与位次参考"
                     value={source.usable_for_rank_recommendation}
                   />
                   <Capability
-                    label="是否可参与招生计划推荐"
+                    label="可参与完整推荐"
                     value={source.usable_for_admission_plan_recommendation}
                   />
                 </div>

@@ -177,12 +177,15 @@
     "year": 2026,
     "data_type": "admission_plans",
     "source_name": "浙江省教育考试院",
-    "source_url": "https://www.zjzs.net/",
-    "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:33.123Z",
-    "raw_file_path": "",
+    "source_url": "https://www.zjzs.net/art/2026/6/18/art_45_12398.html",
+    "source_updated_at": "2026-06-18",
+    "downloaded_at": "2026-07-02T02:11:53.580Z",
+    "raw_file_path": "data/raw/provinces/zhejiang/2026-admission-plans/zhejiang_2026_admission_work_notice.html",
     "processed_file_path": "",
-    "raw_files": [],
+    "raw_files": [
+      "data/raw/provinces/zhejiang/2026-admission-plans/zhejiang_2026_admission_plans_index.html",
+      "data/raw/provinces/zhejiang/2026-admission-plans/zhejiang_2026_admission_work_notice.html"
+    ],
     "processed_files": [],
     "total_rows": 0,
     "imported_rows": 0,
@@ -191,6 +194,7 @@
     "missing_fields": [
       "university_code",
       "university_name",
+      "major_code",
       "major_name",
       "plan_count"
     ],
@@ -198,7 +202,7 @@
     "usable_for_score_reference": false,
     "usable_for_rank_recommendation": false,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次在官方站点首页/高考栏目未发现可直接确认的数据文件；不会使用非官方来源或推测补全。"
+    "notes": "已检查浙江省教育考试院招生计划栏目和 2026 年录取工作通知，未找到普通高考分学校、分专业的公开可批量下载结构化招生计划文件；不开放完整推荐。"
   },
   {
     "id": "zhejiang_2023_admission_scores",
@@ -206,28 +210,28 @@
     "year": 2023,
     "data_type": "admission_scores",
     "source_name": "浙江省教育考试院",
-    "source_url": "https://www.zjzs.net/",
-    "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:33.123Z",
-    "raw_file_path": "",
-    "processed_file_path": "",
-    "raw_files": [],
-    "processed_files": [],
-    "total_rows": 0,
-    "imported_rows": 0,
-    "row_count": 0,
-    "status": "missing",
-    "missing_fields": [
-      "university_code",
-      "university_name",
-      "min_score",
-      "min_rank"
+    "source_url": "https://www.zjzs.net/art/2023/7/19/art_45_2052.html",
+    "source_updated_at": "2023-07-19",
+    "downloaded_at": "2026-07-02T02:11:53.580Z",
+    "raw_file_path": "data/raw/provinces/zhejiang/2023-admission-scores/zhejiang_2023_regular_first_segment.xls",
+    "processed_file_path": "data/processed/admission-scores/zhejiang/zhejiang_2023_regular_first_segment.csv",
+    "raw_files": [
+      "data/raw/provinces/zhejiang/2023-admission-scores/zhejiang_2023_regular_first_segment_page.html",
+      "data/raw/provinces/zhejiang/2023-admission-scores/zhejiang_2023_regular_first_segment.xls"
     ],
-    "queryable": false,
-    "usable_for_score_reference": false,
-    "usable_for_rank_recommendation": false,
+    "processed_files": [
+      "data/processed/admission-scores/zhejiang/zhejiang_2023_regular_first_segment.csv"
+    ],
+    "total_rows": 16808,
+    "imported_rows": 16808,
+    "row_count": 16808,
+    "status": "verified",
+    "missing_fields": [],
+    "queryable": true,
+    "usable_for_score_reference": true,
+    "usable_for_rank_recommendation": true,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次在官方站点首页/高考栏目未发现可直接确认的数据文件；不会使用非官方来源或推测补全。"
+    "notes": "已从浙江省教育考试院官方 xls 附件清洗普通类第一段平行投档分数线表。官方表提供学校代号、学校名称、专业代号、专业名称、计划数、分数线和位次；不做字段推算。"
   },
   {
     "id": "zhejiang_2024_admission_scores",
@@ -235,28 +239,28 @@
     "year": 2024,
     "data_type": "admission_scores",
     "source_name": "浙江省教育考试院",
-    "source_url": "https://www.zjzs.net/",
-    "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:33.123Z",
-    "raw_file_path": "",
-    "processed_file_path": "",
-    "raw_files": [],
-    "processed_files": [],
-    "total_rows": 0,
-    "imported_rows": 0,
-    "row_count": 0,
-    "status": "missing",
-    "missing_fields": [
-      "university_code",
-      "university_name",
-      "min_score",
-      "min_rank"
+    "source_url": "https://www.zjzs.net/art/2024/7/21/art_155_9900.html",
+    "source_updated_at": "2024-07-21",
+    "downloaded_at": "2026-07-02T02:11:53.580Z",
+    "raw_file_path": "data/raw/provinces/zhejiang/2024-admission-scores/zhejiang_2024_regular_first_segment.xls",
+    "processed_file_path": "data/processed/admission-scores/zhejiang/zhejiang_2024_regular_first_segment.csv",
+    "raw_files": [
+      "data/raw/provinces/zhejiang/2024-admission-scores/zhejiang_2024_regular_first_segment_page.html",
+      "data/raw/provinces/zhejiang/2024-admission-scores/zhejiang_2024_regular_first_segment.xls"
     ],
-    "queryable": false,
-    "usable_for_score_reference": false,
-    "usable_for_rank_recommendation": false,
+    "processed_files": [
+      "data/processed/admission-scores/zhejiang/zhejiang_2024_regular_first_segment.csv"
+    ],
+    "total_rows": 17241,
+    "imported_rows": 17241,
+    "row_count": 17241,
+    "status": "verified",
+    "missing_fields": [],
+    "queryable": true,
+    "usable_for_score_reference": true,
+    "usable_for_rank_recommendation": true,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次在官方站点首页/高考栏目未发现可直接确认的数据文件；不会使用非官方来源或推测补全。"
+    "notes": "已从浙江省教育考试院官方 xls 附件清洗普通类第一段平行投档分数线表。官方表提供学校代号、学校名称、专业代号、专业名称、计划数、分数线和位次；不做字段推算。"
   },
   {
     "id": "zhejiang_2025_admission_scores",
@@ -264,28 +268,28 @@
     "year": 2025,
     "data_type": "admission_scores",
     "source_name": "浙江省教育考试院",
-    "source_url": "https://www.zjzs.net/",
-    "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:33.123Z",
-    "raw_file_path": "",
-    "processed_file_path": "",
-    "raw_files": [],
-    "processed_files": [],
-    "total_rows": 0,
-    "imported_rows": 0,
-    "row_count": 0,
-    "status": "missing",
-    "missing_fields": [
-      "university_code",
-      "university_name",
-      "min_score",
-      "min_rank"
+    "source_url": "https://www.zjzs.net/art/2025/7/21/art_45_11467.html",
+    "source_updated_at": "2025-07-21",
+    "downloaded_at": "2026-07-02T02:11:53.580Z",
+    "raw_file_path": "data/raw/provinces/zhejiang/2025-admission-scores/zhejiang_2025_regular_first_segment.xls",
+    "processed_file_path": "data/processed/admission-scores/zhejiang/zhejiang_2025_regular_first_segment.csv",
+    "raw_files": [
+      "data/raw/provinces/zhejiang/2025-admission-scores/zhejiang_2025_regular_first_segment_page.html",
+      "data/raw/provinces/zhejiang/2025-admission-scores/zhejiang_2025_regular_first_segment.xls"
     ],
-    "queryable": false,
-    "usable_for_score_reference": false,
-    "usable_for_rank_recommendation": false,
+    "processed_files": [
+      "data/processed/admission-scores/zhejiang/zhejiang_2025_regular_first_segment.csv"
+    ],
+    "total_rows": 17890,
+    "imported_rows": 17890,
+    "row_count": 17890,
+    "status": "verified",
+    "missing_fields": [],
+    "queryable": true,
+    "usable_for_score_reference": true,
+    "usable_for_rank_recommendation": true,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次在官方站点首页/高考栏目未发现可直接确认的数据文件；不会使用非官方来源或推测补全。"
+    "notes": "已从浙江省教育考试院官方 xls 附件清洗普通类第一段平行投档分数线表。官方表提供学校代号、学校名称、专业代号、专业名称、计划数、分数线和位次；不做字段推算。"
   },
   {
     "id": "zhejiang_2026_province_rules",
@@ -293,17 +297,20 @@
     "year": 2026,
     "data_type": "province_rules",
     "source_name": "浙江省教育考试院",
-    "source_url": "https://www.zjzs.net/",
-    "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:33.123Z",
-    "raw_file_path": "",
+    "source_url": "https://www.zjzs.net/art/2026/6/17/art_45_12386.html",
+    "source_updated_at": "2026-06-17",
+    "downloaded_at": "2026-07-02T02:11:53.580Z",
+    "raw_file_path": "data/raw/provinces/zhejiang/2026-province-rules/zhejiang_2026_volunteer_rules_page.html",
     "processed_file_path": "",
-    "raw_files": [],
+    "raw_files": [
+      "data/raw/provinces/zhejiang/2026-province-rules/zhejiang_2026_online_volunteer_notice.html",
+      "data/raw/provinces/zhejiang/2026-province-rules/zhejiang_2026_volunteer_rules_page.html"
+    ],
     "processed_files": [],
     "total_rows": 0,
     "imported_rows": 0,
     "row_count": 0,
-    "status": "missing",
+    "status": "partial",
     "missing_fields": [
       "volunteer_mode",
       "fill_time_start",
@@ -313,7 +320,7 @@
     "usable_for_score_reference": false,
     "usable_for_rank_recommendation": false,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次在官方站点首页/高考栏目未发现可直接确认的数据文件；不会使用非官方来源或推测补全。"
+    "notes": "已保存浙江省教育考试院 2026 年网上填报志愿通知和志愿填报百问百答页面；尚未结构化为 province_rules 记录。"
   },
   {
     "id": "zhejiang_2026_score_segments",
@@ -321,17 +328,20 @@
     "year": 2026,
     "data_type": "score_segments",
     "source_name": "浙江省教育考试院",
-    "source_url": "https://www.zjzs.net/",
-    "source_updated_at": "unknown",
-    "downloaded_at": "2026-07-01T13:08:33.122Z",
-    "raw_file_path": "",
+    "source_url": "https://www.zjzs.net/art/2026/6/26/art_45_12452.html",
+    "source_updated_at": "2026-06-26",
+    "downloaded_at": "2026-07-02T02:11:53.580Z",
+    "raw_file_path": "data/raw/provinces/zhejiang/2026-score-segments/zhejiang_2026_score_segments_total.pdf",
     "processed_file_path": "",
-    "raw_files": [],
+    "raw_files": [
+      "data/raw/provinces/zhejiang/2026-score-segments/zhejiang_2026_score_segments_page.html",
+      "data/raw/provinces/zhejiang/2026-score-segments/zhejiang_2026_score_segments_total.pdf"
+    ],
     "processed_files": [],
     "total_rows": 0,
     "imported_rows": 0,
     "row_count": 0,
-    "status": "missing",
+    "status": "pending_review",
     "missing_fields": [
       "score",
       "same_score_count",
@@ -341,7 +351,7 @@
     "usable_for_score_reference": false,
     "usable_for_rank_recommendation": false,
     "usable_for_admission_plan_recommendation": false,
-    "notes": "本次在官方站点首页/高考栏目未发现可直接确认的数据文件；不会使用非官方来源或推测补全。"
+    "notes": "已保存浙江省教育考试院官方 2026 年普通高校招生成绩分数段表（总分）PDF。当前尚未清洗为正式 score_segments CSV，未参与分数到位次换算。"
   },
   {
     "id": "anhui_2026_admission_plans",

@@ -73,10 +73,15 @@ function listCsvFiles(dir) {
     return []
   }
 
-  return fs
-    .readdirSync(dir)
-    .filter((file) => file.endsWith(".csv"))
-    .map((file) => path.join(dir, file))
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const filePath = path.join(dir, entry.name)
+
+    if (entry.isDirectory()) {
+      return listCsvFiles(filePath)
+    }
+
+    return entry.isFile() && entry.name.endsWith(".csv") ? [filePath] : []
+  })
 }
 
 function requireField(row, field, label) {
@@ -212,6 +217,10 @@ function validateAdmissionScores() {
 
       if (row.min_rank && Number.isNaN(Number(row.min_rank))) {
         errors.push(`${label} min_rank 如果存在必须是数字`)
+      }
+
+      if (row.plan_count && Number.isNaN(Number(row.plan_count))) {
+        errors.push(`${label} plan_count 如果存在必须是数字`)
       }
     })
   }

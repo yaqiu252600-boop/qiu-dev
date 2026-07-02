@@ -78,6 +78,11 @@ const scoreBucketLabels = {
   safe: "历史最低分低于当前分数",
 } as const
 
+const provinceNotices: Record<string, string> = {
+  山东:
+    "山东官方投档表包含最低位次和投档计划数，未包含最低分。本工具不会反推最低分，仅提供历史位次参考。",
+}
+
 export function TrustedGaokaoWorkbench({
   provinceStatuses,
 }: TrustedGaokaoWorkbenchProps) {
@@ -233,7 +238,7 @@ export function TrustedGaokaoWorkbench({
                   setProvince(event.target.value)
                   setRecommendation(null)
                   setUniversities([])
-                  if (event.target.value === "山东") {
+                  if (["山东", "浙江"].includes(event.target.value)) {
                     setSubjectType("general")
                   } else if (subjectType === "general") {
                     setSubjectType("physics")
@@ -257,11 +262,14 @@ export function TrustedGaokaoWorkbench({
             {canShowAdmissionForm ? (
               <form className="grid gap-4 sm:grid-cols-2" onSubmit={handleRecommend}>
                 <div className="sm:col-span-2 rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-700">
-                  {canShowFull
-                    ? "该省已具备完整志愿辅助分析所需数据。"
-                    : canShowRankReference && !canShowReference
-                      ? "该省当前可查看历史投档最低位次参考，请填写官方位次。"
-                      : "该省当前只能查看历史投档最低分参考。"}
+                  {provinceNotices[province] ??
+                    (canShowFull
+                      ? "该省已具备完整志愿辅助分析所需数据。"
+                      : canShowRankReference && canShowReference
+                        ? "该省当前可查看历史投档最低分和最低位次参考；未导入当年官方招生计划前，不提供完整志愿辅助分析。"
+                        : canShowRankReference
+                          ? "该省当前可查看历史投档最低位次参考，请填写官方位次。"
+                          : "该省当前只能查看历史投档最低分参考。")}
                 </div>
               <Field label="省份">
                 <input
@@ -343,6 +351,11 @@ function ProvinceStatusPanel({ status }: { status: ProvinceDataOverview }) {
           江苏由独立任务处理中，本轮全国扩展不覆盖江苏数据。
         </div>
       ) : null}
+      {provinceNotices[status.province] ? (
+        <div className="rounded-md border border-sky-200 bg-sky-50 p-3 text-sm leading-6 text-sky-900">
+          {provinceNotices[status.province]}
+        </div>
+      ) : null}
       <div className="grid gap-3 sm:grid-cols-2">
         <StatusMetric label="高校基础库" value={status.universities_status} />
         <StatusMetric label="一分一段" value={status.score_segments_status} />
@@ -415,6 +428,17 @@ function RecommendationPanel({
     )
   }
 
+  if (recommendation.ok === false) {
+    return (
+      <div className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+        <p>{recommendation.message}</p>
+        {recommendation.warnings?.map((warning) => (
+          <p key={warning}>{warning}</p>
+        ))}
+      </div>
+    )
+  }
+
   const buckets = recommendation.recommendations ?? {
     rush: [],
     stable: [],
@@ -428,7 +452,7 @@ function RecommendationPanel({
     <div className="mt-5 space-y-5">
       <div className="rounded-md bg-slate-50 p-4 text-sm leading-6 text-slate-700">
         <div className="font-medium text-foreground">
-          {mode === "rank_recommendation" ? "已验证位次推荐" : "仅分数参考"}
+          {mode === "rank_recommendation" ? "历史位次参考" : "仅分数参考"}
         </div>
         <p>{recommendation.message}</p>
       </div>

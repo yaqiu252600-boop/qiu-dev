@@ -20,7 +20,7 @@ def read_csv_dir(path: Path):
     if not path.exists():
         return rows
 
-    for file_path in sorted(path.glob("*.csv")):
+    for file_path in sorted(path.rglob("*.csv")):
         rows.extend(read_csv(file_path))
     return rows
 
@@ -29,7 +29,7 @@ def insert_rows(connection, table, rows):
     if not rows:
         return 0
 
-    keys = list(rows[0].keys())
+    keys = sorted({key for row in rows for key in row.keys()})
     placeholders = ",".join(["?"] * len(keys))
     columns = ",".join(keys)
     sql = f"INSERT OR REPLACE INTO {table} ({columns}) VALUES ({placeholders})"

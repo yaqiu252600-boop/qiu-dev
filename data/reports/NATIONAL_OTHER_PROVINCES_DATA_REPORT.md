@@ -1,6 +1,6 @@
 # 全国非江苏省份高考数据接入报告
 
-生成时间：2026-07-01T16:37:16.275Z
+生成时间：2026-07-02T02:12:42.597Z
 
 ## 本次边界
 
@@ -39,7 +39,7 @@
 | 吉林 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
 | 黑龙江 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
 | 上海 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
-| 浙江 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
+| 浙江 | pending_review | verified | verified | verified | missing | partial | 仅院校查询、可查投档线、可做分数参考、可做位次参考 |
 | 安徽 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
 | 福建 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
 | 江西 | missing | missing | missing | missing | missing | missing | 仅院校查询 |
@@ -63,6 +63,9 @@
 
 ## verified 数据
 
+- 浙江 / 2023 / admission_scores / 浙江省教育考试院 / https://www.zjzs.net/art/2023/7/19/art_45_2052.html
+- 浙江 / 2024 / admission_scores / 浙江省教育考试院 / https://www.zjzs.net/art/2024/7/21/art_155_9900.html
+- 浙江 / 2025 / admission_scores / 浙江省教育考试院 / https://www.zjzs.net/art/2025/7/21/art_45_11467.html
 - 山东 / 2023 / admission_scores / 山东省教育招生考试院 / https://www.sdzk.cn/NewsInfo.aspx?NewsID=6297
 - 山东 / 2024 / admission_scores / 山东省教育招生考试院 / https://www.sdzk.cn/NewsInfo.aspx?NewsID=6680
 - 山东 / 2025 / admission_scores / 山东省教育招生考试院 / https://www.sdzk.cn/NewsInfo.aspx?NewsID=6996
@@ -73,10 +76,11 @@
 
 ## pending_review 数据
 
-- 无
+- 浙江 / 2026 / score_segments / 浙江省教育考试院 / https://www.zjzs.net/art/2026/6/26/art_45_12452.html
 
 ## partial 数据
 
+- 浙江 / 2026 / province_rules / 浙江省教育考试院 / https://www.zjzs.net/art/2026/6/17/art_45_12386.html
 - 山东 / 2026 / admission_plans / 山东省教育招生考试院 / https://www.sdzk.cn/NewsInfo.aspx?NewsID=7278
 - 山东 / 2026 / province_rules / 山东省教育招生考试院 / https://www.sdzk.cn/NewsInfo.aspx?NewsID=7265
 - 山东 / 2026 / score_segments / 山东省教育招生考试院 / https://www.sdzk.cn/NewsInfo.aspx?NewsID=7272
@@ -86,12 +90,7 @@
 
 ## missing 数据
 
-- 浙江 / 2026 / admission_plans / 浙江省教育考试院 / https://www.zjzs.net/
-- 浙江 / 2023 / admission_scores / 浙江省教育考试院 / https://www.zjzs.net/
-- 浙江 / 2024 / admission_scores / 浙江省教育考试院 / https://www.zjzs.net/
-- 浙江 / 2025 / admission_scores / 浙江省教育考试院 / https://www.zjzs.net/
-- 浙江 / 2026 / province_rules / 浙江省教育考试院 / https://www.zjzs.net/
-- 浙江 / 2026 / score_segments / 浙江省教育考试院 / https://www.zjzs.net/
+- 浙江 / 2026 / admission_plans / 浙江省教育考试院 / https://www.zjzs.net/art/2026/6/18/art_45_12398.html
 - 安徽 / 2026 / admission_plans / 安徽省教育招生考试院 / https://www.ahzsks.cn/ptgxzs/
 - 安徽 / 2023 / admission_scores / 安徽省教育招生考试院 / https://www.ahzsks.cn/ptgxzs/
 - 安徽 / 2024 / admission_scores / 安徽省教育招生考试院 / https://www.ahzsks.cn/ptgxzs/
