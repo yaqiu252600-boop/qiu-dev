@@ -22,7 +22,7 @@ async function fetchMarkPrice(symbol: string) {
 
   try {
     const response = await fetch(
-      `https://fapi.binance.com/fapi/v1/premiumIndex?symbol=${encodeURIComponent(symbol)}`,
+      `https://www.binance.com/fapi/v1/premiumIndex?symbol=${encodeURIComponent(symbol)}`,
       {
         cache: "no-store",
         signal: controller.signal,
