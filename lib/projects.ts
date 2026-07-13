@@ -77,6 +77,31 @@ export const projects: Project[] = [
     nextSteps: ["补充更多签文模板", "优化分享图片导出"],
   },
   {
+    slug: "paper-trading",
+    title: "纸面策略看板",
+    description:
+      "集中查看四个纸面模拟策略的总资金、当前浮盈浮亏、滚仓、移动止盈与最近交易。",
+    longDescription:
+      "纸面策略看板用于观察四个模拟策略的资金变化和持仓管理状态。策略状态与成交记录来自已发布快照；每次打开或手动刷新页面时，系统会读取币安合约最新标记价，重新计算当前持仓浮盈浮亏。页面不会自动轮询，也不会执行真实交易。",
+    status: "live",
+    type: "交易研究 / 数据看板",
+    tags: ["Next.js", "纸面模拟", "策略看板", "币安标记价"],
+    demoUrl: "/tools/paper-trading",
+    githubUrl: "https://github.com/yaqiu252600-boop/qiu-dev",
+    featured: false,
+    tool: true,
+    progress: 100,
+    updatedAt: "2026-07-13",
+    eta: "已上线",
+    completed: [
+      "展示四个策略总资金和累计净结果",
+      "展示当前浮盈浮亏、滚仓与移动止盈状态",
+      "接入币安合约标记价并支持手动刷新",
+      "保留最近已平仓记录和错误状态",
+    ],
+    nextSteps: ["接入可公开访问的策略状态源", "增加历史净值曲线"],
+  },
+  {
     slug: "bazi",
     title: "八字排盘工具",
     description: "输入出生日期时间，生成四柱八字、五行分布、十神关系与传统命理文化解读。",

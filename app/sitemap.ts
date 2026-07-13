@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/droidlink",
     "/tools/pdf-to-word",
     "/tools/video-tools",
+    "/tools/paper-trading",
     "/tools/daily-fortune",
     "/tools/bazi",
     "/tools/name",
