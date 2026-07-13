@@ -80,3 +80,24 @@ export type PaperTradingResponse = PaperTradingSnapshot & {
   market_as_of_utc: string
   refresh_mode: "manual"
 }
+
+export function revaluePaperTradingPosition(
+  position: PaperTradingPosition,
+  markPrice: number,
+) {
+  const usedMargin =
+    position.base_position_margin_usdt * position.max_margin_used_multiple
+  const direction = position.side === "long" ? 1 : -1
+  const priceMove =
+    direction * ((markPrice - position.avg_entry_price) / position.avg_entry_price)
+  const unrealizedPnl = usedMargin * position.leverage * priceMove
+
+  return {
+    ...position,
+    mark_price: markPrice,
+    mark_price_stale: false,
+    unrealized_pnl_usdt: unrealizedPnl,
+    unrealized_margin_return_pct:
+      usedMargin > 0 ? unrealizedPnl / usedMargin : 0,
+  }
+}

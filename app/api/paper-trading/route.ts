@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server"
 
 import snapshotJson from "@/data/paper-trading-snapshot.json"
-import type {
-  PaperTradingPosition,
-  PaperTradingResponse,
-  PaperTradingSnapshot,
+import {
+  revaluePaperTradingPosition,
+  type PaperTradingResponse,
+  type PaperTradingSnapshot,
 } from "@/lib/paper-trading"
 
 export const dynamic = "force-dynamic"
@@ -43,24 +43,6 @@ async function fetchMarkPrice(symbol: string) {
     return { price, time: data.time }
   } finally {
     clearTimeout(timeout)
-  }
-}
-
-function withMarkPrice(position: PaperTradingPosition, markPrice: number) {
-  const usedMargin =
-    position.base_position_margin_usdt * position.max_margin_used_multiple
-  const direction = position.side === "long" ? 1 : -1
-  const priceMove =
-    direction * ((markPrice - position.avg_entry_price) / position.avg_entry_price)
-  const unrealizedPnl = usedMargin * position.leverage * priceMove
-
-  return {
-    ...position,
-    mark_price: markPrice,
-    mark_price_stale: false,
-    unrealized_pnl_usdt: unrealizedPnl,
-    unrealized_margin_return_pct:
-      usedMargin > 0 ? unrealizedPnl / usedMargin : 0,
   }
 }
 
@@ -121,7 +103,10 @@ export async function GET() {
 
     return {
       ...strategy,
-      open_position: withMarkPrice(strategy.open_position, mark.price),
+      open_position: revaluePaperTradingPosition(
+        strategy.open_position,
+        mark.price,
+      ),
     }
   })
 

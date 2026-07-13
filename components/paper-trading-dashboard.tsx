@@ -21,11 +21,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import type {
-  PaperTradingPosition,
-  PaperTradingResponse,
-  PaperTradingStrategy,
+import {
+  revaluePaperTradingPosition,
+  type PaperTradingPosition,
+  type PaperTradingResponse,
+  type PaperTradingStrategy,
 } from "@/lib/paper-trading"
+
+type BinanceMark = {
+  symbol: string
+  markPrice: string
+  time: number
+}
 
 const numberFormatter = new Intl.NumberFormat("zh-CN", {
   minimumFractionDigits: 2,
@@ -96,6 +103,81 @@ function exitReasonLabel(reason: string) {
   return labels[reason] ?? reason
 }
 
+async function fetchBrowserMarkPrice(symbol: string) {
+  const response = await fetch(
+    `https://www.binance.com/fapi/v1/premiumIndex?symbol=${encodeURIComponent(symbol)}`,
+    { cache: "no-store" },
+  )
+
+  if (!response.ok) throw new Error(`标记价请求失败：${response.status}`)
+
+  const data = (await response.json()) as BinanceMark
+  const price = Number(data.markPrice)
+
+  if (!Number.isFinite(price) || price <= 0) {
+    throw new Error("标记价数据无效")
+  }
+
+  return { symbol, price, time: data.time }
+}
+
+async function refreshStaleMarkPrices(data: PaperTradingResponse) {
+  const staleSymbols = Array.from(
+    new Set(
+      data.strategies
+        .map((strategy) => strategy.open_position)
+        .filter(
+          (position): position is PaperTradingPosition =>
+            Boolean(position?.mark_price_stale),
+        )
+        .map((position) => position.symbol),
+    ),
+  )
+
+  if (staleSymbols.length === 0) return data
+
+  const results = await Promise.allSettled(
+    staleSymbols.map((symbol) => fetchBrowserMarkPrice(symbol)),
+  )
+  const liveMarks = results
+    .filter(
+      (result): result is PromiseFulfilledResult<{
+        symbol: string
+        price: number
+        time: number
+      }> => result.status === "fulfilled",
+    )
+    .map((result) => result.value)
+
+  if (liveMarks.length === 0) return data
+
+  const markMap = new Map(liveMarks.map((mark) => [mark.symbol, mark]))
+  const strategies = data.strategies.map((strategy) => {
+    const position = strategy.open_position
+    if (!position) return strategy
+
+    const mark = markMap.get(position.symbol)
+    if (!mark) return strategy
+
+    return {
+      ...strategy,
+      open_position: revaluePaperTradingPosition(position, mark.price),
+    }
+  })
+
+  return {
+    ...data,
+    strategies,
+    market_source:
+      liveMarks.length === staleSymbols.length
+        ? ("binance_futures" as const)
+        : ("binance_with_snapshot_fallback" as const),
+    market_as_of_utc: new Date(
+      Math.max(...liveMarks.map((mark) => mark.time)),
+    ).toISOString(),
+  }
+}
+
 export function PaperTradingDashboard() {
   const [data, setData] = useState<PaperTradingResponse | null>(null)
   const [loading, setLoading] = useState(true)
@@ -108,7 +190,8 @@ export function PaperTradingDashboard() {
     try {
       const response = await fetch("/api/paper-trading", { cache: "no-store" })
       if (!response.ok) throw new Error(`请求失败：${response.status}`)
-      setData((await response.json()) as PaperTradingResponse)
+      const payload = (await response.json()) as PaperTradingResponse
+      setData(await refreshStaleMarkPrices(payload))
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "数据加载失败")
     } finally {
