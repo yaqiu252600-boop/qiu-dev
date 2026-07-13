@@ -36,7 +36,12 @@ type BinanceMark = {
 }
 
 const liveStatusUrl =
-  "https://gist.githubusercontent.com/yaqiu252600-boop/04e3d1b16716ecb82ae372cd16e8e70e/raw/paper-trading-live.json"
+  "https://api.github.com/gists/04e3d1b16716ecb82ae372cd16e8e70e"
+const liveStatusFilename = "paper-trading-live.json"
+
+type GitHubGistResponse = {
+  files?: Record<string, { content?: string }>
+}
 
 const numberFormatter = new Intl.NumberFormat("zh-CN", {
   minimumFractionDigits: 2,
@@ -191,13 +196,24 @@ async function refreshStaleMarkPrices(data: PaperTradingResponse) {
 }
 
 async function refreshLiveStrategyData(data: PaperTradingResponse) {
+  if (data.strategy_source === "live_publisher" && !data.strategy_source_stale) {
+    return data
+  }
+
   try {
-    const response = await fetch(`${liveStatusUrl}?ts=${Date.now()}`, {
+    const response = await fetch(liveStatusUrl, {
       cache: "no-store",
+      headers: {
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
     })
     if (!response.ok) return data
 
-    const snapshot = (await response.json()) as PaperTradingSnapshot
+    const gist = (await response.json()) as GitHubGistResponse
+    const content = gist.files?.[liveStatusFilename]?.content
+    if (!content) return data
+    const snapshot = JSON.parse(content) as PaperTradingSnapshot
     if (
       !Array.isArray(snapshot.strategies) ||
       snapshot.strategies.length !== 4 ||

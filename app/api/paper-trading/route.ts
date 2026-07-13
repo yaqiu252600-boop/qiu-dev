@@ -16,15 +16,22 @@ type BinanceMark = {
 
 const bundledSnapshot = snapshotJson as PaperTradingSnapshot
 const liveStatusUrl =
-  "https://gist.githubusercontent.com/yaqiu252600-boop/04e3d1b16716ecb82ae372cd16e8e70e/raw/paper-trading-live.json"
+  "https://api.github.com/gists/04e3d1b16716ecb82ae372cd16e8e70e"
+const liveStatusFilename = "paper-trading-live.json"
+
+type GitHubGistResponse = {
+  files?: Record<string, { content?: string }>
+}
 
 async function loadStrategySnapshot() {
   try {
-    const response = await fetch(`${liveStatusUrl}?ts=${Date.now()}`, {
+    const response = await fetch(liveStatusUrl, {
       cache: "no-store",
       headers: {
         "Cache-Control": "no-cache",
         "User-Agent": "qiu.dev-paper-trading/1.0",
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
       },
     })
 
@@ -32,7 +39,10 @@ async function loadStrategySnapshot() {
       throw new Error(`live status request failed: ${response.status}`)
     }
 
-    const liveSnapshot = (await response.json()) as PaperTradingSnapshot
+    const gist = (await response.json()) as GitHubGistResponse
+    const content = gist.files?.[liveStatusFilename]?.content
+    if (!content) throw new Error("live status file is missing")
+    const liveSnapshot = JSON.parse(content) as PaperTradingSnapshot
     if (
       !Array.isArray(liveSnapshot.strategies) ||
       liveSnapshot.strategies.length !== 4 ||
