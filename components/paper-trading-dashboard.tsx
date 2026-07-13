@@ -25,6 +25,7 @@ import {
   revaluePaperTradingPosition,
   type PaperTradingPosition,
   type PaperTradingResponse,
+  type PaperTradingSnapshot,
   type PaperTradingStrategy,
 } from "@/lib/paper-trading"
 
@@ -33,6 +34,9 @@ type BinanceMark = {
   markPrice: string
   time: number
 }
+
+const liveStatusUrl =
+  "https://gist.githubusercontent.com/yaqiu252600-boop/04e3d1b16716ecb82ae372cd16e8e70e/raw/paper-trading-live.json"
 
 const numberFormatter = new Intl.NumberFormat("zh-CN", {
   minimumFractionDigits: 2,
@@ -91,7 +95,15 @@ function totalNetResult(strategy: PaperTradingStrategy) {
 function marketSourceLabel(source: PaperTradingResponse["market_source"]) {
   if (source === "binance_futures") return "币安合约最新标记价"
   if (source === "binance_with_snapshot_fallback") return "币安标记价（部分使用快照）"
+  if (source === "local_publisher") return "本机看板同步标记价"
   return "已发布快照标记价"
+}
+
+function strategySourceLabel(data: PaperTradingResponse) {
+  if (data.strategy_source === "live_publisher") {
+    return data.strategy_source_stale ? "本机同步已延迟" : "本机监控实时同步"
+  }
+  return "部署快照（本机同步不可用）"
 }
 
 function exitReasonLabel(reason: string) {
@@ -178,6 +190,40 @@ async function refreshStaleMarkPrices(data: PaperTradingResponse) {
   }
 }
 
+async function refreshLiveStrategyData(data: PaperTradingResponse) {
+  try {
+    const response = await fetch(`${liveStatusUrl}?ts=${Date.now()}`, {
+      cache: "no-store",
+    })
+    if (!response.ok) return data
+
+    const snapshot = (await response.json()) as PaperTradingSnapshot
+    if (
+      !Array.isArray(snapshot.strategies) ||
+      snapshot.strategies.length !== 4 ||
+      !Array.isArray(snapshot.trades) ||
+      !snapshot.published_at_utc
+    ) {
+      return data
+    }
+
+    const ageMilliseconds =
+      Date.now() - new Date(snapshot.published_at_utc).getTime()
+    return {
+      ...data,
+      ...snapshot,
+      strategy_source: "live_publisher" as const,
+      strategy_source_stale:
+        !Number.isFinite(ageMilliseconds) || ageMilliseconds > 90_000,
+      strategy_source_error: "",
+      market_source: "local_publisher" as const,
+      market_as_of_utc: snapshot.published_at_utc,
+    }
+  } catch {
+    return data
+  }
+}
+
 export function PaperTradingDashboard() {
   const [data, setData] = useState<PaperTradingResponse | null>(null)
   const [loading, setLoading] = useState(true)
@@ -191,7 +237,8 @@ export function PaperTradingDashboard() {
       const response = await fetch("/api/paper-trading", { cache: "no-store" })
       if (!response.ok) throw new Error(`请求失败：${response.status}`)
       const payload = (await response.json()) as PaperTradingResponse
-      setData(await refreshStaleMarkPrices(payload))
+      const livePayload = await refreshLiveStrategyData(payload)
+      setData(await refreshStaleMarkPrices(livePayload))
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "数据加载失败")
     } finally {
@@ -221,6 +268,8 @@ export function PaperTradingDashboard() {
       losing: openStrategies.filter(
         (strategy) => positionResult(strategy.open_position) < 0,
       ).length,
+      running: data.strategies.filter((strategy) => strategy.monitor_running)
+        .length,
     }
   }, [data])
 
@@ -259,10 +308,15 @@ export function PaperTradingDashboard() {
                 <Badge variant="live">纸面模拟</Badge>
                 <Badge variant="outline">不自动刷新</Badge>
                 <Badge variant="outline">4 个策略</Badge>
+                <Badge
+                  variant={data.strategy_source === "live_publisher" ? "live" : "planned"}
+                >
+                  {strategySourceLabel(data)}
+                </Badge>
               </div>
               <CardTitle className="mt-4 text-xl">策略总体状态</CardTitle>
               <CardDescription className="mt-2 max-w-3xl">
-                策略持仓与累计结果来自最近一次发布快照；打开页面或点击刷新时，会重新读取币安合约标记价并计算当前浮盈浮亏。
+                本机监控每 10 秒发布一次最新策略状态；打开页面或点击刷新时，会同时读取最新持仓、累计结果、滚仓、移动止盈和标记价。
               </CardDescription>
             </div>
             <Button type="button" onClick={loadStatus} disabled={loading}>
@@ -278,6 +332,13 @@ export function PaperTradingDashboard() {
           {error ? (
             <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
               本次刷新失败，仍显示上一次成功数据：{error}
+            </div>
+          ) : null}
+
+          {data.strategy_source !== "live_publisher" || data.strategy_source_stale ? (
+            <div className="rounded-md border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">
+              当前没有拿到新鲜的本机策略状态，页面正在显示降级数据。请确认本机 8877 看板和状态同步进程仍在运行。
+              {data.strategy_source_error ? ` 原因：${data.strategy_source_error}` : ""}
             </div>
           ) : null}
 
@@ -298,7 +359,7 @@ export function PaperTradingDashboard() {
             <OverviewBlock
               label="策略状态时间"
               value={formatTime(data.published_at_utc)}
-              note="已发布快照"
+              note={`${strategySourceLabel(data)} · ${overview?.running ?? 0}/4 个监控运行中`}
               icon={Clock3}
               compact
             />
@@ -323,7 +384,7 @@ export function PaperTradingDashboard() {
         <CardHeader>
           <CardTitle className="text-lg">最近已平仓记录</CardTitle>
           <CardDescription>
-            成交记录随策略快照发布，不会被标记价刷新改写。
+            成交记录随本机策略状态同步，点击刷新即可读取最新平仓结果。
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -368,7 +429,7 @@ export function PaperTradingDashboard() {
 
       <div className="rounded-lg border border-border bg-white p-4 text-sm leading-6 text-muted-foreground">
         <p>
-          “累计净结果”按当前资金 + 预留利润 + 浮盈浮亏 - 初始资金 - 累计补资计算；因此补资不会被误算成策略盈利。进程 PID 只代表快照采集时监控程序已启动，不代表浏览此页面时仍在线。
+          “累计净结果”按当前资金 + 预留利润 + 浮盈浮亏 - 初始资金 - 累计补资计算；因此补资不会被误算成策略盈利。本机同步新鲜时，“监控运行中”由进程存在和最近状态时间共同确认。
         </p>
       </div>
     </div>
@@ -483,7 +544,15 @@ function StrategyCard({ strategy }: { strategy: PaperTradingStrategy }) {
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4 text-xs text-muted-foreground">
-          <span>快照采集时进程 PID：{strategy.monitor_pid}</span>
+          <span
+            className={
+              strategy.monitor_running ? "text-emerald-700" : "text-rose-700"
+            }
+          >
+            {strategy.monitor_running
+              ? `监控运行中 · PID ${strategy.monitor_pid}`
+              : `监控未确认 · PID ${strategy.monitor_pid}`}
+          </span>
           <span className={strategy.last_error ? "text-rose-700" : "text-emerald-700"}>
             {strategy.last_error ? `最近错误：${strategy.last_error}` : "未记录错误"}
           </span>

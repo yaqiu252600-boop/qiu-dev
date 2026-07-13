@@ -25,6 +25,8 @@ export type PaperTradingStrategy = {
   strategy_name: string
   as_of_utc: string
   monitor_pid: number
+  monitor_running?: boolean
+  monitor_age_seconds?: number | null
   paper_only: boolean
   initial_capital_usdt: number
   target_capital_usdt: number
@@ -66,16 +68,25 @@ export type PaperTradingTrade = {
 
 export type PaperTradingSnapshot = {
   published_at_utc: string
+  source_as_of_utc?: string
   paper_only: boolean
   strategies: PaperTradingStrategy[]
   trades: PaperTradingTrade[]
+  publisher?: {
+    version: number
+    status: string
+    source: string
+  }
 }
 
 export type PaperTradingResponse = PaperTradingSnapshot & {
-  strategy_source: "published_snapshot"
+  strategy_source: "live_publisher" | "published_snapshot"
+  strategy_source_stale: boolean
+  strategy_source_error: string
   market_source:
     | "binance_futures"
     | "binance_with_snapshot_fallback"
+    | "local_publisher"
     | "published_snapshot"
   market_as_of_utc: string
   refresh_mode: "manual"

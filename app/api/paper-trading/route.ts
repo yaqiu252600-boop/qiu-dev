@@ -14,7 +14,53 @@ type BinanceMark = {
   time: number
 }
 
-const snapshot = snapshotJson as PaperTradingSnapshot
+const bundledSnapshot = snapshotJson as PaperTradingSnapshot
+const liveStatusUrl =
+  "https://gist.githubusercontent.com/yaqiu252600-boop/04e3d1b16716ecb82ae372cd16e8e70e/raw/paper-trading-live.json"
+
+async function loadStrategySnapshot() {
+  try {
+    const response = await fetch(`${liveStatusUrl}?ts=${Date.now()}`, {
+      cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache",
+        "User-Agent": "qiu.dev-paper-trading/1.0",
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`live status request failed: ${response.status}`)
+    }
+
+    const liveSnapshot = (await response.json()) as PaperTradingSnapshot
+    if (
+      !Array.isArray(liveSnapshot.strategies) ||
+      liveSnapshot.strategies.length !== 4 ||
+      !Array.isArray(liveSnapshot.trades) ||
+      !liveSnapshot.published_at_utc
+    ) {
+      throw new Error("live status payload is incomplete")
+    }
+
+    const ageMilliseconds =
+      Date.now() - new Date(liveSnapshot.published_at_utc).getTime()
+    return {
+      snapshot: liveSnapshot,
+      strategySource: "live_publisher" as const,
+      strategySourceStale:
+        !Number.isFinite(ageMilliseconds) || ageMilliseconds > 90_000,
+      strategySourceError: "",
+    }
+  } catch (error) {
+    return {
+      snapshot: bundledSnapshot,
+      strategySource: "published_snapshot" as const,
+      strategySourceStale: true,
+      strategySourceError:
+        error instanceof Error ? error.message : "live status is unavailable",
+    }
+  }
+}
 
 async function fetchMarkPrice(symbol: string) {
   const controller = new AbortController()
@@ -47,6 +93,8 @@ async function fetchMarkPrice(symbol: string) {
 }
 
 export async function GET() {
+  const source = await loadStrategySnapshot()
+  const snapshot = source.snapshot
   const symbols = Array.from(
     new Set(
       snapshot.strategies
@@ -81,7 +129,9 @@ export async function GET() {
       ? "binance_futures"
       : liveCount > 0
         ? "binance_with_snapshot_fallback"
-        : "published_snapshot"
+        : source.strategySource === "live_publisher"
+          ? "local_publisher"
+          : "published_snapshot"
   const latestMarketTime = Math.max(
     ...marks.map((mark) => mark.time),
     new Date(snapshot.published_at_utc).getTime(),
@@ -96,7 +146,10 @@ export async function GET() {
         ...strategy,
         open_position: {
           ...strategy.open_position,
-          mark_price_stale: true,
+          mark_price_stale:
+            source.strategySource !== "live_publisher" ||
+            source.strategySourceStale ||
+            strategy.open_position.mark_price_stale,
         },
       }
     }
@@ -113,7 +166,9 @@ export async function GET() {
   const response: PaperTradingResponse = {
     ...snapshot,
     strategies,
-    strategy_source: "published_snapshot",
+    strategy_source: source.strategySource,
+    strategy_source_stale: source.strategySourceStale,
+    strategy_source_error: source.strategySourceError,
     market_source: marketSource,
     market_as_of_utc: new Date(latestMarketTime).toISOString(),
     refresh_mode: "manual",
