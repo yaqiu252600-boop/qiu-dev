@@ -118,10 +118,10 @@
       "open_position": null
     },
     {
-      "strategy_id": "candidate02_regime_rocket20_fixed50_stop30",
-      "strategy_name": "候选04 · 火箭20%止盈50%止损30%",
-      "as_of_utc": "2026-07-13T12:16:47+00:00",
-      "monitor_pid": 33284,
+      "strategy_id": "candidate02_regime_rocket20_fixed70_stop35",
+      "strategy_name": "候选04 · 火箭20%止盈70%止损35%",
+      "as_of_utc": "2026-07-13T12:49:10+00:00",
+      "monitor_pid": 31672,
       "paper_only": true,
       "initial_capital_usdt": 14,
       "target_capital_usdt": 14,
