@@ -216,7 +216,7 @@ async function refreshLiveStrategyData(data: PaperTradingResponse) {
     const snapshot = JSON.parse(content) as PaperTradingSnapshot
     if (
       !Array.isArray(snapshot.strategies) ||
-      snapshot.strategies.length !== 4 ||
+      snapshot.strategies.length !== 5 ||
       !Array.isArray(snapshot.trades) ||
       !snapshot.published_at_utc
     ) {
@@ -323,7 +323,7 @@ export function PaperTradingDashboard() {
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="live">纸面模拟</Badge>
                 <Badge variant="outline">不自动刷新</Badge>
-                <Badge variant="outline">4 个策略</Badge>
+                <Badge variant="outline">{data.strategies.length} 个策略</Badge>
                 <Badge
                   variant={data.strategy_source === "live_publisher" ? "live" : "planned"}
                 >
@@ -375,7 +375,7 @@ export function PaperTradingDashboard() {
             <OverviewBlock
               label="策略状态时间"
               value={formatTime(data.published_at_utc)}
-              note={`${strategySourceLabel(data)} · ${overview?.running ?? 0}/4 个监控运行中`}
+              note={`${strategySourceLabel(data)} · ${overview?.running ?? 0}/${data.strategies.length} 个监控运行中`}
               icon={Clock3}
               compact
             />

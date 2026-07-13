@@ -45,7 +45,7 @@ async function loadStrategySnapshot() {
     const liveSnapshot = JSON.parse(content) as PaperTradingSnapshot
     if (
       !Array.isArray(liveSnapshot.strategies) ||
-      liveSnapshot.strategies.length !== 4 ||
+      liveSnapshot.strategies.length !== 5 ||
       !Array.isArray(liveSnapshot.trades) ||
       !liveSnapshot.published_at_utc
     ) {
